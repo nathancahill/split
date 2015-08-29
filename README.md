@@ -2,7 +2,7 @@
 
 
 
-Split.js is a lightweight (2kb) utility for creating adjustable split views.
+Split.js is a lightweight (2kb) utility for creating adjustable split views. [Demo](http://nathancahill.github.io/Split.js/)
 
 No dependencies and no markup required, just two or more elements with a common parent.
 
