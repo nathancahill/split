@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <title>Split.js</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/normalize/3.0.3/normalize.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/skeleton/2.0.4/skeleton.css">
+  <style>
+  .row {
+    height: 600px;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+  }
+
+  #one, #two, .gutter {
+    height: 100%;
+    float: left;
+  }
+
+  #one, #two {
+    box-sizing: border-box;
+    padding: 20px;
+    overflow-y: scroll;
+    overflow-x: hidden;
+  }
+
+  .gutter {
+    background-color: #eee;
+
+    background-image: url('https://ssl.gstatic.com/ui/v1/icons/mail/grippy_large.png');
+    background-repeat: no-repeat;
+    background-position: 50%;
+
+    cursor: move;
+    cursor: grab;
+    cursor: -moz-grab;
+    cursor: -webkit-grab;
+  }
+
+  .gutter:active { 
+    cursor: grabbing;
+    cursor: -moz-grabbing;
+    cursor: -webkit-grabbing;
+  }
+
+  h3 {
+    margin-top: 100px;
+  }
+  </style>
+</head>
+<body>
+    <div class="container">
+        <h3>Split.js</h3>
+        <div class="row">
+            <div id="one">
+                <p>Split.js is a lightweight (2kb) utility for creating adjustable split views.</p>
+                <p>No dependencies and no markup required, just two or more elements with a common parent.</p>
+                <p>Draggable gutters are inserted between every two elements.</p>
+                <p>Initial widths, gutter widths and minimum widths are configurable.</p>
+            </div>
+            <div id="two">
+                <h5>Documentation</h5>
+                <pre><code>Split(&lt;id[]&gt; element ids, &lt;options&gt; options?)</code></pre>
+                <table class="u-full-width">
+                  <thead>
+                    <tr>
+                      <th>Options</th>
+                      <th>Type</th>
+                      <th>Default</th>
+                      <th>Description</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr>
+                      <td>widths</td>
+                      <td>Array of numbers</td>
+                      <td>Even</td>
+                      <td>Initial widths of each element in percents.</td>
+                    </tr>
+                    <tr>
+                      <td>gutterWidth</td>
+                      <td>Number</td>
+                      <td>10</td>
+                      <td>Gutter width in pixels.</td>
+                    </tr>
+                    <tr>
+                      <td>minWidth</td>
+                      <td>Number</td>
+                      <td>100</td>
+                      <td>Minimum width of each element.</td>
+                    </tr>
+                  </tbody>
+                </table>
+                <h5>Usage Example</h5>
+                <pre><code>Split(['one', 'two'], {
+    widths: [25, 75],
+    minWidth: 200
+});</code></pre>
+            </div>
+        </div>
+    </div>
+</body>
+<script src="split.js"></script>
+<script>
+    Split(['one', 'two'], {
+        widths: [29, 71],
+        minWidth: 200
+    });
+</script>
+</html>
