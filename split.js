@@ -62,8 +62,8 @@ var Split = function (ids, options) {
             // Stop dragging if closer than minWidth to
             // the pair's left or right sides
 
-            if (e.clientX <= this.x + options.minWidth ||
-                e.clientX >= this.x + this.width - options.minWidth) {
+            if (e.clientX <= this.x + this.leftMin ||
+                e.clientX >= this.x + this.width - this.rightMin) {
                     return;
             }
 
@@ -101,6 +101,16 @@ var Split = function (ids, options) {
         };
     }
 
+    if (!Array.isArray(options.minWidth)) {
+        var minWidths = [];
+
+        for (var i = 0; i < ids.length; i++) {
+            minWidths.push(options.minWidth);
+        };
+
+        options.minWidth = minWidths;
+    }
+
     for (var i = 0; i < ids.length; i++) {
         var el = document.getElementById(ids[i]);
 
@@ -108,6 +118,8 @@ var Split = function (ids, options) {
             var pair = {
                     left: document.getElementById(ids[i - 1]),
                     right: el,
+                    leftMin: options.minWidth[i - 1],
+                    rightMin: options.minWidth[i],
                     dragging: false,
                     parent: parent
                 },
