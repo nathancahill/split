@@ -5,6 +5,14 @@
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/normalize/3.0.3/normalize.css">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/skeleton/2.0.4/skeleton.css">
   <style>
+  td {
+    padding: 8px 10px;
+  }
+
+  td:first-child {
+    font-family: monospace;
+  }
+
   .example-1 {
     height: 600px;
     border: 1px solid #ddd;
@@ -79,12 +87,12 @@
                   <tr>
                     <td>widths</td>
                     <td>Array of numbers</td>
-                    <td>Even</td>
+                    <td></td>
                     <td>Initial widths of each element in percents.</td>
                   </tr>
                   <tr>
                     <td>minWidth</td>
-                    <td>Number or Array of numbers</td>
+                    <td>Number or array</td>
                     <td>100</td>
                     <td>Minimum width of each element.</td>
                   </tr>
@@ -98,7 +106,7 @@
                     <td>snapOffset</td>
                     <td>Number</td>
                     <td>30</td>
-                    <td>Snap to minimum width offset in pixels.</td>
+                    <td>Snap to minimum width offset.</td>
                   </tr>
                   <tr>
                     <td>onDrag</td>
