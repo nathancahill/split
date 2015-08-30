@@ -73,7 +73,7 @@ var Split = function (ids, options) {
             var offsetX = e.clientX - this.x;
 
             this.left.style.width = offsetX - (options.gutterWidth / 2) + 'px';
-            this.right.style.width = this.width - offsetX - (options.gutterWidth / 2) - 1 + 'px';
+            this.right.style.width = this.width - offsetX - (options.gutterWidth / 2) + 'px';
 
             if (options.onDrag) {
                 options.onDrag();
