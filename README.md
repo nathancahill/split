@@ -21,6 +21,7 @@ Split(<id[]> element ids, <options> options?)
 | widths | Array of numbers | Even | Initial widths of each element in percents. |
 | minWidth | Number or Array of numbers | 100 | Minimum width of each element. |
 | gutterWidth | Number | 10 | Gutter width in pixels. |
+| snapOffset | Number | 30 | Snap to minimum width offset in pixels. |
 | onDrag | Function | | Callback on drag. |
 | onDragStart | Function | | Callback on drag start. |
 | onDragEnd | Function | | Callback on drag end. |

@@ -6,6 +6,7 @@ var Split = function (ids, options) {
 
     if (!options.gutterWidth) options.gutterWidth = 10;
     if (!options.minWidth) options.minWidth = 100;
+    if (!options.snapOffset) options.snapOffset = 30;
 
     // Event listeners for drag events, bound to a pair object.
     // Save the pair's left position and width when dragging starts.
@@ -59,18 +60,20 @@ var Split = function (ids, options) {
         drag = function (e) {
             if (!this.dragging) return;
 
-            // Stop dragging if closer than minWidth to
-            // the pair's left or right sides
-
-            if (e.clientX <= this.x + this.leftMin ||
-                e.clientX >= this.x + this.width - this.rightMin) {
-                    return;
-            }
-
             // Get the relative position of the event from the left side of the
-            // pair for the left width. Right width is total width - left width.
+            // pair.
 
             var offsetX = e.clientX - this.x;
+
+            // If within snapOffset of min or max, set offset to min or max
+
+            if (offsetX <= this.x + this.leftMin + options.snapOffset) {
+                offsetX = this.x + this.leftMin;
+            } else if (offsetX >= this.x + this.width - this.rightMin - options.snapOffset) {
+                offsetX = this.x + this.width - this.rightMin;
+            }
+
+            // Left width is the same as offset. Right width is total width - left width.
 
             this.left.style.width = offsetX - (options.gutterWidth / 2) + 'px';
             this.right.style.width = this.width - offsetX - (options.gutterWidth / 2) + 'px';
