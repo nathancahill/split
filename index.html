@@ -5,18 +5,24 @@
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/normalize/3.0.3/normalize.css">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/skeleton/2.0.4/skeleton.css">
   <style>
-  .row {
+  .example-1 {
     height: 600px;
     border: 1px solid #ddd;
     border-radius: 4px;
   }
 
-  #one, #two, .gutter {
+  .example-2, .example-3 {
+    height: 250px;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+  }
+
+  .split, .gutter {
     height: 100%;
     float: left;
   }
 
-  #one, #two {
+  .split {
     box-sizing: border-box;
     padding: 20px;
     overflow-y: scroll;
@@ -50,52 +56,99 @@
 <body>
     <div class="container">
         <h3>Split.js</h3>
-        <div class="row">
-            <div id="one">
+        <div class="row example-1">
+            <div id="one" class="split">
                 <p>Split.js is a lightweight (2kb) utility for creating adjustable split views.</p>
                 <p>No dependencies and no markup required, just two or more elements with a common parent.</p>
                 <p>Draggable gutters are inserted between every two elements.</p>
                 <p>Initial widths, gutter widths and minimum widths are configurable.</p>
             </div>
-            <div id="two">
-                <h5>Documentation</h5>
-                <pre><code>Split(&lt;id[]&gt; element ids, &lt;options&gt; options?)</code></pre>
-                <table class="u-full-width">
-                  <thead>
-                    <tr>
-                      <th>Options</th>
-                      <th>Type</th>
-                      <th>Default</th>
-                      <th>Description</th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    <tr>
-                      <td>widths</td>
-                      <td>Array of numbers</td>
-                      <td>Even</td>
-                      <td>Initial widths of each element in percents.</td>
-                    </tr>
-                    <tr>
-                      <td>gutterWidth</td>
-                      <td>Number</td>
-                      <td>10</td>
-                      <td>Gutter width in pixels.</td>
-                    </tr>
-                    <tr>
-                      <td>minWidth</td>
-                      <td>Number</td>
-                      <td>100</td>
-                      <td>Minimum width of each element.</td>
-                    </tr>
-                  </tbody>
-                </table>
-                <h5>Usage Example</h5>
+            <div id="two" class="split">
+              <h5>Documentation</h5>
+              <pre><code>Split(&lt;id[]&gt; element ids, &lt;options&gt; options?)</code></pre>
+              <table class="u-full-width">
+                <thead>
+                  <tr>
+                    <th>Options</th>
+                    <th>Type</th>
+                    <th>Default</th>
+                    <th>Description</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <td>widths</td>
+                    <td>Array of numbers</td>
+                    <td>Even</td>
+                    <td>Initial widths of each element in percents.</td>
+                  </tr>
+                  <tr>
+                    <td>minWidth</td>
+                    <td>Number or Array of numbers</td>
+                    <td>100</td>
+                    <td>Minimum width of each element.</td>
+                  </tr>
+                  <tr>
+                    <td>gutterWidth</td>
+                    <td>Number</td>
+                    <td>10</td>
+                    <td>Gutter width in pixels.</td>
+                  </tr>
+                  <tr>
+                    <td>onDrag</td>
+                    <td>Function</td>
+                    <td></td>
+                    <td>Callback on drag.</td>
+                  </tr>
+                  <tr>
+                    <td>onDragStart</td>
+                    <td>Function</td>
+                    <td></td>
+                    <td>Callback on drag start.</td>
+                  </tr>
+                  <tr>
+                    <td>onDragEnd</td>
+                    <td>Function</td>
+                    <td></td>
+                    <td>Callback on drag end.</td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+        </div>
+        <br><br>
+        <div class="row">
+          <h5>Usage Examples</h5>
+          <p>A split with two elements, starting at 25% and 75% wide with 200px minimum width.</p>
                 <pre><code>Split(['one', 'two'], {
     widths: [25, 75],
     minWidth: 200
 });</code></pre>
+          <div class="example-2">
+            <div id="three" class="split">
+              <p>Bacon ipsum dolor amet beef ribs meatloaf picanha pork loin pork chop rump pig sausage bacon shank boudin beef fatback. Pork loin turducken t-bone chicken.</p>
             </div>
+            <div id="four" class="split">
+              <p>Brisket andouille cow ball tip. Ham ground round short loin tri-tip ribeye t-bone boudin, pork loin turkey drumstick tongue pork chop. Kielbasa doner picanha turducken, swine bacon shank pastrami andouille. Hamburger tongue tenderloin meatball picanha. Rump bresaola chicken bacon, ground round corned beef ribeye salami. Turkey fatback short ribs andouille meatball, brisket pork belly cow t-bone turducken pig beef ribs.</p>
+            </div>
+          </div>
+          <br>
+        <p>A split with three elements, starting with even widths with 100px, 100px and 300px minimum widths, respectively.</p>
+                <pre><code>Split(['one', 'two', 'three'], {
+    minWidth: [100, 100, 300]
+});</code></pre>
+          <div class="example-3">
+            <div id="five" class="split">
+              <p>Bacon ipsum dolor amet beef ribs meatloaf picanha pork loin pork chop rump pig sausage bacon shank boudin beef fatback. Pork loin turducken t-bone chicken.</p>
+            </div>
+            <div id="six" class="split">
+              <p>Brisket andouille cow ball tip. Ham ground round short loin tri-tip ribeye t-bone boudin, pork loin turkey drumstick tongue pork chop. Kielbasa doner picanha turducken, swine bacon shank pastrami andouille.</p>
+            </div>
+            <div id="seven" class="split">
+              <p>Hamburger tongue tenderloin meatball picanha. Rump bresaola chicken bacon, ground round corned beef ribeye salami. Turkey fatback short ribs andouille meatball, brisket pork belly cow t-bone turducken pig beef ribs.</p>
+            </div>
+          </div>
+          <br><br>
         </div>
     </div>
 </body>
@@ -104,6 +157,15 @@
     Split(['one', 'two'], {
         widths: [29, 71],
         minWidth: 200
+    });
+
+    Split(['three', 'four'], {
+        widths: [25, 75],
+        minWidth: 200
+    });
+
+    Split(['five', 'six', 'seven'], {
+        minWidth: [100, 100, 300]
     });
 </script>
 </html>
