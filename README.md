@@ -18,7 +18,7 @@ Split(<id[]> element ids, <options> options?)
 
 | Options | Type | Default | Description |
 |---|---|---|---|
-| widths | Array of numbers | Even | Initial widths of each element in percents. |
+| widths | Array of numbers | | Initial widths of each element in percents. |
 | minWidth | Number or Array of numbers | 100 | Minimum width of each element. |
 | gutterWidth | Number | 10 | Gutter width in pixels. |
 | snapOffset | Number | 30 | Snap to minimum width offset in pixels. |
