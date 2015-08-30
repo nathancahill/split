@@ -127,7 +127,6 @@ var Split = function (ids, options) {
 
             gutter.className = 'gutter';
             gutter.style.width = options.gutterWidth + 'px';
-            gutter.style.float = 'left';
 
             gutter.addEventListener('mousedown', startDragging.bind(pair));
 
