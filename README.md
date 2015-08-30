@@ -36,10 +36,10 @@ Split(['one', 'two'], {
 });
 ```
 
-A split with three elements, starting with even widths with 100px, 100px and 500px minimum widths, respectively.
+A split with three elements, starting with even widths with 100px, 100px and 300px minimum widths, respectively.
 
 ```
 Split(['one', 'two', 'three'], {
-    minWidth: [100, 100, 500]
+    minWidth: [100, 100, 300]
 });
 ```
