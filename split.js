@@ -29,6 +29,10 @@ var Split = function (ids, options) {
             this.right.style.userSelect = 'none';
             this.right.style.webkitUserSelect = 'none';
             this.right.style.MozUserSelect = 'none';
+
+            if (options.onDrag) {
+                options.onDragStart();
+            }
         },
 
         stopDragging = function () {
@@ -46,6 +50,10 @@ var Split = function (ids, options) {
             this.right.style.userSelect = '';
             this.right.style.webkitUserSelect = '';
             this.right.style.MozUserSelect = '';
+
+            if (options.onDragEnd) {
+                options.onDragEnd();
+            }
         },
 
         drag = function (e) {
@@ -66,6 +74,10 @@ var Split = function (ids, options) {
 
             this.left.style.width = offsetX - (options.gutterWidth / 2) + 'px';
             this.right.style.width = this.width - offsetX - (options.gutterWidth / 2) + 'px';
+
+            if (options.onDrag) {
+                options.onDrag();
+            }
         },
 
         preventSelection = function () { return false; },
