@@ -30,7 +30,7 @@ var Split = function (ids, options) {
             this.right.style.webkitUserSelect = 'none';
             this.right.style.MozUserSelect = 'none';
 
-            if (options.onDrag) {
+            if (options.onDragStart) {
                 options.onDragStart();
             }
         },
