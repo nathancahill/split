@@ -67,10 +67,10 @@ var Split = function (ids, options) {
 
             // If within snapOffset of min or max, set offset to min or max
 
-            if (offsetX <= this.x + this.leftMin + options.snapOffset) {
-                offsetX = this.x + this.leftMin;
-            } else if (offsetX >= this.x + this.width - this.rightMin - options.snapOffset) {
-                offsetX = this.x + this.width - this.rightMin;
+            if (offsetX <=  this.leftMin + options.snapOffset) {
+                offsetX = this.leftMin;
+            } else if (offsetX >= this.width - this.rightMin - options.snapOffset) {
+                offsetX = this.width - this.rightMin;
             }
 
             // Left width is the same as offset. Right width is total width - left width.
