@@ -16,9 +16,6 @@
     "url": "https://github.com/nathancahill/Split.js/issues"
   },
   "homepage": "https://github.com/nathancahill/Split.js#readme",
-  "dependencies": {
-    "uglifyjs": "^2.4.10"
-  },
   "devDependencies": {
     "uglifyjs": "^2.4.10"
   }
