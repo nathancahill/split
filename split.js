@@ -75,8 +75,8 @@ var Split = function (ids, options) {
 
             // Left width is the same as offset. Right width is total width - left width.
 
-            this.left.style.width = offsetX - (options.gutterWidth / 2) + 'px';
-            this.right.style.width = this.width - offsetX - (options.gutterWidth / 2) + 'px';
+            this.left.style.width = 'calc(' + (offsetX / this.width * 100) + '% - ' + options.gutterWidth / 2 + 'px)';
+            this.right.style.width = 'calc(' + (100 - (offsetX / this.width * 100)) + '% - ' + options.gutterWidth / 2 + 'px)';
 
             if (options.onDrag) {
                 options.onDrag();
@@ -91,8 +91,7 @@ var Split = function (ids, options) {
         // width is gutterWidth * (ids.length - 1). Before calculating
         // each width, subtract the total gutter width for the parent width.
 
-        parent = document.getElementById(ids[0]).parentNode,
-        width = parent.clientWidth - (options.gutterWidth * (ids.length - 1));
+        parent = document.getElementById(ids[0]).parentNode;
 
     if (!options.widths) {
         var percent = 100 / ids.length;
@@ -142,6 +141,6 @@ var Split = function (ids, options) {
             pair.gutter = gutter;
         }
 
-        el.style.width = width * options.widths[i] / 100 + 'px';
+        el.style.width = 'calc(' + options.widths[i] + '% - ' + options.gutterWidth / 2 + 'px)';
     }
 };

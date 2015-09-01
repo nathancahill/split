@@ -1,0 +1,25 @@
+{
+  "name": "splitjs",
+  "version": "0.2.4",
+  "description": "A lightweight utility for creating adjustable split views",
+  "main": "split.js",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/nathancahill/Split.js.git"
+  },
+  "keywords": [
+    "css"
+  ],
+  "author": "Nathan Cahill <nathan@nathancahill.com>",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/nathancahill/Split.js/issues"
+  },
+  "homepage": "https://github.com/nathancahill/Split.js#readme",
+  "dependencies": {
+    "uglifyjs": "^2.4.10"
+  },
+  "devDependencies": {
+    "uglifyjs": "^2.4.10"
+  }
+}
