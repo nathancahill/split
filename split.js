@@ -12,7 +12,9 @@ var Split = function (ids, options) {
     // Save the pair's left position and width when dragging starts.
     // Prevent selection on start and re-enable it when done.
 
-    var startDragging = function () {
+    var startDragging = function (e) {
+            e.preventDefault();
+
             this.dragging = true;
 
             this.width = this.left.clientWidth + this.right.clientWidth + options.gutterWidth;
