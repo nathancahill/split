@@ -1,5 +1,5 @@
 
-var Split = function (ids, options) {
+Split = function (ids, options) {
     // Set defaults
 
     options = typeof options !== 'undefined' ?  options : {};
