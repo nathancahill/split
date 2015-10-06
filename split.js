@@ -76,9 +76,22 @@ Split = function (ids, options) {
             }
 
             // Left width is the same as offset. Right width is total width - left width.
+	    // The widths are expressed as percents and if there are more than
+	    // two columns, the percents will not add up to 100.
 
-            this.left.style.width = 'calc(' + (offsetX / this.width * 100) + '% - ' + options.gutterWidth / 2 + 'px)';
-            this.right.style.width = 'calc(' + (100 - (offsetX / this.width * 100)) + '% - ' + options.gutterWidth / 2 + 'px)';
+	    var sw = this.left.style.width; // style width e.g. "calc(23% - 5px)"
+	    var xolp = sw.indexOf("("); // index of left paren
+	    var old_left_style_width_percent = sw.substr(xolp+1, sw.indexOf("%")-xolp-1);
+	    
+	    sw = this.right.style.width;
+	    xolp = sw.indexOf("(");
+	    var old_right_style_width_percent = sw.substr(xolp+1, sw.indexOf("%")-xolp-1);
+	    
+	    var total_style_width_percent = Number(old_left_style_width_percent) + Number(old_right_style_width_percent);
+	    
+	    var new_left_style_width_percent = (offsetX / this.width * 100);
+            this.left.style.width	=                                                         new_left_style_width_percent  + '%';
+            this.right.style.width	= 'calc(' + (total_style_width_percent - new_left_style_width_percent) + '% - ' + options.gutterWidth + 'px)';
 
             if (options.onDrag) {
                 options.onDrag();
@@ -141,8 +154,11 @@ Split = function (ids, options) {
             parent.insertBefore(gutter, el);
 
             pair.gutter = gutter;
-        }
 
-        el.style.width = 'calc(' + options.widths[i] + '% - ' + options.gutterWidth / 2 + 'px)';
+	    el.style.width = 'calc(' + options.widths[i] + '% - ' + options.gutterWidth + 'px)';
+        } else {
+	    el.style.width =              options.widths[i] + '%'; // No gutter adjustment for leftmost pane
+	}
     }
 };
+
