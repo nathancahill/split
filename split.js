@@ -89,9 +89,9 @@ Split = function (ids, options) {
 	    
 	    var total_style_width_percent = Number(old_left_style_width_percent) + Number(old_right_style_width_percent);
 	    
-	    var new_left_style_width_percent = (offsetX / this.width * 100).toFixed(0);
-            this.left.style.width	= 'calc(' +                                            new_left_style_width_percent  + '% - ' + options.gutterWidth / 2 + 'px)';
-            this.right.style.width	= 'calc(' + (total_style_width_percent - new_left_style_width_percent) + '% - ' + options.gutterWidth / 2 + 'px)';
+	    var new_left_style_width_percent = (offsetX / this.width * 100);
+            this.left.style.width	=                                                         new_left_style_width_percent  + '%';
+            this.right.style.width	= 'calc(' + (total_style_width_percent - new_left_style_width_percent) + '% - ' + options.gutterWidth + 'px)';
 
             if (options.onDrag) {
                 options.onDrag();
@@ -154,9 +154,11 @@ Split = function (ids, options) {
             parent.insertBefore(gutter, el);
 
             pair.gutter = gutter;
-        }
 
-        el.style.width = 'calc(' + options.widths[i].toFixed(0) + '% - ' + options.gutterWidth / 2 + 'px)';
+	    el.style.width = 'calc(' + options.widths[i] + '% - ' + options.gutterWidth + 'px)';
+        } else {
+	    el.style.width =              options.widths[i] + '%'; // No gutter adjustment for leftmost pane
+	}
     }
 };
 
