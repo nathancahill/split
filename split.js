@@ -156,7 +156,7 @@ Split = function (ids, options) {
             pair.gutter = gutter;
         }
 
-        el.style.width = 'calc(' + options.widths[i] + '% - ' + options.gutterWidth / 2 + 'px)';
+        el.style.width = 'calc(' + options.widths[i].toFixed(0) + '% - ' + options.gutterWidth / 2 + 'px)';
     }
 };
 
