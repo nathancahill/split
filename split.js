@@ -17,7 +17,11 @@ Split = function (ids, options) {
 
             this.dragging = true;
 
+            // Calculate the pairs width, and percentage of the parent width
+
             this.width = this.left.clientWidth + this.right.clientWidth + options.gutterWidth;
+            this.percentage = Math.min(this.width / this.parent.clientWidth * 100, 100);
+
             this.x = this.left.getBoundingClientRect().left;
 
             this.left.addEventListener('selectstart', preventSelection);
@@ -75,10 +79,24 @@ Split = function (ids, options) {
                 offsetX = this.width - this.rightMin;
             }
 
-            // Left width is the same as offset. Right width is total width - left width.
+            // For first and last pairs, left and right gutter width is half.
 
-            this.left.style.width = 'calc(' + (offsetX / this.width * 100) + '% - ' + options.gutterWidth / 2 + 'px)';
-            this.right.style.width = 'calc(' + (100 - (offsetX / this.width * 100)) + '% - ' + options.gutterWidth / 2 + 'px)';
+            var leftGutterWidth = options.gutterWidth;
+            var rightGutterWidth = options.gutterWidth;
+
+            if (this.isFirst) {
+                leftGutterWidth = options.gutterWidth / 2;
+            }
+
+            if (this.isLast) {
+                rightGutterWidth = options.gutterWidth / 2;
+            }
+
+            // Left width is the same as offset. Right width is total width - left width.
+            // Both widths are calculated from the initial parent percentage.
+
+            this.left.style.width = 'calc(' + (offsetX / this.width * this.percentage) + '% - ' + leftGutterWidth + 'px)';
+            this.right.style.width = 'calc(' + (this.percentage - (offsetX / this.width * this.percentage)) + '% - ' + rightGutterWidth + 'px)';
 
             if (options.onDrag) {
                 options.onDrag();
@@ -116,7 +134,10 @@ Split = function (ids, options) {
     }
 
     for (var i = 0; i < ids.length; i++) {
-        var el = document.getElementById(ids[i]);
+        var el = document.getElementById(ids[i]),
+            isFirst = (i == 1),
+            isLast = (i == ids.length - 1),
+            gutterWidth = options.gutterWidth;
 
         if (i > 0) {
             var pair = {
@@ -125,7 +146,9 @@ Split = function (ids, options) {
                     leftMin: options.minWidth[i - 1],
                     rightMin: options.minWidth[i],
                     dragging: false,
-                    parent: parent
+                    parent: parent,
+                    isFirst: isFirst,
+                    isLast: isLast
                 },
                 gutter = document.createElement('div');
 
@@ -143,6 +166,10 @@ Split = function (ids, options) {
             pair.gutter = gutter;
         }
 
-        el.style.width = 'calc(' + options.widths[i] + '% - ' + options.gutterWidth / 2 + 'px)';
+        if (i == 0 || i == ids.length - 1) {
+            gutterWidth = options.gutterWidth / 2;
+        }
+
+        el.style.width = 'calc(' + options.widths[i] + '% - ' + gutterWidth + 'px)';
     }
 };
