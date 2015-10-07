@@ -17,9 +17,18 @@ Split = function (ids, options) {
 
             this.dragging = true;
 
+            // The first and last pairs have 1.5x gutter (1 in the middle and 1/2 on the side).
+            // All other pairs have 2x gutter (1 in the middle and 1/2 on each side)/
+
+            if (this.isFirst || this.isLast) {
+                gutterWidth = options.gutterWidth * 1.5;
+            } else {
+                gutterWidth = options.gutterWidth * 2;
+            }
+
             // Calculate the pairs width, and percentage of the parent width
 
-            this.width = this.left.getBoundingClientRect().width + this.right.getBoundingClientRect().width + options.gutterWidth;
+            this.width = this.left.getBoundingClientRect().width + this.right.getBoundingClientRect().width + gutterWidth;
             this.percentage = Math.min(this.width / this.parent.getBoundingClientRect().width * 100, 100);
 
             this.x = this.left.getBoundingClientRect().left;
