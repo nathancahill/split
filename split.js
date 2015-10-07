@@ -18,9 +18,12 @@ Split = function (ids, options) {
             this.dragging = true;
 
             // The first and last pairs have 1.5x gutter (1 in the middle and 1/2 on the side).
-            // All other pairs have 2x gutter (1 in the middle and 1/2 on each side)/
+            // All other pairs have 2x gutter (1 in the middle and 1/2 on each side).
+            // Special case for pairs that are first and last (only 1 pair).
 
-            if (this.isFirst || this.isLast) {
+            if (this.isFirst && this.isLast) {
+                gutterWidth = options.gutterWidth;
+            } else if (this.isFirst || this.isLast) {
                 gutterWidth = options.gutterWidth * 1.5;
             } else {
                 gutterWidth = options.gutterWidth * 2;
