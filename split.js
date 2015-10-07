@@ -32,7 +32,7 @@ Split = function (ids, options) {
             // Calculate the pairs width, and percentage of the parent width
 
             this.width = this.left.getBoundingClientRect().width + this.right.getBoundingClientRect().width + gutterWidth;
-            this.percentage = Math.min(this.width / this.parent.getBoundingClientRect().width * 100, 100);
+            this.percentage = Math.min(this.width / this.parent.clientWidth * 100, 100);
 
             this.x = this.left.getBoundingClientRect().left;
 
