@@ -20,7 +20,7 @@
   }
 
   .example-v2, .example-v3 {
-    height: 250px;
+    height: 1000px;
     border: 1px solid #ddd;
     border-radius: 4px;
   }
@@ -76,13 +76,13 @@
 <body>
     <div class="container">
         <h3>splitV.js</h3>
-        <div class="row example-v1">
+        <div class="row">
           <p>Vertical Example 1: A vertical split with two elements, starting at 50% and 50% high with 25px minimum height.</p>
                 <pre><code>SplitV(['v1-one', 'v1-two'], {
     heights: [50, 50],
     minHeight: 25
 });</code></pre>
-          <div class="example-v1-x">
+          <div class="example-v1">
             <div id="v1-one" class="vsplit">
               <p>Bacon ipsum dolor amet beef ribs meatloaf picanha pork loin pork chop rump pig sausage bacon shank boudin beef fatback. Pork loin turducken t-bone chicken.</p>
             </div>
@@ -92,7 +92,7 @@
           </div>
         </div>
         <br>
-        <div class="row example-v2">
+        <div class="example-v2">
           <p>Vertical Example 2: A horizontal split with three elements, starting with even widths with 100px, 100px and 300px minimum widths, respectively.</p>
           <p>The first pane of the horizontal split is itself split vertically into two sub-panes, starting with even heights and with 50px, 100px minimum heights, respectively.</p>
                 <pre><code>
@@ -102,7 +102,7 @@ Split(['v2-one', 'v2-two', 'v2-three'], {
 SplitV(['v2-one-top', 'v2-one-bottom'], {
     minHeight: [50, 100]
 });</code></pre>
-          <div class="example-v2-x">
+          <div class="example-v2">
             <div id="v2-one" class="split">
               <div id="v2-one-top" class="vsplit">
                 <p>Bacon ipsum dolor amet beef ribs meatloaf picanha pork loin pork chop rump pig</p>

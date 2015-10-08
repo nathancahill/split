@@ -109,6 +109,8 @@ SplitV = function (ids, options) {
             this.top.style.height = 'calc(' + (offsetY / this.height * this.percentage) + '% - ' + topGutterHeight + 'px)';
             this.bot.style.height = 'calc(' + (this.percentage - (offsetY / this.height * this.percentage)) + '% - ' + botGutterHeight + 'px)';
 
+	    console.log("this.top.style.height=" + this.top.style.height + " this.bot.style.height=" + this.bot.style.height);
+	    
             if (options.onDrag) {
                 options.onDrag();
             }
@@ -163,7 +165,7 @@ SplitV = function (ids, options) {
                 },
                 gutter = document.createElement('div');
 
-            gutter.className = 'gutter';
+            gutter.className = 'vgutter';
             gutter.style.height = options.gutterHeight + 'px';
             gutter.style.width = "100%"; // ?or? el.getBoundingClientRect().width + 'px';
 
