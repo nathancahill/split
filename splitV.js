@@ -81,12 +81,12 @@ SplitV = function (ids, options) {
             // Get the relative position of the event from the top side of the pair.
 
             var offsetY = e.clientY - this.y;
+		
+	    // If within snapOffset of min or max, set offset to min or max
 
-            // If within snapOffset of min or max, set offset to min or max
-
-            if (offsetY <=  this.topMin + options.snapOffset) {
+	    if (offsetY <=  this.topMin + options.snapOffset) {
                 offsetY = this.topMin;
-            } else if (offsetY >= this.height - this.botMin - options.snapOffset) {
+	    } else if (offsetY >= this.height - this.botMin - options.snapOffset) {
                 offsetY = this.height - this.botMin;
             }
 
@@ -108,9 +108,7 @@ SplitV = function (ids, options) {
 
             this.top.style.height = 'calc(' + (offsetY / this.height * this.percentage) + '% - ' + topGutterHeight + 'px)';
             this.bot.style.height = 'calc(' + (this.percentage - (offsetY / this.height * this.percentage)) + '% - ' + botGutterHeight + 'px)';
-
-	    console.log("this.top.style.height=" + this.top.style.height + " this.bot.style.height=" + this.bot.style.height);
-	    
+   
             if (options.onDrag) {
                 options.onDrag();
             }
