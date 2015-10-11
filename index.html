@@ -69,7 +69,7 @@
                 <p>Split.js is a lightweight (2kb) utility for creating adjustable split views.</p>
                 <p>No dependencies and no markup required, just two or more elements with a common parent.</p>
                 <p>Draggable gutters are inserted between every two elements.</p>
-                <p>Initial widths, gutter widths and minimum widths are configurable.</p>
+                <p>Initial sizes, gutter sizes and minimum sizes are configurable.</p>
             </div>
             <div id="two" class="split">
               <h5>Documentation</h5>
@@ -85,28 +85,28 @@
                 </thead>
                 <tbody>
                   <tr>
-                    <td>widths</td>
+                    <td>sizes</td>
                     <td>Array of numbers</td>
                     <td></td>
-                    <td>Initial widths of each element in percents.</td>
+                    <td>Initial sizes of each element in percents.</td>
                   </tr>
                   <tr>
-                    <td>minWidth</td>
+                    <td>minSize</td>
                     <td>Number or array</td>
                     <td>100</td>
-                    <td>Minimum width of each element.</td>
+                    <td>Minimum size of each element.</td>
                   </tr>
                   <tr>
-                    <td>gutterWidth</td>
+                    <td>gutterSize</td>
                     <td>Number</td>
                     <td>10</td>
-                    <td>Gutter width in pixels.</td>
+                    <td>Gutter size in pixels.</td>
                   </tr>
                   <tr>
                     <td>snapOffset</td>
                     <td>Number</td>
                     <td>30</td>
-                    <td>Snap to minimum width offset.</td>
+                    <td>Snap to minimum size offset.</td>
                   </tr>
                   <tr>
                     <td>onDrag</td>
@@ -135,8 +135,8 @@
           <h5>Usage Examples</h5>
           <p>A split with two elements, starting at 25% and 75% wide with 200px minimum width.</p>
                 <pre><code>Split(['one', 'two'], {
-    widths: [25, 75],
-    minWidth: 200
+    sizes: [25, 75],
+    minSize: 200
 });</code></pre>
           <div class="example-2">
             <div id="three" class="split">
@@ -149,7 +149,7 @@
           <br>
         <p>A split with three elements, starting with even widths with 100px, 100px and 300px minimum widths, respectively.</p>
                 <pre><code>Split(['one', 'two', 'three'], {
-    minWidth: [100, 100, 300]
+    minSize: [100, 100, 300]
 });</code></pre>
           <div class="example-3">
             <div id="five" class="split">
@@ -169,17 +169,17 @@
 <script src="split.js"></script>
 <script>
     Split(['one', 'two'], {
-        widths: [29, 71],
-        minWidth: 200
+        sizes: [29, 71],
+        minSize: 200
     });
 
     Split(['three', 'four'], {
-        widths: [25, 75],
-        minWidth: 200
+        sizes: [25, 75],
+        minSize: 200
     });
 
     Split(['five', 'six', 'seven'], {
-        minWidth: [100, 100, 300]
+        minSize: [100, 100, 300]
     });
 </script>
 </html>

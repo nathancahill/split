@@ -8,7 +8,7 @@ No dependencies and no markup required, just two or more elements with a common 
 
 Draggable gutters are inserted between every two elements.
 
-Initial widths, gutter widths and minimum widths are configurable.
+Initial sizes, gutter sizes and minimum sizes are configurable.
 
 ### Documentation
 
@@ -18,9 +18,9 @@ Split(<id[]> element ids, <options> options?)
 
 | Options | Type | Default | Description |
 |---|---|---|---|
-| widths | Array of numbers | | Initial widths of each element in percents. |
-| minWidth | Number or Array of numbers | 100 | Minimum width of each element. |
-| gutterWidth | Number | 10 | Gutter width in pixels. |
+| sizes | Array of numbers | | Initial sizes of each element in percents. |
+| minSize | Number or Array of numbers | 100 | Minimum size of each element. |
+| gutterSize | Number | 10 | Gutter size in pixels. |
 | snapOffset | Number | 30 | Snap to minimum width offset in pixels. |
 | onDrag | Function | | Callback on drag. |
 | onDragStart | Function | | Callback on drag start. |
@@ -32,8 +32,8 @@ A split with two elements, starting at 25% and 75% wide with 200px minimum width
 
 ```
 Split(['one', 'two'], {
-    widths: [25, 75],
-    minWidth: 200
+    sizes: [25, 75],
+    minSize: 200
 });
 ```
 
@@ -41,6 +41,6 @@ A split with three elements, starting with even widths with 100px, 100px and 300
 
 ```
 Split(['one', 'two', 'three'], {
-    minWidth: [100, 100, 300]
+    minSize: [100, 100, 300]
 });
 ```
