@@ -1,6 +1,6 @@
 {
   "name": "splitjs",
-  "version": "0.4.0",
+  "version": "0.4.1",
   "description": "A lightweight utility for creating adjustable split views",
   "main": "split.js",
   "repository": {
