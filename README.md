@@ -120,7 +120,7 @@ And for horizontal splits, floating the elements with 100% height is useful:
 ## Compatibility
 
 - IE9
-- Firefox 1
+- Firefox 3.5
 - Chrome 1
-- Safari 3
+- Safari 4
 - Opera 7
