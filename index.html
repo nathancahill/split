@@ -59,6 +59,8 @@
     -webkit-box-sizing: border-box;
        -moz-box-sizing: border-box;
             box-sizing: border-box;
+
+    -ms-overflow-style: none;
     overflow-y: scroll;
     overflow-x: hidden;
   }
@@ -286,6 +288,11 @@ Split(['twelve', 'thirteen'], {
           <pre><code>.split, .gutter.gutter-horizontal {
   height: 100%;
   float: left;
+}</code></pre>
+          <p>Overflow can be handled as well. IE shows scrollbars even when there's no overflow, so hide them too:</p>
+          <pre><code>.split {
+  -ms-overflow-style: none;
+  overflow-y: scroll;
 }</code></pre>
         </div>
     </div>
