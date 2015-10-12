@@ -119,8 +119,14 @@ And for horizontal splits, floating the elements with 100% height is useful:
 
 ## Compatibility
 
-- IE9
-- Firefox 3.5
-- Chrome 1
-- Safari 4
+- IE 9
+- Firefox 4
+- Chrome 19
+- Safari 7
 - Opera 7
+
+Limited by:
+
+ - [calc()](https://developer.mozilla.org/en-US/docs/Web/CSS/calc#AutoCompatibilityTable)
+ - [box-sizing](https://developer.mozilla.org/en-US/docs/Web/CSS/box-sizing#AutoCompatibilityTable)
+ - [getBoundingClientRect()](https://developer.mozilla.org/en-US/docs/Web/API/Element/getBoundingClientRect#AutoCompatibilityTable)
