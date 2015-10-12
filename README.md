@@ -45,3 +45,11 @@ Split(['one', 'two', 'three'], {
     minSize: [100, 100, 300]
 });
 ```
+
+A vertical split with two elements.
+
+```
+Split(['one', 'two'], {
+    direction: 'vertical'
+});
+```

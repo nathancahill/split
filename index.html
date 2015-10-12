@@ -23,7 +23,7 @@
     border-radius: 4px;
   }
 
-  .example-2, .example-3, .example-4 {
+  .example-2, .example-3, .example-4, .example-5 {
     height: 250px;
     border: 1px solid #ddd;
     border-radius: 4px;
@@ -33,7 +33,7 @@
     padding: 20px;
   }
 
-  .example-4 {
+  .example-4, .example-5 {
     height: 400px;
   }
 
@@ -199,6 +199,26 @@
               <p>Brisket andouille cow ball tip. Ham ground round short loin tri-tip ribeye t-bone boudin, pork loin turkey drumstick tongue pork chop. Kielbasa doner picanha turducken, swine bacon shank pastrami andouille.</p>
             </div>
           </div>
+          <br>
+        <p>Nested splits, horizontal and vertical.</p>
+                <pre><code>Split(['ten', 'eleven']);
+
+Split(['twelve', 'thirteen'], {
+    direction: 'vertical'
+});</code></pre>
+          <div class="example-5">
+            <div id="ten" class="split split-horizontal">
+              <div id="twelve" class="split split-vertical">
+                <p>Bacon ipsum dolor amet beef ribs meatloaf picanha pork loin pork chop rump pig sausage bacon shank boudin beef fatback. Pork loin turducken t-bone chicken.</p>
+              </div>
+              <div id="thirteen" class="split split-vertical">
+                <p>Bacon ipsum dolor amet beef ribs meatloaf picanha pork loin pork chop rump pig sausage bacon shank boudin beef fatback. Pork loin turducken t-bone chicken.</p>
+              </div>
+            </div>
+            <div id="eleven" class="split split-horizontal">
+              <p>Brisket andouille cow ball tip. Ham ground round short loin tri-tip ribeye t-bone boudin, pork loin turkey drumstick tongue pork chop. Kielbasa doner picanha turducken, swine bacon shank pastrami andouille.</p>
+            </div>
+          </div>
           <br><br>
         </div>
     </div>
@@ -220,6 +240,12 @@
     });
 
     Split(['eight', 'nine'], {
+        direction: 'vertical'
+    });
+
+    Split(['ten', 'eleven']);
+
+    Split(['twelve', 'thirteen'], {
         direction: 'vertical'
     });
 </script>
