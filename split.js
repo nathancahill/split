@@ -183,11 +183,11 @@ Split = function (ids, options) {
                 },
                 gutter = document.createElement('div');
 
-            gutter.className = 'gutter';
-
             if (options.direction == 'horizontal') {
+                gutter.className = 'gutter gutter-horizontal';
                 gutter.style.width = options.gutterSize + 'px';
             } else {
+                gutter.className = 'gutter gutter-vertical';
                 gutter.style.height = options.gutterSize + 'px';
             }
 
