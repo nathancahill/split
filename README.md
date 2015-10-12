@@ -128,7 +128,7 @@ Overflow can be handled as well. IE shows scrollbars even when there's no overfl
 
 ## Compatibility
 
-- IE 9
+- IE 9 (scrollbars show in IE 9, see #7)
 - Firefox 4
 - Chrome 19
 - Safari 7
