@@ -56,7 +56,9 @@
   }
 
   .split {
-    box-sizing: border-box;
+    -webkit-box-sizing: border-box;
+       -moz-box-sizing: border-box;
+            box-sizing: border-box;
     overflow-y: scroll;
     overflow-x: hidden;
   }
@@ -276,7 +278,9 @@ Split(['twelve', 'thirteen'], {
             Split.js also works best when the elements are sized using <code>border-box</code>. The <code>split</code> class would have to be added manually to apply these styles:
           </p>
           <pre><code>.split {
-  box-sizing: border-box;
+  -webkit-box-sizing: border-box;
+     -moz-box-sizing: border-box;
+          box-sizing: border-box;
 }</code></pre>
           <p>And for horizontal splits, floating the elements with 100% height is useful:</p>
           <pre><code>.split, .gutter.gutter-horizontal {

@@ -102,7 +102,9 @@ Split.js also works best when the elements are sized using `border-box`. The `sp
 
 ```css
 .split {
-  box-sizing: border-box;
+  -webkit-box-sizing: border-box;
+     -moz-box-sizing: border-box;
+          box-sizing: border-box;
 }
 ```
 
