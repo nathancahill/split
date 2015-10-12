@@ -60,8 +60,7 @@
        -moz-box-sizing: border-box;
             box-sizing: border-box;
 
-    -ms-overflow-style: -ms-autohiding-scrollbar;
-    overflow-y: scroll;
+    overflow-y: auto;
     overflow-x: hidden;
   }
 
@@ -289,10 +288,10 @@ Split(['twelve', 'thirteen'], {
   height: 100%;
   float: left;
 }</code></pre>
-          <p>Overflow can be handled as well. IE shows scrollbars even when there's no overflow, so hide them too:</p>
+          <p>Overflow can be handled as well:</p>
           <pre><code>.split {
-  -ms-overflow-style: -ms-autohiding-scrollbar;
-  overflow-y: scroll;
+  overflow-y: auto;
+  overflow-x: hidden;
 }</code></pre>
         </div>
     </div>

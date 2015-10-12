@@ -121,14 +121,14 @@ Overflow can be handled as well. IE shows scrollbars even when there's no overfl
 
 ```css
 .split {
-  -ms-overflow-style: -ms-autohiding-scrollbar;
-  overflow-y: scroll;
+  overflow-y: auto;
+  overflow-x: hidden;
 }
 ```
 
 ## Compatibility
 
-- IE 9 (scrollbars show in IE 9, see #7)
+- IE 9
 - Firefox 4
 - Chrome 19
 - Safari 7
