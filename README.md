@@ -134,6 +134,8 @@ Overflow can be handled as well. IE shows scrollbars even when there's no overfl
 - Safari 7
 - Opera 7
 
+Gracefully falls back in IE 8 and below to only setting the initial widths/heights and not allowing dragging.
+
 Limited by:
 
  - [calc()](https://developer.mozilla.org/en-US/docs/Web/CSS/calc#AutoCompatibilityTable)
