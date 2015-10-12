@@ -116,3 +116,11 @@ And for horizontal splits, floating the elements with 100% height is useful:
   float: left;
 }
 ```
+
+## Compatibility
+
+- IE9
+- Firefox 1
+- Chrome 1
+- Safari 3
+- Opera 7
