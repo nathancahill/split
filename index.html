@@ -13,26 +13,36 @@
     font-family: monospace;
   }
 
+  h3 {
+    margin-top: 100px;
+  }
+
   .example-1 {
     height: 600px;
     border: 1px solid #ddd;
     border-radius: 4px;
   }
 
-  .example-2, .example-3 {
+  .example-2, .example-3, .example-4 {
     height: 250px;
     border: 1px solid #ddd;
     border-radius: 4px;
   }
 
-  .split, .gutter {
-    height: 100%;
-    float: left;
+  #two {
+    padding: 20px;
+  }
+
+  .example-4 {
+    height: 400px;
+  }
+
+  .split p {
+    padding: 20px;
   }
 
   .split {
     box-sizing: border-box;
-    padding: 20px;
     overflow-y: scroll;
     overflow-x: hidden;
   }
@@ -40,7 +50,6 @@
   .gutter {
     background-color: #eee;
 
-    background-image: url('https://ssl.gstatic.com/ui/v1/icons/mail/grippy_large.png');
     background-repeat: no-repeat;
     background-position: 50%;
 
@@ -56,8 +65,17 @@
     cursor: -webkit-grabbing;
   }
 
-  h3 {
-    margin-top: 100px;
+  .gutter.gutter-horizontal {
+    background-image: url('grips/vertical.png');
+  }
+
+  .gutter.gutter-vertical {
+    background-image: url('grips/horizontal.png');
+  }
+
+  .split.split-horizontal, .gutter.gutter-horizontal {
+    height: 100%;
+    float: left;
   }
   </style>
 </head>
@@ -65,13 +83,13 @@
     <div class="container">
         <h3>Split.js</h3>
         <div class="row example-1">
-            <div id="one" class="split">
+            <div id="one" class="split split-horizontal">
                 <p>Split.js is a lightweight (2kb) utility for creating adjustable split views.</p>
                 <p>No dependencies and no markup required, just two or more elements with a common parent.</p>
                 <p>Draggable gutters are inserted between every two elements.</p>
                 <p>Initial sizes, gutter sizes and minimum sizes are configurable.</p>
             </div>
-            <div id="two" class="split">
+            <div id="two" class="split split-horizontal">
               <h5>Documentation</h5>
               <pre><code>Split(&lt;id[]&gt; element ids, &lt;options&gt; options?)</code></pre>
               <table class="u-full-width">
@@ -145,10 +163,10 @@
     minSize: 200
 });</code></pre>
           <div class="example-2">
-            <div id="three" class="split">
+            <div id="three" class="split split-horizontal">
               <p>Bacon ipsum dolor amet beef ribs meatloaf picanha pork loin pork chop rump pig sausage bacon shank boudin beef fatback. Pork loin turducken t-bone chicken.</p>
             </div>
-            <div id="four" class="split">
+            <div id="four" class="split split-horizontal">
               <p>Brisket andouille cow ball tip. Ham ground round short loin tri-tip ribeye t-bone boudin, pork loin turkey drumstick tongue pork chop. Kielbasa doner picanha turducken, swine bacon shank pastrami andouille. Hamburger tongue tenderloin meatball picanha. Rump bresaola chicken bacon, ground round corned beef ribeye salami. Turkey fatback short ribs andouille meatball, brisket pork belly cow t-bone turducken pig beef ribs.</p>
             </div>
           </div>
@@ -158,14 +176,27 @@
     minSize: [100, 100, 300]
 });</code></pre>
           <div class="example-3">
-            <div id="five" class="split">
+            <div id="five" class="split split-horizontal">
               <p>Bacon ipsum dolor amet beef ribs meatloaf picanha pork loin pork chop rump pig sausage bacon shank boudin beef fatback. Pork loin turducken t-bone chicken.</p>
             </div>
-            <div id="six" class="split">
+            <div id="six" class="split split-horizontal">
               <p>Brisket andouille cow ball tip. Ham ground round short loin tri-tip ribeye t-bone boudin, pork loin turkey drumstick tongue pork chop. Kielbasa doner picanha turducken, swine bacon shank pastrami andouille.</p>
             </div>
-            <div id="seven" class="split">
+            <div id="seven" class="split split-horizontal">
               <p>Hamburger tongue tenderloin meatball picanha. Rump bresaola chicken bacon, ground round corned beef ribeye salami. Turkey fatback short ribs andouille meatball, brisket pork belly cow t-bone turducken pig beef ribs.</p>
+            </div>
+          </div>
+          <br>
+        <p>A vertical split with two elements, starting with even heights.</p>
+                <pre><code>Split(['eight', 'nine'], {
+    direction: 'vertical'
+});</code></pre>
+          <div class="example-4">
+            <div id="eight" class="split split-vertical">
+              <p>Bacon ipsum dolor amet beef ribs meatloaf picanha pork loin pork chop rump pig sausage bacon shank boudin beef fatback. Pork loin turducken t-bone chicken.</p>
+            </div>
+            <div id="nine" class="split split-vertical">
+              <p>Brisket andouille cow ball tip. Ham ground round short loin tri-tip ribeye t-bone boudin, pork loin turkey drumstick tongue pork chop. Kielbasa doner picanha turducken, swine bacon shank pastrami andouille.</p>
             </div>
           </div>
           <br><br>
@@ -186,6 +217,10 @@
 
     Split(['five', 'six', 'seven'], {
         minSize: [100, 100, 300]
+    });
+
+    Split(['eight', 'nine'], {
+        direction: 'vertical'
     });
 </script>
 </html>
