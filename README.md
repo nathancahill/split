@@ -22,6 +22,7 @@ Split(<id[]> element ids, <options> options?)
 | minSize | Number or Array of numbers | 100 | Minimum size of each element. |
 | gutterSize | Number | 10 | Gutter size in pixels. |
 | snapOffset | Number | 30 | Snap to minimum width offset in pixels. |
+| direction | String | 'horizontal' | Direction to split. |
 | onDrag | Function | | Callback on drag. |
 | onDragStart | Function | | Callback on drag start. |
 | onDragEnd | Function | | Callback on drag end. |

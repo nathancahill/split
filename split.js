@@ -7,6 +7,7 @@ Split = function (ids, options) {
     if (!options.gutterSize) options.gutterSize = 10;
     if (!options.minSize) options.minSize = 100;
     if (!options.snapOffset) options.snapOffset = 30;
+    if (!options.direction) options.direction = 'horizontal';
 
     // Event listeners for drag events, bound to a pair object.
     // Save the pair's position and size when dragging starts.
@@ -31,10 +32,15 @@ Split = function (ids, options) {
 
             // Calculate the pairs size, and percentage of the parent size
 
-            this.size = this.a.getBoundingClientRect().width + this.b.getBoundingClientRect().width + gutterSize;
-            this.percentage = Math.min(this.size / this.parent.clientWidth * 100, 100);
-
-            this.start = this.a.getBoundingClientRect().left;
+            if (this.direction == 'horizontal') {
+                this.size = this.a.getBoundingClientRect().width + this.b.getBoundingClientRect().width + gutterSize;
+                this.percentage = Math.min(this.size / this.parent.clientWidth * 100, 100);
+                this.start = this.a.getBoundingClientRect().left;
+            } else if (this.direction == 'vertical') {
+                this.size = this.a.getBoundingClientRect().height + this.b.getBoundingClientRect().height + gutterSize;
+                this.percentage = Math.min(this.size / this.parent.clientHeight * 100, 100);
+                this.start = this.a.getBoundingClientRect().top;
+            }
 
             this.a.addEventListener('selectstart', preventSelection);
             this.a.addEventListener('dragstart', preventSelection);
@@ -81,7 +87,11 @@ Split = function (ids, options) {
             // Get the relative position of the event from the first side of the
             // pair.
 
-            var offset = e.clientX - this.start;
+            if (this.direction == 'horizontal') {
+                var offset = e.clientX - this.start;
+            } else if (this.direction == 'vertical') {
+                var offset = e.clientY - this.start;
+            }
 
             // If within snapOffset of min or max, set offset to min or max
 
@@ -107,8 +117,16 @@ Split = function (ids, options) {
             // A size is the same as offset. B size is total size - A size.
             // Both sizes are calculated from the initial parent percentage.
 
-            this.a.style.width = 'calc(' + (offset / this.size * this.percentage) + '% - ' + aGutterSize + 'px)';
-            this.b.style.width = 'calc(' + (this.percentage - (offset / this.size * this.percentage)) + '% - ' + bGutterSize + 'px)';
+            var aSize = 'calc(' + (offset / this.size * this.percentage) + '% - ' + aGutterSize + 'px)';
+            var bSize = 'calc(' + (this.percentage - (offset / this.size * this.percentage)) + '% - ' + bGutterSize + 'px)';
+
+            if (this.direction == 'horizontal') {
+                this.a.style.width = aSize;
+                this.b.style.width = bSize;
+            } else if (this.direction == 'vertical') {
+                this.a.style.height = aSize;
+                this.b.style.height = bSize;
+            }
 
             if (options.onDrag) {
                 options.onDrag();
@@ -160,12 +178,18 @@ Split = function (ids, options) {
                     dragging: false,
                     parent: parent,
                     isFirst: isFirst,
-                    isLast: isLast
+                    isLast: isLast,
+                    direction: options.direction
                 },
                 gutter = document.createElement('div');
 
             gutter.className = 'gutter';
-            gutter.style.width = options.gutterSize + 'px';
+
+            if (options.direction == 'horizontal') {
+                gutter.style.width = options.gutterSize + 'px';
+            } else {
+                gutter.style.height = options.gutterSize + 'px';
+            }
 
             gutter.addEventListener('mousedown', startDragging.bind(pair));
 
@@ -182,6 +206,12 @@ Split = function (ids, options) {
             gutterSize = options.gutterSize / 2;
         }
 
-        el.style.width = 'calc(' + options.sizes[i] + '% - ' + gutterSize + 'px)';
+        var size = 'calc(' + options.sizes[i] + '% - ' + gutterSize + 'px)';
+
+        if (options.direction == 'horizontal') {
+            el.style.width = size;
+        } else if (options.direction == 'vertical') {
+            el.style.height = size;
+        }
     }
 };
