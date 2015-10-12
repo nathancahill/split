@@ -2,15 +2,27 @@
 
 
 
-Split.js is a lightweight (2kb) utility for creating adjustable split views. [Demo](http://nathancahill.github.io/Split.js/)
+Split.js is a lightweight (2kb), non-opionionated utility for creating adjustable split views or panes. [Demo](http://nathancahill.github.io/Split.js/).
 
-No dependencies and no markup required, just two or more elements with a common parent.
+No dependencies or markup required, just two or more elements with a common parent. Views can be split horizontally or vertically, with draggable gutters inserted between every two elements.
 
-Draggable gutters are inserted between every two elements.
+## Installation
 
-Initial sizes, gutter sizes and minimum sizes are configurable.
+Install with Bower:
 
-### Documentation
+```
+bower install split.js
+```
+
+Or clone from Github:
+
+```
+git clone https://github.com/nathancahill/Split.js.git
+```
+
+<br>
+
+## Documentation
 
 ```
 Split(<id[]> element ids, <options> options?)
@@ -27,7 +39,9 @@ Split(<id[]> element ids, <options> options?)
 | onDragStart | Function | | Callback on drag start. |
 | onDragEnd | Function | | Callback on drag end. |
 
-### Usage Examples
+<br>
+
+## Usage Examples
 
 A split with two elements, starting at 25% and 75% wide with 200px minimum width.
 
@@ -52,4 +66,55 @@ A vertical split with two elements.
 Split(['one', 'two'], {
     direction: 'vertical'
 });
+```
+
+<br>
+
+## CSS
+
+In being non-opionionated, the only CSS Split.js sets is the widths or heights of the elements. Everything else is left up to you. However, here's some basic CSS to style the gutters with:
+
+```
+.gutter {
+  background-color: #eee;
+
+  background-repeat: no-repeat;
+  background-position: 50%;
+
+  cursor: move;
+  cursor: grab;
+  cursor: -moz-grab;
+  cursor: -webkit-grab;
+}
+
+.gutter:active { 
+  cursor: grabbing;
+  cursor: -moz-grabbing;
+  cursor: -webkit-grabbing;
+}
+
+.gutter.gutter-horizontal {
+  background-image: url('grips/vertical.png');
+}
+
+.gutter.gutter-vertical {
+  background-image: url('grips/horizontal.png');
+}
+```
+
+Split.js also works best when the elements are sized using `border-box`. The `split` class would have to be added manually to apply these styles:
+
+```
+.split {
+  box-sizing: border-box;
+}
+```
+
+And for horizontal splits, floating the elements with 100% height is useful:
+
+```
+.split, .gutter.gutter-horizontal {
+  height: 100%;
+  float: left;
+}
 ```
