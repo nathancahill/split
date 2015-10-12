@@ -117,7 +117,7 @@ And for horizontal splits, floating the elements with 100% height is useful:
 }
 ```
 
-Overflow can be handled as well. IE shows scrollbars even when there's no overflow, so hide them too:
+Overflow can be handled as well:
 
 ```css
 .split {
