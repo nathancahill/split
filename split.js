@@ -1,4 +1,13 @@
 
+// Array.isArray Polyfill
+// https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/isArray
+
+if (!Array.isArray) {
+  Array.isArray = function(arg) {
+    return Object.prototype.toString.call(arg) === '[object Array]';
+  };
+}
+
 Split = function (ids, options) {
     // Set defaults
 
@@ -169,44 +178,51 @@ Split = function (ids, options) {
             isLast = (i == ids.length - 1),
             gutterSize = options.gutterSize;
 
-        if (i > 0) {
-            var pair = {
-                    a: document.getElementById(ids[i - 1]),
-                    b: el,
-                    aMin: options.minSize[i - 1],
-                    bMin: options.minSize[i],
-                    dragging: false,
-                    parent: parent,
-                    isFirst: isFirst,
-                    isLast: isLast,
-                    direction: options.direction
-                },
-                gutter = document.createElement('div');
+        // IE9 and aboe
+        if (!(window.attachEvent && !window.addEventListener)) {
+            if (i > 0) {
+                var pair = {
+                        a: document.getElementById(ids[i - 1]),
+                        b: el,
+                        aMin: options.minSize[i - 1],
+                        bMin: options.minSize[i],
+                        dragging: false,
+                        parent: parent,
+                        isFirst: isFirst,
+                        isLast: isLast,
+                        direction: options.direction
+                    },
+                    gutter = document.createElement('div');
 
-            if (options.direction == 'horizontal') {
-                gutter.className = 'gutter gutter-horizontal';
-                gutter.style.width = options.gutterSize + 'px';
-            } else {
-                gutter.className = 'gutter gutter-vertical';
-                gutter.style.height = options.gutterSize + 'px';
+                if (options.direction == 'horizontal') {
+                    gutter.className = 'gutter gutter-horizontal';
+                    gutter.style.width = options.gutterSize + 'px';
+                } else {
+                    gutter.className = 'gutter gutter-vertical';
+                    gutter.style.height = options.gutterSize + 'px';
+                }
+
+                gutter.addEventListener('mousedown', startDragging.bind(pair));
+
+                parent.addEventListener('mouseup', stopDragging.bind(pair));
+                parent.addEventListener('mousemove', drag.bind(pair));
+                parent.addEventListener('mouseleave', stopDragging.bind(pair));
+
+                parent.insertBefore(gutter, el);
+
+                pair.gutter = gutter;
             }
 
-            gutter.addEventListener('mousedown', startDragging.bind(pair));
+            if (i == 0 || i == ids.length - 1) {
+                gutterSize = options.gutterSize / 2;
+            }
 
-            parent.addEventListener('mouseup', stopDragging.bind(pair));
-            parent.addEventListener('mousemove', drag.bind(pair));
-            parent.addEventListener('mouseleave', stopDragging.bind(pair));
+            var size = 'calc(' + options.sizes[i] + '% - ' + gutterSize + 'px)';
 
-            parent.insertBefore(gutter, el);
-
-            pair.gutter = gutter;
+        // IE8 and below
+        } else {
+            var size = options.sizes[i] + '%';
         }
-
-        if (i == 0 || i == ids.length - 1) {
-            gutterSize = options.gutterSize / 2;
-        }
-
-        var size = 'calc(' + options.sizes[i] + '% - ' + gutterSize + 'px)';
 
         if (options.direction == 'horizontal') {
             el.style.width = size;
