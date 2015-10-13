@@ -1,4 +1,10 @@
 
+'use strict';
+
+(function() {
+
+var global = this;
+
 // Array.isArray Polyfill
 // https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/isArray
 
@@ -8,7 +14,11 @@ if (!Array.isArray) {
   };
 }
 
-Split = function (ids, options) {
+var isIE8 = function () {
+    return (global.attachEvent && !global.addEventListener);
+}
+
+var Split = function (ids, options) {
     // Set defaults
 
     options = typeof options !== 'undefined' ?  options : {};
@@ -178,8 +188,8 @@ Split = function (ids, options) {
             isLast = (i == ids.length - 1),
             gutterSize = options.gutterSize;
 
-        // IE9 and aboe
-        if (!(window.attachEvent && !window.addEventListener)) {
+        // IE9 and above
+        if (!isIE8()) {
             if (i > 0) {
                 var pair = {
                         a: document.getElementById(ids[i - 1]),
@@ -231,3 +241,14 @@ Split = function (ids, options) {
         }
     }
 };
+
+if (typeof exports !== 'undefined') {
+    if (typeof module !== 'undefined' && module.exports) {
+        exports = module.exports = Split;
+    }
+    exports.Split = Split;
+} else {
+    global.Split = Split;
+}
+
+}).call(this);
