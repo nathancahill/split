@@ -18,6 +18,19 @@ var isIE8 = function () {
     return (global.attachEvent && !global.addEventListener);
 }
 
+var calc = (function () {
+    var prefixes = ["", "-webkit-", "-moz-", "-o-"], el
+
+    for (var i = 0; i < prefixes.length; i++) {
+        el = document.createElement('div');
+        el.style.cssText = "width:" + prefixes[i] + "calc(9px)";
+
+        if (el.style.length) {
+            return prefixes[i] + "calc"
+        }
+    }
+})();
+
 var Split = function (ids, options) {
     // Set defaults
 
@@ -136,8 +149,8 @@ var Split = function (ids, options) {
             // A size is the same as offset. B size is total size - A size.
             // Both sizes are calculated from the initial parent percentage.
 
-            var aSize = 'calc(' + (offset / this.size * this.percentage) + '% - ' + aGutterSize + 'px)';
-            var bSize = 'calc(' + (this.percentage - (offset / this.size * this.percentage)) + '% - ' + bGutterSize + 'px)';
+            var aSize = calc + '(' + (offset / this.size * this.percentage) + '% - ' + aGutterSize + 'px)';
+            var bSize = calc + '(' + (this.percentage - (offset / this.size * this.percentage)) + '% - ' + bGutterSize + 'px)';
 
             if (this.direction == 'horizontal') {
                 this.a.style.width = aSize;
@@ -227,7 +240,7 @@ var Split = function (ids, options) {
                 gutterSize = options.gutterSize / 2;
             }
 
-            var size = 'calc(' + options.sizes[i] + '% - ' + gutterSize + 'px)';
+            var size = calc + '(' + options.sizes[i] + '% - ' + gutterSize + 'px)';
 
         // IE8 and below
         } else {
