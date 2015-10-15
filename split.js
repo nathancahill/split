@@ -14,9 +14,9 @@ if (!Array.isArray) {
   };
 }
 
-var isIE8 = function () {
+var isIE8 = (function () {
     return (global.attachEvent && !global.addEventListener);
-}
+})();
 
 var calc = (function () {
     var prefixes = ["", "-webkit-", "-moz-", "-o-"], el
@@ -202,7 +202,7 @@ var Split = function (ids, options) {
             gutterSize = options.gutterSize;
 
         // IE9 and above
-        if (!isIE8()) {
+        if (!isIE8) {
             if (i > 0) {
                 var pair = {
                         a: document.getElementById(ids[i - 1]),
