@@ -14,9 +14,13 @@ if (!Array.isArray) {
   };
 }
 
+// Check if browser is IE8 or lower
+
 var isIE8 = (function () {
     return (global.attachEvent && !global.addEventListener);
 })();
+
+// Get supported calc() prefix
 
 var calc = (function () {
     var prefixes = ["", "-webkit-", "-moz-", "-o-"], el
