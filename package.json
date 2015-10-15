@@ -1,5 +1,5 @@
 {
-  "name": "splitjs",
+  "name": "split.js",
   "version": "0.4.1",
   "description": "A lightweight utility for creating adjustable split views",
   "main": "split.js",
