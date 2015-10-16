@@ -36,6 +36,8 @@ var calc = (function () {
 })();
 
 var Split = function (ids, options) {
+    var dimension, clientDimension, clientAxis, position, gutterClass, pairs = [];
+
     // Set defaults
 
     options = typeof options !== 'undefined' ?  options : {};
@@ -45,38 +47,28 @@ var Split = function (ids, options) {
     if (!options.snapOffset) options.snapOffset = 30;
     if (!options.direction) options.direction = 'horizontal';
 
+    if (options.direction == 'horizontal') {
+        dimension = 'width';
+        clientDimension = 'clientWidth';
+        clientAxis = 'clientX';
+        position = 'left';
+        gutterClass = 'gutter gutter-horizontal';
+    } else if (options.direction == 'vertical') {
+        dimension = 'height';
+        clientDimension = 'clientWidth';
+        clientAxis = 'clientY';
+        position = 'top';
+        gutterClass = 'gutter gutter-vertical';
+    }
+
     // Event listeners for drag events, bound to a pair object.
-    // Save the pair's position and size when dragging starts.
+    // Calculate the pair's position and size when dragging starts.
     // Prevent selection on start and re-enable it when done.
 
     var startDragging = function (e) {
             e.preventDefault();
 
             this.dragging = true;
-
-            // The first and last pairs have 1.5x gutter (1 in the middle and 1/2 on the side).
-            // All other pairs have 2x gutter (1 in the middle and 1/2 on each side).
-            // Special case for pairs that are first and last (only 1 pair).
-
-            if (this.isFirst && this.isLast) {
-                gutterSize = options.gutterSize;
-            } else if (this.isFirst || this.isLast) {
-                gutterSize = options.gutterSize * 1.5;
-            } else {
-                gutterSize = options.gutterSize * 2;
-            }
-
-            // Calculate the pairs size, and percentage of the parent size
-
-            if (this.direction == 'horizontal') {
-                this.size = this.a.getBoundingClientRect().width + this.b.getBoundingClientRect().width + gutterSize;
-                this.percentage = Math.min(this.size / this.parent.clientWidth * 100, 100);
-                this.start = this.a.getBoundingClientRect().left;
-            } else if (this.direction == 'vertical') {
-                this.size = this.a.getBoundingClientRect().height + this.b.getBoundingClientRect().height + gutterSize;
-                this.percentage = Math.min(this.size / this.parent.clientHeight * 100, 100);
-                this.start = this.a.getBoundingClientRect().top;
-            }
 
             this.a.addEventListener('selectstart', preventSelection);
             this.a.addEventListener('dragstart', preventSelection);
@@ -90,6 +82,8 @@ var Split = function (ids, options) {
             this.b.style.userSelect = 'none';
             this.b.style.webkitUserSelect = 'none';
             this.b.style.MozUserSelect = 'none';
+
+            calculateSizes.call(this);
 
             if (options.onDragStart) {
                 options.onDragStart();
@@ -123,11 +117,7 @@ var Split = function (ids, options) {
             // Get the relative position of the event from the first side of the
             // pair.
 
-            if (this.direction == 'horizontal') {
-                var offset = e.clientX - this.start;
-            } else if (this.direction == 'vertical') {
-                var offset = e.clientY - this.start;
-            }
+            var offset = e[clientAxis] - this.start;
 
             // If within snapOffset of min or max, set offset to min or max
 
@@ -137,36 +127,27 @@ var Split = function (ids, options) {
                 offset = this.size - this.bMin;
             }
 
-            // For first and last pairs, first and last gutter width is half.
-
-            var aGutterSize = options.gutterSize;
-            var bGutterSize = options.gutterSize;
-
-            if (this.isFirst) {
-                aGutterSize = options.gutterSize / 2;
-            }
-
-            if (this.isLast) {
-                bGutterSize = options.gutterSize / 2;
-            }
-
-            // A size is the same as offset. B size is total size - A size.
-            // Both sizes are calculated from the initial parent percentage.
-
-            var aSize = calc + '(' + (offset / this.size * this.percentage) + '% - ' + aGutterSize + 'px)';
-            var bSize = calc + '(' + (this.percentage - (offset / this.size * this.percentage)) + '% - ' + bGutterSize + 'px)';
-
-            if (this.direction == 'horizontal') {
-                this.a.style.width = aSize;
-                this.b.style.width = bSize;
-            } else if (this.direction == 'vertical') {
-                this.a.style.height = aSize;
-                this.b.style.height = bSize;
-            }
+            adjust.call(this, offset);
 
             if (options.onDrag) {
                 options.onDrag();
             }
+        },
+
+        calculateSizes = function () {
+            // Calculate the pairs size, and percentage of the parent size
+
+            this.size = this.a.getBoundingClientRect()[dimension] + this.b.getBoundingClientRect()[dimension] + this.aGutterSize + this.bGutterSize;
+            this.percentage = Math.min(this.size / this.parent[clientDimension] * 100, 100);
+            this.start = this.a.getBoundingClientRect()[position];
+        },
+
+        adjust = function (offset) {
+            // A size is the same as offset. B size is total size - A size.
+            // Both sizes are calculated from the initial parent percentage.
+
+            this.a.style[dimension] = calc + '(' + (offset / this.size * this.percentage) + '% - ' + this.aGutterSize + 'px)';
+            this.b.style[dimension] = calc + '(' + (this.percentage - (offset / this.size * this.percentage)) + '% - ' + this.bGutterSize + 'px)';
         },
 
         preventSelection = function () { return false; },
@@ -197,34 +178,45 @@ var Split = function (ids, options) {
         var el = document.getElementById(ids[i]),
             isFirst = (i == 1),
             isLast = (i == ids.length - 1),
-            gutterSize = options.gutterSize;
+            gutterSize = options.gutterSize,
+            pair;
+
+        if (i > 0) {
+            pair = {
+                a: document.getElementById(ids[i - 1]),
+                b: el,
+                aMin: options.minSize[i - 1],
+                bMin: options.minSize[i],
+                dragging: false,
+                parent: parent,
+                isFirst: isFirst,
+                isLast: isLast,
+                direction: options.direction
+            };
+
+            // For first and last pairs, first and last gutter width is half.
+
+            pair.aGutterSize = options.gutterSize;
+            pair.bGutterSize = options.gutterSize;
+
+            if (isFirst) {
+                pair.aGutterSize = options.gutterSize / 2;
+            }
+
+            if (isLast) {
+                pair.bGutterSize = options.gutterSize / 2;
+            }
+        }
 
         // IE9 and above
         if (!isIE8) {
             if (i > 0) {
-                var pair = {
-                        a: document.getElementById(ids[i - 1]),
-                        b: el,
-                        aMin: options.minSize[i - 1],
-                        bMin: options.minSize[i],
-                        dragging: false,
-                        parent: parent,
-                        isFirst: isFirst,
-                        isLast: isLast,
-                        direction: options.direction
-                    },
-                    gutter = document.createElement('div');
+                var gutter = document.createElement('div');
 
-                if (options.direction == 'horizontal') {
-                    gutter.className = 'gutter gutter-horizontal';
-                    gutter.style.width = options.gutterSize + 'px';
-                } else {
-                    gutter.className = 'gutter gutter-vertical';
-                    gutter.style.height = options.gutterSize + 'px';
-                }
+                gutter.className = gutterClass;
+                gutter.style[dimension] = options.gutterSize + 'px';
 
                 gutter.addEventListener('mousedown', startDragging.bind(pair));
-
                 parent.addEventListener('mouseup', stopDragging.bind(pair));
                 parent.addEventListener('mousemove', drag.bind(pair));
                 parent.addEventListener('mouseleave', stopDragging.bind(pair));
@@ -245,10 +237,10 @@ var Split = function (ids, options) {
             var size = options.sizes[i] + '%';
         }
 
-        if (options.direction == 'horizontal') {
-            el.style.width = size;
-        } else if (options.direction == 'vertical') {
-            el.style.height = size;
+        el.style[dimension] = size;
+
+        if (i > 0) {
+            pairs.push(pair);
         }
     }
 };
