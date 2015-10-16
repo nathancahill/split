@@ -171,12 +171,6 @@ var Split = function (ids, options) {
 
         preventSelection = function () { return false; },
 
-        // Given a list of DOM element ids and a list of percentage sizes,
-        // assign each element a size allowing for a gutter between each
-        // pair. The number of gutters is ids.length - 1, and the total gutter
-        // size is gutterSize * (ids.length - 1). Before calculating
-        // each size, subtract the total gutter size for the parent size.
-
         parent = document.getElementById(ids[0]).parentNode;
 
     if (!options.sizes) {
