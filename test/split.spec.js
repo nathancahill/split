@@ -1,4 +1,14 @@
 
+function calcParts(expr) {
+    var re = /calc\(([\d]*\.[\d]*)%\s-\s([\d]+)px\)/,
+        m = re.exec(expr);
+
+    return {
+        percentage: parseFloat(m[1]),
+        pixels: parseInt(m[2])
+    };
+}
+
 describe('Split', function() {
     beforeEach(function() {
         this.a = document.createElement('div');
@@ -30,9 +40,13 @@ describe('Split', function() {
     it('splits in three when given three elements', function() {
         Split(['a', 'b', 'c']);
 
-        expect(this.a.style.width).toBe('calc(33.3333% - 5px)');
-        expect(this.b.style.width).toBe('calc(33.3333% - 10px)');
-        expect(this.c.style.width).toBe('calc(33.3333% - 5px)');
+        expect(calcParts(this.a.style.width).percentage).toBeCloseTo(33.33);
+        expect(calcParts(this.b.style.width).percentage).toBeCloseTo(33.33);
+        expect(calcParts(this.c.style.width).percentage).toBeCloseTo(33.33);
+
+        expect(calcParts(this.a.style.width).pixels).toBe(5);
+        expect(calcParts(this.b.style.width).pixels).toBe(10);
+        expect(calcParts(this.c.style.width).pixels).toBe(5);
     });
 
     it('splits vertically when direction is vertical', function() {
@@ -76,9 +90,13 @@ describe('Split', function() {
             gutterSize: 20
         });
 
-        expect(this.a.style.width).toBe('calc(33.3333% - 10px)');
-        expect(this.b.style.width).toBe('calc(33.3333% - 20px)');
-        expect(this.c.style.width).toBe('calc(33.3333% - 10px)');
+        expect(calcParts(this.a.style.width).percentage).toBeCloseTo(33.33);
+        expect(calcParts(this.b.style.width).percentage).toBeCloseTo(33.33);
+        expect(calcParts(this.c.style.width).percentage).toBeCloseTo(33.33);
+
+        expect(calcParts(this.a.style.width).pixels).toBe(10);
+        expect(calcParts(this.b.style.width).pixels).toBe(20);
+        expect(calcParts(this.c.style.width).pixels).toBe(10);
     });
 
     it('accounts for gutter size when direction is vertical', function() {
@@ -97,8 +115,12 @@ describe('Split', function() {
             gutterSize: 20
         });
 
-        expect(this.a.style.height).toBe('calc(33.3333% - 10px)');
-        expect(this.b.style.height).toBe('calc(33.3333% - 20px)');
-        expect(this.c.style.height).toBe('calc(33.3333% - 10px)');
+        expect(calcParts(this.a.style.height).percentage).toBeCloseTo(33.33);
+        expect(calcParts(this.b.style.height).percentage).toBeCloseTo(33.33);
+        expect(calcParts(this.c.style.height).percentage).toBeCloseTo(33.33);
+
+        expect(calcParts(this.a.style.height).pixels).toBe(10);
+        expect(calcParts(this.b.style.height).pixels).toBe(20);
+        expect(calcParts(this.c.style.height).pixels).toBe(10);
     });
 });
