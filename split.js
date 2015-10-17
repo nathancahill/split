@@ -150,6 +150,38 @@ var Split = function (ids, options) {
             this.b.style[dimension] = calc + '(' + (this.percentage - (offset / this.size * this.percentage)) + '% - ' + this.bGutterSize + 'px)';
         },
 
+        fitMin = function () {
+            if (this.a.getBoundingClientRect()[dimension] < this.aMin) {
+                this.a.style[dimension] = (this.aMin - this.aGutterSize) + 'px';
+                this.b.style[dimension] = (this.size - this.aMin - this.aGutterSize) + 'px';
+            } else if (this.b.getBoundingClientRect()[dimension] < this.bMin) {
+                this.a.style[dimension] = (this.size - this.bMin - this.bGutterSize) + 'px';
+                this.b.style[dimension] = (this.bMin - this.bGutterSize) + 'px';
+            }
+        },
+
+        fitMinReverse = function () {
+            if (this.b.getBoundingClientRect()[dimension] < this.bMin) {
+                this.a.style[dimension] = (this.size - this.bMin - this.bGutterSize) + 'px';
+                this.b.style[dimension] = (this.bMin - this.bGutterSize) + 'px';
+            } else if (this.a.getBoundingClientRect()[dimension] < this.aMin) {
+                this.a.style[dimension] = (this.aMin - this.aGutterSize) + 'px';
+                this.b.style[dimension] = (this.size - this.aMin - this.aGutterSize) + 'px';
+            }
+        },
+
+        balancePairs = function (pairs) {
+            for (var i = 0; i < pairs.length; i++) {
+                calculateSizes.call(pairs[i]);
+                fitMin.call(pairs[i]);
+            };
+
+            for (var i = pairs.length - 1; i >= 0; i--) {
+                calculateSizes.call(pairs[i]);
+                fitMinReverse.call(pairs[i]);
+            };
+        },
+
         preventSelection = function () { return false; },
 
         parent = document.getElementById(ids[0]).parentNode;
@@ -243,6 +275,8 @@ var Split = function (ids, options) {
             pairs.push(pair);
         }
     }
+
+    balancePairs(pairs);
 };
 
 if (typeof exports !== 'undefined') {
