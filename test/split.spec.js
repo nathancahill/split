@@ -168,4 +168,13 @@ describe('Split', function() {
         expect(this.b.getBoundingClientRect().width).toBe(200 - 10);
         expect(this.c.getBoundingClientRect().width).toBe(200 - 5);
     });
+
+    it('set size directly when given css values', function() {
+        Split(['a', 'b'], {
+            sizes: ['150px', '640px']
+        });
+
+        expect(this.a.style.width).toBe('150px');
+        expect(this.b.style.width).toBe('640px');
+    });
 });

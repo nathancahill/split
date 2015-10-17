@@ -210,6 +210,7 @@ var Split = function (ids, options) {
         var el = document.getElementById(ids[i]),
             isFirst = (i == 1),
             isLast = (i == ids.length - 1),
+            size,
             gutterSize = options.gutterSize,
             pair;
 
@@ -262,11 +263,19 @@ var Split = function (ids, options) {
                 gutterSize = options.gutterSize / 2;
             }
 
-            var size = calc + '(' + options.sizes[i] + '% - ' + gutterSize + 'px)';
+            if (typeof options.sizes[i] === 'string' || options.sizes[i] instanceof String) {
+                size = options.sizes[i];
+            } else {
+                size = calc + '(' + options.sizes[i] + '% - ' + gutterSize + 'px)';
+            }
 
         // IE8 and below
         } else {
-            var size = options.sizes[i] + '%';
+            if (typeof options.sizes[i] === 'string' || options.sizes[i] instanceof String) {
+                size = options.sizes[i];
+            } else {
+                size = options.sizes[i] + '%';
+            }
         }
 
         el.style[dimension] = size;
