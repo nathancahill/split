@@ -28,8 +28,8 @@ Split(<id[]> element ids, <options> options?)
 
 | Options | Type | Default | Description |
 |---|---|---|---|
-| sizes | Array of numbers | | Initial sizes of each element in percents. |
-| minSize | Number or Array of numbers | 100 | Minimum size of each element. |
+| sizes | Array | | Initial sizes of each element in percents or CSS values. |
+| minSize | Number or Array | 100 | Minimum size of each element. |
 | gutterSize | Number | 10 | Gutter size in pixels. |
 | snapOffset | Number | 30 | Snap to minimum width offset in pixels. |
 | direction | String | 'horizontal' | Direction to split: horizontal or vertical. |
@@ -61,6 +61,14 @@ A vertical split with two elements.
 ```js
 Split(['one', 'two'], {
     direction: 'vertical'
+});
+```
+
+Specifying the initial widths with CSS values.
+
+```js
+Split(['one', 'two'], {
+	sizes: ['200px', '500px']
 });
 ```
 
