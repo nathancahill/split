@@ -19,6 +19,7 @@
   "devDependencies": {
     "grunt": "^0.4.5",
     "grunt-contrib-jasmine": "nathancahill/grunt-contrib-jasmine",
+    "jasmine": "^2.3.2",
     "uglifyjs": "^2.4.10"
   },
   "scripts": {
