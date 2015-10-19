@@ -55,7 +55,7 @@ var Split = function (ids, options) {
         gutterClass = 'gutter gutter-horizontal';
     } else if (options.direction == 'vertical') {
         dimension = 'height';
-        clientDimension = 'clientWidth';
+        clientDimension = 'clientHeight';
         clientAxis = 'clientY';
         position = 'top';
         gutterClass = 'gutter gutter-vertical';
