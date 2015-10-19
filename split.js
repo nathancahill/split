@@ -23,14 +23,14 @@ var isIE8 = (function () {
 // Get supported calc() prefix
 
 var calc = (function () {
-    var prefixes = ["", "-webkit-", "-moz-", "-o-"], el
+    var prefixes = ["", "-webkit-", "-moz-", "-o-"], el;
 
     for (var i = 0; i < prefixes.length; i++) {
         el = document.createElement('div');
         el.style.cssText = "width:" + prefixes[i] + "calc(9px)";
 
         if (el.style.length) {
-            return prefixes[i] + "calc"
+            return prefixes[i] + "calc";
         }
     }
 })();
@@ -174,12 +174,12 @@ var Split = function (ids, options) {
             for (var i = 0; i < pairs.length; i++) {
                 calculateSizes.call(pairs[i]);
                 fitMin.call(pairs[i]);
-            };
+            }
 
-            for (var i = pairs.length - 1; i >= 0; i--) {
+            for (i = pairs.length - 1; i >= 0; i--) {
                 calculateSizes.call(pairs[i]);
                 fitMinReverse.call(pairs[i]);
-            };
+            }
         },
 
         preventSelection = function () { return false; },
@@ -193,7 +193,7 @@ var Split = function (ids, options) {
 
         for (var i = 0; i < ids.length; i++) {
             options.sizes.push(percent);
-        };
+        }
     }
 
     if (!Array.isArray(options.minSize)) {
@@ -201,7 +201,7 @@ var Split = function (ids, options) {
 
         for (var i = 0; i < ids.length; i++) {
             minSizes.push(options.minSize);
-        };
+        }
 
         options.minSize = minSizes;
     }
@@ -259,7 +259,7 @@ var Split = function (ids, options) {
                 pair.gutter = gutter;
             }
 
-            if (i == 0 || i == ids.length - 1) {
+            if (i === 0 || i == ids.length - 1) {
                 gutterSize = options.gutterSize / 2;
             }
 
