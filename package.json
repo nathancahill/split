@@ -23,6 +23,7 @@
     "uglifyjs": "^2.4.10"
   },
   "scripts": {
-    "test": "./node_modules/.bin/grunt jasmine"
+    "test": "./node_modules/.bin/grunt jasmine",
+    "build": "./node_modules/.binuglifyjs -m -o split.min.js split.js"
   }
 }
