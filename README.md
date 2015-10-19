@@ -1,8 +1,9 @@
 ## Split.js
 
 ![](https://travis-ci.org/nathancahill/Split.js.svg)
+![](https://badge-size.herokuapp.com/nathancahill/Split.js/master/split.min.js.svg?compression=gzip&label=size)
 
-Split.js is a lightweight (2kb), unopinionated utility for creating adjustable split views or panes. [Demo](http://nathancahill.github.io/Split.js/).
+Split.js is a lightweight, unopinionated utility for creating adjustable split views or panes. [Demo](http://nathancahill.github.io/Split.js/).
 
 No dependencies or markup required, just two or more elements with a common parent. Views can be split horizontally or vertically, with draggable gutters inserted between every two elements.
 
