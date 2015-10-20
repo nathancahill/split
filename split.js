@@ -26,7 +26,7 @@ var calc = (function () {
     var prefixes = ["", "-webkit-", "-moz-", "-o-"], el;
 
     for (var i = 0; i < prefixes.length; i++) {
-        el = document.createElement('div');
+        el = global.document.createElement('div');
         el.style.cssText = "width:" + prefixes[i] + "calc(9px)";
 
         if (el.style.length) {
@@ -184,7 +184,7 @@ var Split = function (ids, options) {
 
         preventSelection = function () { return false; },
 
-        parent = document.getElementById(ids[0]).parentNode;
+        parent = global.document.getElementById(ids[0]).parentNode;
 
     if (!options.sizes) {
         var percent = 100 / ids.length;
@@ -207,7 +207,7 @@ var Split = function (ids, options) {
     }
 
     for (var i = 0; i < ids.length; i++) {
-        var el = document.getElementById(ids[i]),
+        var el = global.document.getElementById(ids[i]),
             isFirst = (i == 1),
             isLast = (i == ids.length - 1),
             size,
@@ -216,7 +216,7 @@ var Split = function (ids, options) {
 
         if (i > 0) {
             pair = {
-                a: document.getElementById(ids[i - 1]),
+                a: global.document.getElementById(ids[i - 1]),
                 b: el,
                 aMin: options.minSize[i - 1],
                 bMin: options.minSize[i],
@@ -244,7 +244,7 @@ var Split = function (ids, options) {
         // IE9 and above
         if (!isIE8) {
             if (i > 0) {
-                var gutter = document.createElement('div');
+                var gutter = global.document.createElement('div');
 
                 gutter.className = gutterClass;
                 gutter.style[dimension] = options.gutterSize + 'px';
