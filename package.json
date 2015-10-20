@@ -24,6 +24,6 @@
   },
   "scripts": {
     "test": "./node_modules/.bin/grunt jasmine",
-    "build": "./node_modules/.binuglifyjs -m -o split.min.js split.js"
+    "build": "./node_modules/.bin/uglifyjs -m -o split.min.js split.js"
   }
 }
