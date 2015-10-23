@@ -3,7 +3,11 @@
 
 (function() {
 
-var global = this;
+var global = this,
+    getElementById = 'getElementById',
+    addEventListener = 'addEventListener',
+    removeEventListener = 'removeEventListener',
+    getBoundingClientRect = 'getBoundingClientRect';
 
 // Array.isArray Polyfill
 // https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/isArray
@@ -17,7 +21,7 @@ if (!Array.isArray) {
 // Check if browser is IE8 or lower
 
 var isIE8 = (function () {
-    return (global.attachEvent && !global.addEventListener);
+    return (global.attachEvent && !global[addEventListener]);
 })();
 
 // Get supported calc() prefix
@@ -70,10 +74,10 @@ var Split = function (ids, options) {
 
             this.dragging = true;
 
-            this.a.addEventListener('selectstart', preventSelection);
-            this.a.addEventListener('dragstart', preventSelection);
-            this.b.addEventListener('selectstart', preventSelection);
-            this.b.addEventListener('dragstart', preventSelection);
+            this.a[addEventListener]('selectstart', preventSelection);
+            this.a[addEventListener]('dragstart', preventSelection);
+            this.b[addEventListener]('selectstart', preventSelection);
+            this.b[addEventListener]('dragstart', preventSelection);
 
             this.a.style.userSelect = 'none';
             this.a.style.webkitUserSelect = 'none';
@@ -93,10 +97,10 @@ var Split = function (ids, options) {
         stopDragging = function () {
             this.dragging = false;
 
-            this.a.removeEventListener('selectstart', preventSelection);
-            this.a.removeEventListener('dragstart', preventSelection);
-            this.b.removeEventListener('selectstart', preventSelection);
-            this.b.removeEventListener('dragstart', preventSelection);
+            this.a[removeEventListener]('selectstart', preventSelection);
+            this.a[removeEventListener]('dragstart', preventSelection);
+            this.b[removeEventListener]('selectstart', preventSelection);
+            this.b[removeEventListener]('dragstart', preventSelection);
 
             this.a.style.userSelect = '';
             this.a.style.webkitUserSelect = '';
@@ -141,9 +145,9 @@ var Split = function (ids, options) {
         calculateSizes = function () {
             // Calculate the pairs size, and percentage of the parent size
 
-            this.size = this.a.getBoundingClientRect()[dimension] + this.b.getBoundingClientRect()[dimension] + this.aGutterSize + this.bGutterSize;
+            this.size = this.a[getBoundingClientRect]()[dimension] + this.b[getBoundingClientRect]()[dimension] + this.aGutterSize + this.bGutterSize;
             this.percentage = Math.min(this.size / this.parent[clientDimension] * 100, 100);
-            this.start = this.a.getBoundingClientRect()[position];
+            this.start = this.a[getBoundingClientRect]()[position];
         },
 
         adjust = function (offset) {
@@ -155,20 +159,20 @@ var Split = function (ids, options) {
         },
 
         fitMin = function () {
-            if (this.a.getBoundingClientRect()[dimension] < this.aMin) {
+            if (this.a[getBoundingClientRect]()[dimension] < this.aMin) {
                 this.a.style[dimension] = (this.aMin - this.aGutterSize) + 'px';
                 this.b.style[dimension] = (this.size - this.aMin - this.aGutterSize) + 'px';
-            } else if (this.b.getBoundingClientRect()[dimension] < this.bMin) {
+            } else if (this.b[getBoundingClientRect]()[dimension] < this.bMin) {
                 this.a.style[dimension] = (this.size - this.bMin - this.bGutterSize) + 'px';
                 this.b.style[dimension] = (this.bMin - this.bGutterSize) + 'px';
             }
         },
 
         fitMinReverse = function () {
-            if (this.b.getBoundingClientRect()[dimension] < this.bMin) {
+            if (this.b[getBoundingClientRect]()[dimension] < this.bMin) {
                 this.a.style[dimension] = (this.size - this.bMin - this.bGutterSize) + 'px';
                 this.b.style[dimension] = (this.bMin - this.bGutterSize) + 'px';
-            } else if (this.a.getBoundingClientRect()[dimension] < this.aMin) {
+            } else if (this.a[getBoundingClientRect]()[dimension] < this.aMin) {
                 this.a.style[dimension] = (this.aMin - this.aGutterSize) + 'px';
                 this.b.style[dimension] = (this.size - this.aMin - this.aGutterSize) + 'px';
             }
@@ -188,7 +192,7 @@ var Split = function (ids, options) {
 
         preventSelection = function () { return false; },
 
-        parent = global.document.getElementById(ids[0]).parentNode;
+        parent = global.document[getElementById](ids[0]).parentNode;
 
     if (!options.sizes) {
         var percent = 100 / ids.length;
@@ -211,7 +215,7 @@ var Split = function (ids, options) {
     }
 
     for (var i = 0; i < ids.length; i++) {
-        var el = global.document.getElementById(ids[i]),
+        var el = global.document[getElementById](ids[i]),
             isFirst = (i == 1),
             isLast = (i == ids.length - 1),
             size,
@@ -220,7 +224,7 @@ var Split = function (ids, options) {
 
         if (i > 0) {
             pair = {
-                a: global.document.getElementById(ids[i - 1]),
+                a: global.document[getElementById](ids[i - 1]),
                 b: el,
                 aMin: options.minSize[i - 1],
                 bMin: options.minSize[i],
@@ -253,15 +257,15 @@ var Split = function (ids, options) {
                 gutter.className = gutterClass;
                 gutter.style[dimension] = options.gutterSize + 'px';
 
-                gutter.addEventListener('mousedown', startDragging.bind(pair));
-                parent.addEventListener('mouseup', stopDragging.bind(pair));
-                parent.addEventListener('mousemove', drag.bind(pair));
-                parent.addEventListener('mouseleave', stopDragging.bind(pair));
+                gutter[addEventListener]('mousedown', startDragging.bind(pair));
+                parent[addEventListener]('mouseup', stopDragging.bind(pair));
+                parent[addEventListener]('mousemove', drag.bind(pair));
+                parent[addEventListener]('mouseleave', stopDragging.bind(pair));
 
-                gutter.addEventListener('touchstart', startDragging.bind(pair));
-                parent.addEventListener('touchend', stopDragging.bind(pair));
-                parent.addEventListener('touchcancel', stopDragging.bind(pair));
-                parent.addEventListener('touchmove', drag.bind(pair));
+                gutter[addEventListener]('touchstart', startDragging.bind(pair));
+                parent[addEventListener]('touchend', stopDragging.bind(pair));
+                parent[addEventListener]('touchcancel', stopDragging.bind(pair));
+                parent[addEventListener]('touchmove', drag.bind(pair));
 
                 parent.insertBefore(gutter, el);
 
