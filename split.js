@@ -117,7 +117,11 @@ var Split = function (ids, options) {
             // Get the relative position of the event from the first side of the
             // pair.
 
-            var offset = e[clientAxis] - this.start;
+            if ('touches' in e) {
+                var offset = e.touches[0][clientAxis] - this.start;
+            } else {
+                var offset = e[clientAxis] - this.start;
+            }
 
             // If within snapOffset of min or max, set offset to min or max
 
@@ -253,6 +257,11 @@ var Split = function (ids, options) {
                 parent.addEventListener('mouseup', stopDragging.bind(pair));
                 parent.addEventListener('mousemove', drag.bind(pair));
                 parent.addEventListener('mouseleave', stopDragging.bind(pair));
+
+                gutter.addEventListener('touchstart', startDragging.bind(pair));
+                parent.addEventListener('touchend', stopDragging.bind(pair));
+                parent.addEventListener('touchcancel', stopDragging.bind(pair));
+                parent.addEventListener('touchmove', drag.bind(pair));
 
                 parent.insertBefore(gutter, el);
 
