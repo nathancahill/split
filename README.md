@@ -65,7 +65,7 @@ Split(['one', 'two'], {
 });
 ```
 
-Specifying the initial widths with CSS values.
+Specifying the initial widths with CSS values. Not recommended, the size/gutter calculations would have to be done before hand and won't scale on viewport resize.
 
 ```js
 Split(['one', 'two'], {
@@ -140,6 +140,7 @@ Overflow can be handled as well:
 - Chrome 19
 - Safari 7
 - Opera 7
+- Mobile Safari
 
 Gracefully falls back in IE 8 and below to only setting the initial widths/heights and not allowing dragging.
 
