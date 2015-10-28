@@ -133,19 +133,12 @@ Overflow can be handled as well:
 }
 ```
 
-## Compatibility
+## Browser Support
 
-- IE 9
-- Firefox 4
-- Chrome 19
-- Safari 7
-- Opera 7
-- Mobile Safari
+This library uses [calc()](https://developer.mozilla.org/en-US/docs/Web/CSS/calc#AutoCompatibilityTable), [box-sizing](https://developer.mozilla.org/en-US/docs/Web/CSS/box-sizing#AutoCompatibilityTable) and [getBoundingClientRect()](https://developer.mozilla.org/en-US/docs/Web/API/Element/getBoundingClientRect#AutoCompatibilityTable). This features are supported in the following browsers:
+
+| <img src="http://i.imgur.com/dJC1GUv.png" width="48px" height="48px" alt="Chrome logo"> | <img src="http://i.imgur.com/o1m5RcQ.png" width="48px" height="48px" alt="Firefox logo"> | <img src="http://i.imgur.com/8h3iz5H.png" width="48px" height="48px" alt="Internet Explorer logo"> | <img src="http://i.imgur.com/iQV4nmJ.png" width="48px" height="48px" alt="Opera logo"> | <img src="http://i.imgur.com/j3tgNKJ.png" width="48px" height="48px" alt="Safari logo"> |
+|:---:|:---:|:---:|:---:|:---:|
+| 19+ ✔ | 4+ ✔ | 9+ ✔ | 32+ ✔ | 7+ ✔ |
 
 Gracefully falls back in IE 8 and below to only setting the initial widths/heights and not allowing dragging.
-
-Limited by:
-
- - [calc()](https://developer.mozilla.org/en-US/docs/Web/CSS/calc#AutoCompatibilityTable)
- - [box-sizing](https://developer.mozilla.org/en-US/docs/Web/CSS/box-sizing#AutoCompatibilityTable)
- - [getBoundingClientRect()](https://developer.mozilla.org/en-US/docs/Web/API/Element/getBoundingClientRect#AutoCompatibilityTable)
