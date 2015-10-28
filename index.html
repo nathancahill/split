@@ -242,57 +242,7 @@ Split(['twelve', 'thirteen'], {
             </div>
           </div>
           <br><br>
-        </div>
-        <br>
-        <div class="row">
-          <h5>CSS</h5>
-          <hr>
-          <p>
-            In being non-opionionated, the only CSS Split.js sets is the widths or heights of the elements. Everything else is left up to you. However, here's some basic CSS to style the gutters with:
-          </p>
-          <pre><code>.gutter {
-  background-color: #eee;
-
-  background-repeat: no-repeat;
-  background-position: 50%;
-
-  cursor: move;
-  cursor: grab;
-  cursor: -moz-grab;
-  cursor: -webkit-grab;
-}
-
-.gutter:active { 
-  cursor: grabbing;
-  cursor: -moz-grabbing;
-  cursor: -webkit-grabbing;
-}
-
-.gutter.gutter-horizontal {
-  background-image: url('grips/vertical.png');
-}
-
-.gutter.gutter-vertical {
-  background-image: url('grips/horizontal.png');
-}</code></pre>
-          <p>
-            Split.js also works best when the elements are sized using <code>border-box</code>. The <code>split</code> class would have to be added manually to apply these styles:
-          </p>
-          <pre><code>.split {
-  -webkit-box-sizing: border-box;
-     -moz-box-sizing: border-box;
-          box-sizing: border-box;
-}</code></pre>
-          <p>And for horizontal splits, floating the elements with 100% height is useful:</p>
-          <pre><code>.split, .gutter.gutter-horizontal {
-  height: 100%;
-  float: left;
-}</code></pre>
-          <p>Overflow can be handled as well:</p>
-          <pre><code>.split {
-  overflow-y: auto;
-  overflow-x: hidden;
-}</code></pre>
+          <br><br>
         </div>
     </div>
 </body>
