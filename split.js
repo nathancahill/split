@@ -70,6 +70,10 @@ var Split = function (ids, options) {
     // Prevent selection on start and re-enable it when done.
 
     var startDragging = function (e) {
+            if (!this.dragging && options.onDragStart) {
+                options.onDragStart();
+            }
+
             e.preventDefault();
 
             this.dragging = true;
@@ -88,13 +92,13 @@ var Split = function (ids, options) {
             this.b.style.MozUserSelect = 'none';
 
             calculateSizes.call(this);
-
-            if (options.onDragStart) {
-                options.onDragStart();
-            }
         },
 
         stopDragging = function () {
+            if (this.dragging && options.onDragEnd) {
+                options.onDragEnd();
+            }
+
             this.dragging = false;
 
             this.a[removeEventListener]('selectstart', preventSelection);
@@ -109,10 +113,6 @@ var Split = function (ids, options) {
             this.b.style.userSelect = '';
             this.b.style.webkitUserSelect = '';
             this.b.style.MozUserSelect = '';
-
-            if (options.onDragEnd) {
-                options.onDragEnd();
-            }
         },
 
         drag = function (e) {
