@@ -34,6 +34,7 @@ Split(<id[]> element ids, <options> options?)
 | gutterSize | Number | 10 | Gutter size in pixels. |
 | snapOffset | Number | 30 | Snap to minimum width offset in pixels. |
 | direction | String | 'horizontal' | Direction to split: horizontal or vertical. |
+| cursor | String | 'grabbing' | Cursor to display while dragging |
 | onDrag | Function | | Callback on drag. |
 | onDragStart | Function | | Callback on drag start. |
 | onDragEnd | Function | | Callback on drag end. |
@@ -88,12 +89,6 @@ In being non-opionionated, the only CSS Split.js sets is the widths or heights o
   cursor: grab;
   cursor: -moz-grab;
   cursor: -webkit-grab;
-}
-
-.gutter:active { 
-  cursor: grabbing;
-  cursor: -moz-grabbing;
-  cursor: -webkit-grabbing;
 }
 
 .gutter.gutter-horizontal {

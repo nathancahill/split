@@ -50,6 +50,7 @@ var Split = function (ids, options) {
     if (!options.minSize) options.minSize = 100;
     if (!options.snapOffset) options.snapOffset = 30;
     if (!options.direction) options.direction = 'horizontal';
+    if (!options.cursor) options.cursor = 'grabbing';
 
     if (options.direction == 'horizontal') {
         dimension = 'width';
@@ -86,10 +87,14 @@ var Split = function (ids, options) {
             this.a.style.userSelect = 'none';
             this.a.style.webkitUserSelect = 'none';
             this.a.style.MozUserSelect = 'none';
+            this.a.style.cursor = options.cursor;
 
             this.b.style.userSelect = 'none';
             this.b.style.webkitUserSelect = 'none';
             this.b.style.MozUserSelect = 'none';
+            this.b.style.cursor = options.cursor;
+
+            this.gutter.style.cursor = options.cursor;
 
             calculateSizes.call(this);
         },
@@ -109,10 +114,14 @@ var Split = function (ids, options) {
             this.a.style.userSelect = '';
             this.a.style.webkitUserSelect = '';
             this.a.style.MozUserSelect = '';
+            this.a.style.cursor = '';
 
             this.b.style.userSelect = '';
             this.b.style.webkitUserSelect = '';
             this.b.style.MozUserSelect = '';
+            this.b.style.cursor = '';
+
+            this.gutter.style.cursor = '';
         },
 
         drag = function (e) {
