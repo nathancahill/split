@@ -34,14 +34,14 @@ describe('Split', function() {
     });
 
     it('splits in two when given two elements', function() {
-        Split(['a', 'b']);
+        Split(['#a', '#b']);
 
         expect(this.a.style.width).toBe('calc(50% - 5px)');
         expect(this.b.style.width).toBe('calc(50% - 5px)');
     });
 
     it('splits in three when given three elements', function() {
-        Split(['a', 'b', 'c']);
+        Split(['#a', '#b', '#c']);
 
         expect(calcParts(this.a.style.width).percentage).toBeCloseTo(33.33);
         expect(calcParts(this.b.style.width).percentage).toBeCloseTo(33.33);
@@ -53,7 +53,7 @@ describe('Split', function() {
     });
 
     it('splits vertically when direction is vertical', function() {
-        Split(['a', 'b'], {
+        Split(['#a', '#b'], {
             direction: 'vertical'
         });
 
@@ -62,7 +62,7 @@ describe('Split', function() {
     });
 
     it('splits in percentages when given sizes', function() {
-        Split(['a', 'b'], {
+        Split(['#a', '#b'], {
             sizes: [25, 75]
         });
 
@@ -71,7 +71,7 @@ describe('Split', function() {
     });
 
     it('splits in percentages when given sizes', function() {
-        Split(['a', 'b'], {
+        Split(['#a', '#b'], {
             sizes: [25, 75]
         });
 
@@ -80,7 +80,7 @@ describe('Split', function() {
     });
 
     it('accounts for gutter size', function() {
-        Split(['a', 'b'], {
+        Split(['#a', '#b'], {
             gutterSize: 20
         });
 
@@ -89,7 +89,7 @@ describe('Split', function() {
     });
 
     it('accounts for gutter size with more than two elements', function() {
-        Split(['a', 'b', 'c'], {
+        Split(['#a', '#b', '#c'], {
             gutterSize: 20
         });
 
@@ -103,7 +103,7 @@ describe('Split', function() {
     });
 
     it('accounts for gutter size when direction is vertical', function() {
-        Split(['a', 'b'], {
+        Split(['#a', '#b'], {
             direction: 'vertical',
             gutterSize: 20
         });
@@ -113,7 +113,7 @@ describe('Split', function() {
     });
 
     it('accounts for gutter size with more than two elements when direction is vertical', function() {
-        Split(['a', 'b', 'c'], {
+        Split(['#a', '#b', '#c'], {
             direction: 'vertical',
             gutterSize: 20
         });
@@ -128,7 +128,7 @@ describe('Split', function() {
     });
 
     it('overrides size with minSize', function() {
-        Split(['a', 'b'], {
+        Split(['#a', '#b'], {
             sizes: [5, 95],
             minSize: [200, 200]
         });
@@ -138,7 +138,7 @@ describe('Split', function() {
     });
 
     it('overrides size with minSize on second element', function() {
-        Split(['a', 'b'], {
+        Split(['#a', '#b'], {
             sizes: [95, 5],
             minSize: [200, 200]
         });
@@ -148,7 +148,7 @@ describe('Split', function() {
     });
 
     it('overrides size with minSize when direction is vertical', function() {
-        Split(['a', 'b'], {
+        Split(['#a', '#b'], {
             direction: 'vertical',
             sizes: [5, 95],
             minSize: [200, 200]
@@ -159,7 +159,7 @@ describe('Split', function() {
     });
 
     it('overrides size with minSize with more than two elements', function() {
-        Split(['a', 'b', 'c'], {
+        Split(['#a', '#b', '#c'], {
             sizes: [90, 5, 5],
             minSize: [200, 200, 200]
         });
@@ -170,7 +170,7 @@ describe('Split', function() {
     });
 
     it('set size directly when given css values', function() {
-        Split(['a', 'b'], {
+        Split(['#a', '#b'], {
             sizes: ['150px', '640px']
         });
 

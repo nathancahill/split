@@ -112,7 +112,7 @@
             <div id="two" class="split split-horizontal">
               <h5>Documentation</h5>
               <hr>
-              <pre><code>Split(&lt;id[]&gt; element ids, &lt;options&gt; options?)</code></pre>
+              <pre><code>Split(&lt;selector[]&gt; selectors, &lt;options&gt; options?)</code></pre>
               <table class="u-full-width">
                 <thead>
                   <tr>
@@ -186,7 +186,7 @@
           <h5>Usage Examples</h5>
           <hr>
           <p>A split with two elements, starting at 25% and 75% wide with 200px minimum width.</p>
-                <pre><code>Split(['one', 'two'], {
+                <pre><code>Split(['#one', '#two'], {
     sizes: [25, 75],
     minSize: 200
 });</code></pre>
@@ -200,7 +200,7 @@
           </div>
           <br>
         <p>A split with three elements, starting with even widths with 100px, 100px and 300px minimum widths, respectively.</p>
-                <pre><code>Split(['one', 'two', 'three'], {
+                <pre><code>Split(['#one', '#two', '#three'], {
     minSize: [100, 100, 300]
 });</code></pre>
           <div class="example-3">
@@ -216,7 +216,7 @@
           </div>
           <br>
         <p>A vertical split with two elements, starting with even heights.</p>
-                <pre><code>Split(['eight', 'nine'], {
+                <pre><code>Split(['#eight', '#nine'], {
     direction: 'vertical'
 });</code></pre>
           <div class="example-4">
@@ -229,9 +229,9 @@
           </div>
           <br>
         <p>Nested splits, horizontal and vertical.</p>
-                <pre><code>Split(['ten', 'eleven']);
+                <pre><code>Split(['#ten', '#eleven']);
 
-Split(['twelve', 'thirteen'], {
+Split(['#twelve', '#thirteen'], {
     direction: 'vertical'
 });</code></pre>
           <div class="example-5">
@@ -255,27 +255,27 @@ Split(['twelve', 'thirteen'], {
 <script>hljs.initHighlightingOnLoad();</script>
 <script src="split.js"></script>
 <script>
-    Split(['one', 'two'], {
+    Split(['#one', '#two'], {
         sizes: [29, 71],
         minSize: 200
     });
 
-    Split(['three', 'four'], {
+    Split(['#three', '#four'], {
         sizes: [25, 75],
         minSize: 200
     });
 
-    Split(['five', 'six', 'seven'], {
+    Split(['#five', '#six', '#seven'], {
         minSize: [100, 100, 300]
     });
 
-    Split(['eight', 'nine'], {
+    Split(['#eight', '#nine'], {
         direction: 'vertical'
     });
 
-    Split(['ten', 'eleven']);
+    Split(['#ten', '#eleven']);
 
-    Split(['twelve', 'thirteen'], {
+    Split(['#twelve', '#thirteen'], {
         direction: 'vertical'
     });
 </script>

@@ -4,7 +4,7 @@
 (function() {
 
 var global = this,
-    getElementById = 'getElementById',
+    querySelector = 'querySelector',
     addEventListener = 'addEventListener',
     removeEventListener = 'removeEventListener',
     getBoundingClientRect = 'getBoundingClientRect';
@@ -201,7 +201,7 @@ var Split = function (ids, options) {
 
         preventSelection = function () { return false; },
 
-        parent = global.document[getElementById](ids[0]).parentNode;
+        parent = global.document[querySelector](ids[0]).parentNode;
 
     if (!options.sizes) {
         var percent = 100 / ids.length;
@@ -224,7 +224,7 @@ var Split = function (ids, options) {
     }
 
     for (var i = 0; i < ids.length; i++) {
-        var el = global.document[getElementById](ids[i]),
+        var el = global.document[querySelector](ids[i]),
             isFirst = (i == 1),
             isLast = (i == ids.length - 1),
             size,
@@ -233,7 +233,7 @@ var Split = function (ids, options) {
 
         if (i > 0) {
             pair = {
-                a: global.document[getElementById](ids[i - 1]),
+                a: global.document[querySelector](ids[i - 1]),
                 b: el,
                 aMin: options.minSize[i - 1],
                 bMin: options.minSize[i],

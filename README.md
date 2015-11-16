@@ -24,7 +24,7 @@ git clone https://github.com/nathancahill/Split.js.git
 ## Documentation
 
 ```js
-Split(<id[]> element ids, <options> options?)
+Split(<selector[]> selectors, <options> options?)
 ```
 
 | Options | Type | Default | Description |
@@ -44,7 +44,7 @@ Split(<id[]> element ids, <options> options?)
 A split with two elements, starting at 25% and 75% wide with 200px minimum width.
 
 ```js
-Split(['one', 'two'], {
+Split(['#one', '#two'], {
     sizes: [25, 75],
     minSize: 200
 });
@@ -53,7 +53,7 @@ Split(['one', 'two'], {
 A split with three elements, starting with even widths with 100px, 100px and 300px minimum widths, respectively.
 
 ```js
-Split(['one', 'two', 'three'], {
+Split(['#one', '#two', '#three'], {
     minSize: [100, 100, 300]
 });
 ```
@@ -61,7 +61,7 @@ Split(['one', 'two', 'three'], {
 A vertical split with two elements.
 
 ```js
-Split(['one', 'two'], {
+Split(['#one', '#two'], {
     direction: 'vertical'
 });
 ```
@@ -69,7 +69,7 @@ Split(['one', 'two'], {
 Specifying the initial widths with CSS values. Not recommended, the size/gutter calculations would have to be done before hand and won't scale on viewport resize.
 
 ```js
-Split(['one', 'two'], {
+Split(['#one', '#two'], {
 	sizes: ['200px', '500px']
 });
 ```
