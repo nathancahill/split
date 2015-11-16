@@ -319,4 +319,4 @@ if (typeof exports !== 'undefined') {
     global.Split = Split;
 }
 
-}).call(this);
+}).call(window);
