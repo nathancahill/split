@@ -1,7 +1,7 @@
 {
   "name": "Split.js",
   "main": "split.js",
-  "version": "0.4.6",
+  "version": "0.4.7",
   "homepage": "https://github.com/nathancahill/Split.js",
   "authors": [
     "Nathan Cahill <nathan@nathancahill.com>"
