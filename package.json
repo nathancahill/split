@@ -17,6 +17,7 @@
   },
   "homepage": "https://github.com/nathancahill/Split.js#readme",
   "devDependencies": {
+    "eslint": "^1.9.0",
     "grunt": "^0.4.5",
     "grunt-contrib-jasmine": "nathancahill/grunt-contrib-jasmine",
     "jasmine": "^2.3.2",

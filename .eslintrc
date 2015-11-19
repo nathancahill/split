@@ -1,0 +1,10 @@
+{
+  "rules": {
+    "strict": 0
+  },
+  "extends": "eslint:recommended",
+  "env": {
+    "browser": true,
+    "node": true
+  }
+}
