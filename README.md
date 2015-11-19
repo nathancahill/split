@@ -74,6 +74,8 @@ Split(['#one', '#two'], {
 });
 ```
 
+JSFiddle style is also possible: [Demo](http://nathancahill.github.io/Split.js/examples/jsfiddle.html).
+
 ## CSS
 
 In being non-opionionated, the only CSS Split.js sets is the widths or heights of the elements. Everything else is left up to you. However, here's some basic CSS to style the gutters with:
