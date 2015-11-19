@@ -87,11 +87,13 @@ var Split = function (ids, options) {
             this.a.style.userSelect = 'none';
             this.a.style.webkitUserSelect = 'none';
             this.a.style.MozUserSelect = 'none';
+            this.a.style.pointerEvents = 'none';
             this.a.style.cursor = options.cursor;
 
             this.b.style.userSelect = 'none';
             this.b.style.webkitUserSelect = 'none';
             this.b.style.MozUserSelect = 'none';
+            this.b.style.pointerEvents = 'none';
             this.b.style.cursor = options.cursor;
 
             this.gutter.style.cursor = options.cursor;
@@ -114,11 +116,13 @@ var Split = function (ids, options) {
             this.a.style.userSelect = '';
             this.a.style.webkitUserSelect = '';
             this.a.style.MozUserSelect = '';
+            this.a.style.pointerEvents = '';
             this.a.style.cursor = '';
 
             this.b.style.userSelect = '';
             this.b.style.webkitUserSelect = '';
             this.b.style.MozUserSelect = '';
+            this.b.style.pointerEvents = '';
             this.b.style.cursor = '';
 
             this.gutter.style.cursor = '';
