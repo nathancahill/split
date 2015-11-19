@@ -138,7 +138,7 @@ This library uses [calc()](https://developer.mozilla.org/en-US/docs/Web/CSS/calc
 |:---:|:---:|:---:|:---:|:---:|
 | 19+ ✔ | 4+ ✔ | 9+ ✔ | 32+ ✔ | 7+ ✔ |
 
-Gracefully falls back in IE 8 and below to only setting the initial widths/heights and not allowing dragging.
+Gracefully falls back in IE 8 and below to only setting the initial widths/heights and not allowing dragging. IE 8 requires a [polyfill](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/isArray) for `Array.isArray()`
 
 ## License
 
