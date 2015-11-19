@@ -40,7 +40,14 @@ var calc = (function () {
 })();
 
 var Split = function (ids, options) {
-    var dimension, clientDimension, clientAxis, position, gutterClass, pairs = [];
+    var dimension
+      , clientDimension
+      , clientAxis
+      , position
+      , gutterClass
+      , paddingA
+      , paddingB
+      , pairs = []
 
     // Set defaults
 
@@ -58,12 +65,16 @@ var Split = function (ids, options) {
         clientAxis = 'clientX';
         position = 'left';
         gutterClass = 'gutter gutter-horizontal';
+        paddingA = 'paddingLeft';
+        paddingB = 'paddingRight';
     } else if (options.direction == 'vertical') {
         dimension = 'height';
         clientDimension = 'clientHeight';
         clientAxis = 'clientY';
         position = 'top';
         gutterClass = 'gutter gutter-vertical';
+        paddingA = 'paddingTop';
+        paddingB = 'paddingBottom';
     }
 
     // Event listeners for drag events, bound to a pair object.
@@ -157,9 +168,11 @@ var Split = function (ids, options) {
 
         calculateSizes = function () {
             // Calculate the pairs size, and percentage of the parent size
+            var computedStyle = global.getComputedStyle(this.parent)
+              , parentSize = this.parent[clientDimension] - parseFloat(computedStyle[paddingA]) - parseFloat(computedStyle[paddingB])
 
             this.size = this.a[getBoundingClientRect]()[dimension] + this.b[getBoundingClientRect]()[dimension] + this.aGutterSize + this.bGutterSize;
-            this.percentage = Math.min(this.size / this.parent[clientDimension] * 100, 100);
+            this.percentage = Math.min(this.size / parentSize * 100, 100);
             this.start = this.a[getBoundingClientRect]()[position];
         },
 
