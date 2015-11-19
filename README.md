@@ -15,6 +15,12 @@ Install with Bower:
 bower install split.js
 ```
 
+NPM:
+
+```shell
+npm install split.js
+```
+
 Or clone from Github:
 
 ```shell
