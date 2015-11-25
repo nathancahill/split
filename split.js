@@ -75,11 +75,15 @@ var global = this
             e.preventDefault()
 
             this.dragging = true
-            this.stop = stopDragging.bind(pair)
+            this.move = drag.bind(this)
+            this.stop = stopDragging.bind(this)
 
             global[addEventListener]('mouseup', this.stop)
             global[addEventListener]('touchend', this.stop)
             global[addEventListener]('touchcancel', this.stop)
+
+            this.parent[addEventListener]('mousemove', this.move)
+            this.parent[addEventListener]('touchmove', this.move)
 
             this.a[addEventListener]('selectstart', preventSelection)
             this.a[addEventListener]('dragstart', preventSelection)
@@ -113,7 +117,11 @@ var global = this
             global[removeEventListener]('touchend', this.stop)
             global[removeEventListener]('touchcancel', this.stop)
 
+            this.parent[removeEventListener]('mousemove', this.move)
+            this.parent[removeEventListener]('touchmove', this.move)
+
             delete this.stop
+            delete this.move
 
             this.a[removeEventListener]('selectstart', preventSelection)
             this.a[removeEventListener]('dragstart', preventSelection)
@@ -274,10 +282,7 @@ var global = this
                 gutter.style[dimension] = options.gutterSize + 'px'
 
                 gutter[addEventListener]('mousedown', startDragging.bind(pair))
-                parent[addEventListener]('mousemove', drag.bind(pair))
-
                 gutter[addEventListener]('touchstart', startDragging.bind(pair))
-                parent[addEventListener]('touchmove', drag.bind(pair))
 
                 parent.insertBefore(gutter, el)
 
