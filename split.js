@@ -9,13 +9,14 @@ var global = this
   , removeEventListener = 'removeEventListener'
   , getBoundingClientRect = 'getBoundingClientRect'
   , isIE8 = global.attachEvent && !global[addEventListener]
+  , document = global.document
 
   , calc = (function () {
         var el
           , prefixes = ["", "-webkit-", "-moz-", "-o-"]
 
         for (var i = 0; i < prefixes.length; i++) {
-            el = global.document.createElement('div')
+            el = document.createElement('div')
             el.style.cssText = "width:" + prefixes[i] + "calc(9px)"
 
             if (el.style.length) {
@@ -216,7 +217,7 @@ var global = this
             }
         }
       , preventSelection = function () { return false }
-      , parent = global.document[querySelector](ids[0]).parentNode
+      , parent = document[querySelector](ids[0]).parentNode
 
     if (!options.sizes) {
         var percent = 100 / ids.length
@@ -239,7 +240,7 @@ var global = this
     }
 
     for (i = 0; i < ids.length; i++) {
-        var el = global.document[querySelector](ids[i])
+        var el = document[querySelector](ids[i])
           , isFirst = (i == 1)
           , isLast = (i == ids.length - 1)
           , size
@@ -248,7 +249,7 @@ var global = this
 
         if (i > 0) {
             pair = {
-                a: global.document[querySelector](ids[i - 1]),
+                a: document[querySelector](ids[i - 1]),
                 b: el,
                 aMin: options.minSize[i - 1],
                 bMin: options.minSize[i],
@@ -276,7 +277,7 @@ var global = this
         // IE9 and above
         if (!isIE8) {
             if (i > 0) {
-                var gutter = global.document.createElement('div')
+                var gutter = document.createElement('div')
 
                 gutter.className = gutterClass
                 gutter.style[dimension] = options.gutterSize + 'px'
