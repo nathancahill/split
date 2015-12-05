@@ -69,79 +69,87 @@ var global = this
     // Prevent selection on start and re-enable it when done.
 
     var startDragging = function (e) {
-            if (!this.dragging && options.onDragStart) {
+            var self = this
+              , a = self.a
+              , b = self.b
+
+            if (!self.dragging && options.onDragStart) {
                 options.onDragStart()
             }
 
             e.preventDefault()
 
-            this.dragging = true
-            this.move = drag.bind(this)
-            this.stop = stopDragging.bind(this)
+            self.dragging = true
+            self.move = drag.bind(self)
+            self.stop = stopDragging.bind(self)
 
-            global[addEventListener]('mouseup', this.stop)
-            global[addEventListener]('touchend', this.stop)
-            global[addEventListener]('touchcancel', this.stop)
+            global[addEventListener]('mouseup', self.stop)
+            global[addEventListener]('touchend', self.stop)
+            global[addEventListener]('touchcancel', self.stop)
 
-            this.parent[addEventListener]('mousemove', this.move)
-            this.parent[addEventListener]('touchmove', this.move)
+            self.parent[addEventListener]('mousemove', self.move)
+            self.parent[addEventListener]('touchmove', self.move)
 
-            this.a[addEventListener]('selectstart', preventSelection)
-            this.a[addEventListener]('dragstart', preventSelection)
-            this.b[addEventListener]('selectstart', preventSelection)
-            this.b[addEventListener]('dragstart', preventSelection)
+            a[addEventListener]('selectstart', preventSelection)
+            a[addEventListener]('dragstart', preventSelection)
+            b[addEventListener]('selectstart', preventSelection)
+            b[addEventListener]('dragstart', preventSelection)
 
-            this.a.style.userSelect = 'none'
-            this.a.style.webkitUserSelect = 'none'
-            this.a.style.MozUserSelect = 'none'
-            this.a.style.pointerEvents = 'none'
-            this.a.style.cursor = options.cursor
+            a.style.userSelect = 'none'
+            a.style.webkitUserSelect = 'none'
+            a.style.MozUserSelect = 'none'
+            a.style.pointerEvents = 'none'
+            a.style.cursor = options.cursor
 
-            this.b.style.userSelect = 'none'
-            this.b.style.webkitUserSelect = 'none'
-            this.b.style.MozUserSelect = 'none'
-            this.b.style.pointerEvents = 'none'
-            this.b.style.cursor = options.cursor
+            b.style.userSelect = 'none'
+            b.style.webkitUserSelect = 'none'
+            b.style.MozUserSelect = 'none'
+            b.style.pointerEvents = 'none'
+            b.style.cursor = options.cursor
 
-            this.gutter.style.cursor = options.cursor
+            self.gutter.style.cursor = options.cursor
 
-            calculateSizes.call(this)
+            calculateSizes.call(self)
         }
       , stopDragging = function () {
-            if (this.dragging && options.onDragEnd) {
+            var self = this
+              , a = self.a
+              , b = self.b
+
+            if (self.dragging && options.onDragEnd) {
                 options.onDragEnd()
             }
 
-            this.dragging = false
+            self.dragging = false
 
-            global[removeEventListener]('mouseup', this.stop)
-            global[removeEventListener]('touchend', this.stop)
-            global[removeEventListener]('touchcancel', this.stop)
+            global[removeEventListener]('mouseup', self.stop)
+            global[removeEventListener]('touchend', self.stop)
+            global[removeEventListener]('touchcancel', self.stop)
 
-            this.parent[removeEventListener]('mousemove', this.move)
-            this.parent[removeEventListener]('touchmove', this.move)
+            self.parent[removeEventListener]('mousemove', self.move)
+            self.parent[removeEventListener]('touchmove', self.move)
 
-            delete this.stop
-            delete this.move
+            delete self.stop
+            delete self.move
 
-            this.a[removeEventListener]('selectstart', preventSelection)
-            this.a[removeEventListener]('dragstart', preventSelection)
-            this.b[removeEventListener]('selectstart', preventSelection)
-            this.b[removeEventListener]('dragstart', preventSelection)
+            a[removeEventListener]('selectstart', preventSelection)
+            a[removeEventListener]('dragstart', preventSelection)
+            b[removeEventListener]('selectstart', preventSelection)
+            b[removeEventListener]('dragstart', preventSelection)
 
-            this.a.style.userSelect = ''
-            this.a.style.webkitUserSelect = ''
-            this.a.style.MozUserSelect = ''
-            this.a.style.pointerEvents = ''
-            this.a.style.cursor = ''
+            a.style.userSelect = ''
+            a.style.webkitUserSelect = ''
+            a.style.MozUserSelect = ''
+            a.style.pointerEvents = ''
+            a.style.cursor = ''
 
-            this.b.style.userSelect = ''
-            this.b.style.webkitUserSelect = ''
-            this.b.style.MozUserSelect = ''
-            this.b.style.pointerEvents = ''
-            this.b.style.cursor = ''
+            b.style.userSelect = ''
+            b.style.webkitUserSelect = ''
+            b.style.MozUserSelect = ''
+            b.style.pointerEvents = ''
+            b.style.cursor = ''
 
-            this.gutter.style.cursor = ''
+            self.gutter.style.cursor = ''
         }
       , drag = function (e) {
             var offset
@@ -188,21 +196,29 @@ var global = this
             this.b.style[dimension] = calc + '(' + (this.percentage - (offset / this.size * this.percentage)) + '% - ' + this.bGutterSize + 'px)'
         }
       , fitMin = function () {
-            if (this.a[getBoundingClientRect]()[dimension] < this.aMin) {
-                this.a.style[dimension] = (this.aMin - this.aGutterSize) + 'px'
-                this.b.style[dimension] = (this.size - this.aMin - this.aGutterSize) + 'px'
-            } else if (this.b[getBoundingClientRect]()[dimension] < this.bMin) {
-                this.a.style[dimension] = (this.size - this.bMin - this.bGutterSize) + 'px'
-                this.b.style[dimension] = (this.bMin - this.bGutterSize) + 'px'
+            var self = this
+              , a = self.a
+              , b = self.b
+
+            if (a[getBoundingClientRect]()[dimension] < self.aMin) {
+                a.style[dimension] = (self.aMin - self.aGutterSize) + 'px'
+                b.style[dimension] = (self.size - self.aMin - self.aGutterSize) + 'px'
+            } else if (b[getBoundingClientRect]()[dimension] < self.bMin) {
+                a.style[dimension] = (self.size - self.bMin - self.bGutterSize) + 'px'
+                b.style[dimension] = (self.bMin - self.bGutterSize) + 'px'
             }
         }
       , fitMinReverse = function () {
-            if (this.b[getBoundingClientRect]()[dimension] < this.bMin) {
-                this.a.style[dimension] = (this.size - this.bMin - this.bGutterSize) + 'px'
-                this.b.style[dimension] = (this.bMin - this.bGutterSize) + 'px'
-            } else if (this.a[getBoundingClientRect]()[dimension] < this.aMin) {
-                this.a.style[dimension] = (this.aMin - this.aGutterSize) + 'px'
-                this.b.style[dimension] = (this.size - this.aMin - this.aGutterSize) + 'px'
+            var self = this
+              , a = self.a
+              , b = self.b
+
+            if (b[getBoundingClientRect]()[dimension] < self.bMin) {
+                a.style[dimension] = (self.size - self.bMin - self.bGutterSize) + 'px'
+                b.style[dimension] = (self.bMin - self.bGutterSize) + 'px'
+            } else if (a[getBoundingClientRect]()[dimension] < self.aMin) {
+                a.style[dimension] = (self.aMin - self.aGutterSize) + 'px'
+                b.style[dimension] = (self.size - self.aMin - self.aGutterSize) + 'px'
             }
         }
       , balancePairs = function (pairs) {
