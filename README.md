@@ -12,7 +12,7 @@ No dependencies or markup required, just two or more elements with a common pare
 Install with Bower:
 
 ```shell
-bower install split.js
+bower install Split.js
 ```
 
 NPM:
