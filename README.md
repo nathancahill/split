@@ -1,4 +1,7 @@
-## Split.js [![Build Status](https://travis-ci.org/nathancahill/Split.js.svg?branch=v0.4.4)](https://travis-ci.org/nathancahill/Split.js) [![File Size](https://badge-size.herokuapp.com/nathancahill/Split.js/master/split.min.js.svg?compression=gzip&label=size)](https://raw.githubusercontent.com/nathancahill/Split.js/master/split.min.js)
+## Split.js
+
+[![Build Status](https://travis-ci.org/nathancahill/Split.js.svg?branch=v0.4.4)](https://travis-ci.org/nathancahill/Split.js)
+[![File Size](https://badge-size.herokuapp.com/nathancahill/Split.js/master/split.min.js.svg?compression=gzip&label=size)](https://raw.githubusercontent.com/nathancahill/Split.js/master/split.min.js)
 
 Split.js is a lightweight, unopinionated utility for creating adjustable split views or panes. [Demo](http://nathancahill.github.io/Split.js/).
 
@@ -32,7 +35,7 @@ Split(<selector[]> selectors, <options> options?)
 
 | Options | Type | Default | Description |
 |---|---|---|---|
-| sizes | Array | | Initial sizes of each element as a percentage, CSS value or null*. |
+| sizes | Array | | Initial sizes of each element in percents or CSS values. |
 | minSize | Number or Array | 100 | Minimum size of each element. |
 | gutterSize | Number | 10 | Gutter size in pixels. |
 | snapOffset | Number | 30 | Snap to minimum width offset in pixels. |
@@ -69,21 +72,15 @@ Split(['#one', '#two'], {
 });
 ```
 
-Specifying `null` in the sizes allows acts as a placeholder for automatic sizing. All `null` sizes are split evenly from the remaining parent size after all specified sizes are accounted for. A split with three elements, starting at 25%, 50% and 25% wide:
-
-```js
-Split(['#one', '#two', '#three'], {
-    sizes: [25, null, 25]
-});
-```
-
-Specifying the initial sizes with CSS values. Using CSS values is only recommended alongside `null` so that the remaining space is filled automatically. A split with two elements, one 200px wide, and the second filling up the remaining space:
+Specifying the initial widths with CSS values. Not recommended, the size/gutter calculations would have to be done before hand and won't scale on viewport resize.
 
 ```js
 Split(['#one', '#two'], {
-	sizes: ['200px', null]
+	sizes: ['200px', '500px']
 });
 ```
+
+JSFiddle style is also possible: [Demo](http://nathancahill.github.io/Split.js/examples/jsfiddle.html).
 
 ## CSS
 
@@ -138,8 +135,6 @@ Overflow can be handled as well:
   overflow-x: hidden;
 }
 ```
-
-JSFiddle style is also possible: [Demo](http://nathancahill.github.io/Split.js/examples/jsfiddle.html).
 
 ## Browser Support
 
