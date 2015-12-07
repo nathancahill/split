@@ -92,19 +92,16 @@ In being non-opionionated, the only CSS Split.js sets is the widths or heights o
 
   background-repeat: no-repeat;
   background-position: 50%;
-
-  cursor: move;
-  cursor: grab;
-  cursor: -moz-grab;
-  cursor: -webkit-grab;
 }
 
 .gutter.gutter-horizontal {
   background-image: url('grips/vertical.png');
+  cursor: ew-resize;
 }
 
 .gutter.gutter-vertical {
   background-image: url('grips/horizontal.png');
+  cursor: ns-resize;
 }
 ```
 
