@@ -99,15 +99,14 @@ var global = this
             a.style.webkitUserSelect = 'none'
             a.style.MozUserSelect = 'none'
             a.style.pointerEvents = 'none'
-            a.style.cursor = options.cursor
 
             b.style.userSelect = 'none'
             b.style.webkitUserSelect = 'none'
             b.style.MozUserSelect = 'none'
             b.style.pointerEvents = 'none'
-            b.style.cursor = options.cursor
 
             self.gutter.style.cursor = options.cursor
+            self.parent.style.cursor = options.cursor
 
             calculateSizes.call(self)
         }
@@ -141,15 +140,14 @@ var global = this
             a.style.webkitUserSelect = ''
             a.style.MozUserSelect = ''
             a.style.pointerEvents = ''
-            a.style.cursor = ''
 
             b.style.userSelect = ''
             b.style.webkitUserSelect = ''
             b.style.MozUserSelect = ''
             b.style.pointerEvents = ''
-            b.style.cursor = ''
 
             self.gutter.style.cursor = ''
+            self.parent.style.cursor = ''
         }
       , drag = function (e) {
             var offset
