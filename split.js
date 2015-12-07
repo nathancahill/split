@@ -4,7 +4,6 @@
 (function() {
 
 var global = this
-  , querySelector = 'querySelector'
   , addEventListener = 'addEventListener'
   , removeEventListener = 'removeEventListener'
   , getBoundingClientRect = 'getBoundingClientRect'
@@ -24,6 +23,13 @@ var global = this
             }
         }
     })()
+  , elementOrSelector = function (el) {
+        if (typeof el === 'string' || el instanceof String) {
+            return document.querySelector(el)
+        } else {
+            return el
+        }
+    }
 
   , Split = function (ids, options) {
     var dimension
@@ -231,7 +237,7 @@ var global = this
             }
         }
       , preventSelection = function () { return false }
-      , parent = document[querySelector](ids[0]).parentNode
+      , parent = elementOrSelector(ids[0]).parentNode
 
     if (!options.sizes) {
         var percent = 100 / ids.length
@@ -254,7 +260,7 @@ var global = this
     }
 
     for (i = 0; i < ids.length; i++) {
-        var el = document[querySelector](ids[i])
+        var el = elementOrSelector(ids[i])
           , isFirst = (i == 1)
           , isLast = (i == ids.length - 1)
           , size
@@ -263,7 +269,7 @@ var global = this
 
         if (i > 0) {
             pair = {
-                a: document[querySelector](ids[i - 1]),
+                a: elementOrSelector(ids[i - 1]),
                 b: el,
                 aMin: options.minSize[i - 1],
                 bMin: options.minSize[i],

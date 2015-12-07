@@ -30,7 +30,7 @@ git clone https://github.com/nathancahill/Split.js.git
 ## Documentation
 
 ```js
-Split(<selector[]> selectors, <options> options?)
+Split(<HTMLElement|selector[]> elements, <options> options?)
 ```
 
 | Options | Type | Default | Description |
