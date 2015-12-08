@@ -40,7 +40,7 @@ Split(<HTMLElement|selector[]> elements, <options> options?)
 | gutterSize | Number | 10 | Gutter size in pixels. |
 | snapOffset | Number | 30 | Snap to minimum width offset in pixels. |
 | direction | String | 'horizontal' | Direction to split: horizontal or vertical. |
-| cursor | String | 'grabbing' | Cursor to display while dragging. |
+| cursor | String | 'col-resize' | Cursor to display while dragging. |
 | onDrag | Function | | Callback on drag. |
 | onDragStart | Function | | Callback on drag start. |
 | onDragEnd | Function | | Callback on drag end. |
