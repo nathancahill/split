@@ -46,10 +46,10 @@ var global = this
 
     options = typeof options !== 'undefined' ?  options : {}
 
-    if (!options.gutterSize) options.gutterSize = 10
-    if (!options.minSize) options.minSize = 100
-    if (!options.snapOffset) options.snapOffset = 30
-    if (!options.direction) options.direction = 'horizontal'
+    if (typeof options.gutterSize === 'undefined') options.gutterSize = 10
+    if (typeof options.minSize === 'undefined') options.minSize = 100
+    if (typeof options.snapOffset === 'undefined') options.snapOffset = 30
+    if (typeof options.direction === 'undefined') options.direction = 'horizontal'
 
     if (options.direction == 'horizontal') {
         dimension = 'width'
