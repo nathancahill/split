@@ -50,7 +50,6 @@ var global = this
     if (!options.minSize) options.minSize = 100
     if (!options.snapOffset) options.snapOffset = 30
     if (!options.direction) options.direction = 'horizontal'
-    if (!options.cursor) options.cursor = 'grabbing'
 
     if (options.direction == 'horizontal') {
         dimension = 'width'
@@ -60,6 +59,7 @@ var global = this
         gutterClass = 'gutter gutter-horizontal'
         paddingA = 'paddingLeft'
         paddingB = 'paddingRight'
+        if (!options.cursor) options.cursor = 'ew-resize'
     } else if (options.direction == 'vertical') {
         dimension = 'height'
         clientDimension = 'clientHeight'
@@ -68,6 +68,7 @@ var global = this
         gutterClass = 'gutter gutter-vertical'
         paddingA = 'paddingTop'
         paddingB = 'paddingBottom'
+        if (!options.cursor) options.cursor = 'ns-resize'
     }
 
     // Event listeners for drag events, bound to a pair object.
