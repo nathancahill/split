@@ -300,6 +300,11 @@ var global = this
             if (i > 0) {
                 var gutter = document.createElement('div')
 
+                // Add the gutter content first, otherwise we might lose event listeners.
+                if (typeof options.gutterContent !== 'undefined') {
+                    gutter.innerHTML = options.gutterContent
+                }
+
                 gutter.className = gutterClass
                 gutter.style[dimension] = options.gutterSize + 'px'
 
