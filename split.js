@@ -349,4 +349,4 @@ if (typeof exports !== 'undefined') {
     global.Split = Split
 }
 
-}).call(window)
+}).call(window);
