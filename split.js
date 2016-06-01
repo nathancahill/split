@@ -300,9 +300,7 @@ var global = this
             if (i > 0) {
                 var gutter
 				
-				
                 if (typeof(options.gutterObj) === 'undefined') {
-					//Create Gutter if obj is not set
                     gutter = document.createElement('div')
 
                     gutter.className = gutterClass
@@ -311,9 +309,9 @@ var global = this
                 } else {
                     gutter = options.gutterObj
                 }
+				
                 gutter[addEventListener]('mousedown', startDragging.bind(pair))
                 gutter[addEventListener]('touchstart', startDragging.bind(pair))
-
 
                 pair.gutter = gutter
             }
