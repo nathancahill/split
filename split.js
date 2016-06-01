@@ -298,15 +298,19 @@ var global = this
         // IE9 and above
         if (!isIE8) {
             if (i > 0) {
-                var gutter = document.createElement('div')
+                var gutter;
+                if (typeof(options.gutterObj) === 'undefined') {
+                    gutter = document.createElement('div')
 
-                gutter.className = gutterClass
-                gutter.style[dimension] = options.gutterSize + 'px'
-
+                    gutter.className = gutterClass
+                    gutter.style[dimension] = options.gutterSize + 'px'
+                    parent.insertBefore(gutter, el)
+                } else {
+                    gutter = options.gutterObj
+                }
                 gutter[addEventListener]('mousedown', startDragging.bind(pair))
                 gutter[addEventListener]('touchstart', startDragging.bind(pair))
 
-                parent.insertBefore(gutter, el)
 
                 pair.gutter = gutter
             }
