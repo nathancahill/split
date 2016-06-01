@@ -298,8 +298,11 @@ var global = this
         // IE9 and above
         if (!isIE8) {
             if (i > 0) {
-                var gutter;
+                var gutter
+				
+				
                 if (typeof(options.gutterObj) === 'undefined') {
+					//Create Gutter if obj is not set
                     gutter = document.createElement('div')
 
                     gutter.className = gutterClass
