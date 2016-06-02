@@ -81,7 +81,7 @@ Split(['#one', '#two'], {
 });
 ```
 
-Create your own gutter style and specify it to act as the gutter.
+Create your own gutter element and specify it to act as the gutter.
 
 ```js
 Split(['#one', '#two'], {
