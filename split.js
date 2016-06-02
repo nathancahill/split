@@ -300,14 +300,14 @@ var global = this
             if (i > 0) {
                 var gutter
 				
-                if (typeof(options.gutterObj) === 'undefined') {
+                if (typeof(options.gutterElem) === 'undefined') {
                     gutter = document.createElement('div')
 
                     gutter.className = gutterClass
                     gutter.style[dimension] = options.gutterSize + 'px'
                     parent.insertBefore(gutter, el)
                 } else {
-                    gutter = options.gutterObj
+                    gutter = options.gutterElem 
                 }
 				
                 gutter[addEventListener]('mousedown', startDragging.bind(pair))
