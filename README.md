@@ -44,6 +44,7 @@ Split(<HTMLElement|selector[]> elements, <options> options?)
 | onDrag | Function | | Callback on drag. |
 | onDragStart | Function | | Callback on drag start. |
 | onDragEnd | Function | | Callback on drag end. |
+| adjust | Function | | Custom function to adjust the width of the elements. Recieves argument `offset`. |
 
 ## Usage Examples
 

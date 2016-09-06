@@ -178,7 +178,11 @@ var global = this
                 offset = this.size - this.bMin
             }
 
-            adjust.call(this, offset)
+            if (options.adjust) {
+              options.adjust.call(this, offset)
+            }
+            else
+              adjust.call(this, offset)
 
             if (options.onDrag) {
                 options.onDrag()
