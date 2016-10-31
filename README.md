@@ -45,7 +45,22 @@ Split(<HTMLElement|selector[]> elements, <options> options?)
 | onDragStart | Function | | Callback on drag start. |
 | onDragEnd | Function | | Callback on drag end. |
 
+Important Note: Split.js does not set CSS beyond the minimum needed to manage the width and height of the elements.
+This is by design. It makes Split.js flexible and useful in many different situations.
+If you create a horizontal split, you are responsible for (likely) floating the elements and the gutter,
+and setting their heights. See the [CSS](#css) section below.
+
 ## Usage Examples
+
+Reference HTML for examples. Gutters are inserted automatically:
+
+```html
+<div>
+    <div id="one">content one</div>
+    <div id="two">content two</div>
+    <div id="three">content three</div>
+</div>
+```
 
 A split with two elements, starting at 25% and 75% wide with 200px minimum width.
 
@@ -115,7 +130,7 @@ Split.js also works best when the elements are sized using `border-box`. The `sp
 }
 ```
 
-And for horizontal splits, floating the elements with 100% height is useful:
+And for horizontal splits, floating the elements with 100% height is required. Make sure that the parent has it's height defined to use this, or use a clearfix:
 
 ```css
 .split, .gutter.gutter-horizontal {
@@ -145,7 +160,7 @@ Gracefully falls back in IE 8 and below to only setting the initial widths/heigh
 
 ## License
 
-Copyright (c) 2015 Nathan Cahill
+Copyright (c) 2016 Nathan Cahill
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
