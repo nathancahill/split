@@ -1,3 +1,8 @@
+// The programming goals of Split.js are to deliver readable, understandable and
+// maintainable code, while at the same time manually optimizing for tiny minified file size,
+// browser compatibility without additional requirements, graceful fallback (IE8 is supported)
+// and very few assumptions about the user's page layout.
+//
 // Make sure all browsers handle this JS library correctly with ES5.
 // More information here: https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Strict_mode
 'use strict';
@@ -10,11 +15,11 @@
 (function() {
 
 // Save the global `this` for use later. In this case, since the library only
-// runs in the browser, it will refer to `window`. Figure out if we're in IE8
+// runs in the browser, it will refer to `window`. Also, figure out if we're in IE8
 // or not. IE8 will still render correctly, but will be static instead of draggable.
 //
-// Also, save a couple long function names that are used frequently.
-// This optimization saves around 200 bytes.
+// Save a couple long function names that are used frequently.
+// This optimization saves around 400 bytes.
 var global = this
   , isIE8 = global.attachEvent && !global[addEventListener]
   , document = global.document
@@ -45,7 +50,7 @@ var global = this
 
   // The second helper function allows elements and string selectors to be used
   // interchangeably. In either case an element is returned. This allows us to
-  // do Split(elem1, elem2) as well as Split('#id1', '#id2').
+  // do `Split(elem1, elem2)` as well as `Split('#id1', '#id2')`.
   , elementOrSelector = function (el) {
         if (typeof el === 'string' || el instanceof String) {
             return document.querySelector(el)
@@ -141,11 +146,11 @@ var global = this
     // The pair object saves metadata like dragging state, position and
     // event listener references.
     //
-    // startDragging calls calculateSizes to store the inital size in the pair object.
+    // startDragging calls `calculateSizes` to store the inital size in the pair object.
     // It also adds event listeners for mouse/touch events,
     // and prevents selection while dragging so avoid the selecting text.
     var startDragging = function (e) {
-            // Alias frequently used variables to save space. 50 bytes.
+            // Alias frequently used variables to save space. 200 bytes.
             var self = this
               , a = self.a
               , b = self.b
@@ -201,20 +206,17 @@ var global = this
 
       // stopDragging is very similar to startDragging in reverse.
       , stopDragging = function () {
-            // Alias frequently used variables to save space. 50 bytes.
             var self = this
               , a = self.a
               , b = self.b
 
-            // Call the onDragEnd callback.
             if (self.dragging && options.onDragEnd) {
                 options.onDragEnd()
             }
 
-            // Set the dragging property of the pair object.
             self.dragging = false
 
-            // Remove the stored event listeners.
+            // Remove the stored event listeners. This is why we store them.
             global[removeEventListener]('mouseup', self.stop)
             global[removeEventListener]('touchend', self.stop)
             global[removeEventListener]('touchcancel', self.stop)
@@ -227,7 +229,6 @@ var global = this
             delete self.stop
             delete self.move
 
-            // Allow selection again.
             a[removeEventListener]('selectstart', noop)
             a[removeEventListener]('dragstart', noop)
             b[removeEventListener]('selectstart', noop)
@@ -243,7 +244,6 @@ var global = this
             b.style.MozUserSelect = ''
             b.style.pointerEvents = ''
 
-            // Reset the cursor.
             self.gutter.style.cursor = ''
             self.parent.style.cursor = ''
         }
@@ -267,7 +267,7 @@ var global = this
 
             if (!this.dragging) return
 
-            // Get the relative position of the event from the first side of the
+            // Get the offset of the event from the first side of the
             // pair `this.start`. Supports touch events, but not multitouch, so only the first
             // finger `touches[0]` is counted.
             if ('touches' in e) {
@@ -284,7 +284,7 @@ var global = this
                 offset = this.size - this.bMin
             }
 
-            // Actually adjust the size. The size
+            // Actually adjust the size.
             adjust.call(this, offset)
 
             // Call the drag callback continously. Don't do anything too intensive
@@ -401,22 +401,22 @@ var global = this
         options.minSize = minSizes
     }
 
-    // 5. Loop through the elements while pairing them off. Every pair gets an
-    // `pair` object, a gutter, and special isFirst/isLast properties.
+    // 5. Loop through the elements while pairing them off. Every pair gets a
+    // `pair` object, a gutter, and isFirst/isLast properties.
     //
     // Basic logic:
     //
-    // 1. Starting with the second element `i > 0`, create `pair` objects with
-    //    `a = ids[i - 1]` and `b = ids[i]`
-    // 2. Set gutter sizes based on the _pair_ being first/last. The first and last
-    //    pair have gutterSize / 2, since they only have one half gutter, and not two.
-    // 3. Create gutter elements and add event listeners.
-    // 4. Set the size of the elements, minus the gutter sizes.
+    // - Starting with the second element `i > 0`, create `pair` objects with
+    //   `a = ids[i - 1]` and `b = ids[i]`
+    // - Set gutter sizes based on the _pair_ being first/last. The first and last
+    //   pair have gutterSize / 2, since they only have one half gutter, and not two.
+    // - Create gutter elements and add event listeners.
+    // - Set the size of the elements, minus the gutter sizes.
     //
     // -----------------------------------------------------------------------
     // |     i=0     |         i=1         |        i=2       |      i=3     |
     // |             |       isFirst       |                  |     isLast   |
-    // |          pair 0                pair 1              pair 2           |
+    // |           pair 0                pair 1             pair 2           |
     // |             |                     |                  |              |
     // -----------------------------------------------------------------------
     for (i = 0; i < ids.length; i++) {
@@ -482,7 +482,7 @@ var global = this
 
             // Split.js allows setting sizes via numbers (ideally), or if you must,
             // by string, like '300px'. This is less than ideal, because it breaks
-            // the fluid layout that calc(% - px) provides. You're on your own if you do that,
+            // the fluid layout that `calc(% - px)` provides. You're on your own if you do that,
             // make sure you calculate the gutter size by hand.
             if (typeof options.sizes[i] === 'string' || options.sizes[i] instanceof String) {
                 size = options.sizes[i]
