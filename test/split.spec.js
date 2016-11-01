@@ -177,4 +177,13 @@ describe('Split', function() {
         expect(this.a.style.width).toBe('150px');
         expect(this.b.style.width).toBe('640px');
     });
+
+    it('adjusts sizes using setSizes', function() {
+        var split = Split(['#a', '#b']);
+
+        split.setSizes([70, 30])
+
+        expect(this.a.style.width).toBe('calc(70% - 5px)');
+        expect(this.b.style.width).toBe('calc(30% - 5px)');
+    });
 });

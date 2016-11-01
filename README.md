@@ -45,7 +45,7 @@ Split(<HTMLElement|selector[]> elements, <options> options?)
 | onDragStart | Function | | Callback on drag start. |
 | onDragEnd | Function | | Callback on drag end. |
 
-Important Note: Split.js does not set CSS beyond the minimum needed to manage the width and height of the elements.
+__Important Note__: Split.js does not set CSS beyond the minimum needed to manage the width and height of the elements.
 This is by design. It makes Split.js flexible and useful in many different situations.
 If you create a horizontal split, you are responsible for (likely) floating the elements and the gutter,
 and setting their heights. See the [CSS](#css) section below.
@@ -97,9 +97,16 @@ Split(['#one', '#two'], {
 
 JSFiddle style is also possible: [Demo](http://nathancahill.github.io/Split.js/examples/jsfiddle.html).
 
+## API
+
+Split.js returns an instance with a couple of functions:
+
+```
+.setSizes([25, 75])
+
 ## CSS
 
-In being non-opionionated, the only CSS Split.js sets is the widths or heights of the elements. Everything else is left up to you. However, here's some basic CSS to style the gutters with:
+In being non-opionionated, the only CSS Split.js sets is the widths or heights of the elements. Everything else is left up to you. You must set the elements and gutter heights when using horizontal mode. The gutters will not be visible if their height is 0px. Here's some basic CSS to style the gutters with, although it's not required:
 
 ```css
 .gutter {
@@ -130,16 +137,23 @@ Split.js also works best when the elements are sized using `border-box`. The `sp
 }
 ```
 
-And for horizontal splits, floating the elements with 100% height is required. Make sure that the parent has it's height defined to use this, or use a clearfix:
+And for horizontal splits, make sure the layout allows elements (including gutters) to be displayed side-by-side. Floating the elements is one option:
 
 ```css
 .split, .gutter.gutter-horizontal {
-  height: 100%;
   float: left;
 }
 ```
 
-Overflow can be handled as well:
+If you use floats, set the height of the elements including the gutters. The gutters will not be visible otherwise if the height is set to 0px.
+
+```css
+.split, .gutter.gutter-horizontal {
+  height: 300px;
+}
+```
+
+Overflow can be handled as well, to get scrolling within the elements:
 
 ```css
 .split {

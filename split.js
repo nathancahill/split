@@ -27,7 +27,7 @@ var global = this
   , removeEventListener = 'removeEventListener'
   , getBoundingClientRect = 'getBoundingClientRect'
 
-  // Only two helper functions are needed:
+  // This library only needs two helper functions:
   //
   // The first determines which prefixes of CSS calc we need.
   // We only need to do this once on startup, when this anonymous function is called.
@@ -369,6 +369,21 @@ var global = this
                 fitMinReverse.call(pairs[i])
             }
         }
+      , setElementSize = function (el, size, gutterSize) {
+            // Split.js allows setting sizes via numbers (ideally), or if you must,
+            // by string, like '300px'. This is less than ideal, because it breaks
+            // the fluid layout that `calc(% - px)` provides. You're on your own if you do that,
+            // make sure you calculate the gutter size by hand.
+            if (typeof size !== 'string' && !(size instanceof String)) {
+                if (!isIE8) {
+                    size = calc + '(' + size + '% - ' + gutterSize + 'px)'
+                } else {
+                    size = options.sizes[i] + '%'
+                }
+            }
+
+            el.style[dimension] = size
+        }
 
       // No-op function to prevent default. Used to prevent selection.
       , noop = function () { return false }
@@ -423,7 +438,7 @@ var global = this
         var el = elementOrSelector(ids[i])
           , isFirstPair = (i == 1)
           , isLastPair = (i == ids.length - 1)
-          , size
+          , size = options.sizes[i]
           , gutterSize = options.gutterSize
           , pair
 
@@ -479,28 +494,10 @@ var global = this
             if (i === 0 || i == ids.length - 1) {
                 gutterSize = options.gutterSize / 2
             }
-
-            // Split.js allows setting sizes via numbers (ideally), or if you must,
-            // by string, like '300px'. This is less than ideal, because it breaks
-            // the fluid layout that `calc(% - px)` provides. You're on your own if you do that,
-            // make sure you calculate the gutter size by hand.
-            if (typeof options.sizes[i] === 'string' || options.sizes[i] instanceof String) {
-                size = options.sizes[i]
-            } else {
-                size = calc + '(' + options.sizes[i] + '% - ' + gutterSize + 'px)'
-            }
-
-        // IE8 and below (static size, can not be moved)
-        } else {
-            if (typeof options.sizes[i] === 'string' || options.sizes[i] instanceof String) {
-                size = options.sizes[i]
-            } else {
-                size = options.sizes[i] + '%'
-            }
         }
 
         // Set the element size to our determined size.
-        el.style[dimension] = size
+        setElementSize(el, size, gutterSize)
 
         // After the first iteration, and we have a pair object, append it to the
         // list of pairs.
@@ -511,6 +508,19 @@ var global = this
 
     // Balance the pairs to try to accomodate min sizes.
     balancePairs(pairs)
+
+    return {
+        setSizes: function (sizes) {
+            for (var i = 0; i < sizes.length; i++) {
+                if (i > 0) {
+                    var pair = pairs[i - 1]
+
+                    setElementSize(pair.a, sizes[i - 1], pair.aGutterSize)
+                    setElementSize(pair.b, sizes[i], pair.bGutterSize)
+                }
+            }
+        }
+    }
 }
 
 // Play nicely with module systems, and the browser too if you include it raw.
