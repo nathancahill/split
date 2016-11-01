@@ -520,6 +520,21 @@ var global = this
                     setElementSize(pair.b, sizes[i], pair.bGutterSize)
                 }
             }
+        },
+        collapse: function (i) {
+            var pair
+
+            if (i === pairs.length) {
+                pair = pairs[i - 1]
+
+                calculateSizes.call(pair)
+                adjust.call(pair, pair.size - pair.bGutterSize)
+            } else {
+                pair = pairs[i]
+
+                calculateSizes.call(pair)
+                adjust.call(pair, pair.aGutterSize)
+            }
         }
     }
 }
