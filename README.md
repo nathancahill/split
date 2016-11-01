@@ -99,10 +99,27 @@ JSFiddle style is also possible: [Demo](http://nathancahill.github.io/Split.js/e
 
 ## API
 
-Split.js returns an instance with a couple of functions:
+Split.js returns an instance with a couple of functions. The instance is returned on creation:
 
 ```
-.setSizes([25, 75])
+var instance = Split([], ...)
+```
+
+#### .setSizes([])
+
+setSizes behaves the same as the `sizes` configuration option, passing an array of percents or CSS values. It updates the sizes of the elements in the split:
+
+```
+instance.setSizes([25, 75])
+```
+
+#### .collapse(index)
+
+collapse changes the size of element at `index` to 0. Every element except the last is collapsed towards the front (left or top). The last is collapsed towards the back:
+
+```
+instance.collapse(0)
+```
 
 ## CSS
 
