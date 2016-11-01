@@ -278,10 +278,11 @@ var global = this
 
             // If within snapOffset of min or max, set offset to min or max.
             // snapOffset buffers aMin and bMin, so logic is opposite for both.
-            if (offset <=  this.aMin + options.snapOffset) {
-                offset = this.aMin
-            } else if (offset >= this.size - (this.bMin + options.snapOffset)) {
-                offset = this.size - this.bMin
+            // Include the appropriate gutter sizes to prevent overflows.
+            if (offset <= this.aMin + options.snapOffset + this.aGutterSize) {
+                offset = this.aMin + this.aGutterSize
+            } else if (offset >= this.size - (this.bMin + options.snapOffset + this.bGutterSize)) {
+                offset = this.size - (this.bMin + this.bGutterSize)
             }
 
             // Actually adjust the size.
