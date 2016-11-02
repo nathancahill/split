@@ -121,6 +121,14 @@ collapse changes the size of element at `index` to 0. Every element except the l
 instance.collapse(0)
 ```
 
+#### .destroy()
+
+Destroy the instance. It removes the gutter elements, and the size CSS styles Split.js set.
+
+```
+instance.destroy()
+```
+
 ## CSS
 
 In being non-opionionated, the only CSS Split.js sets is the widths or heights of the elements. Everything else is left up to you. You must set the elements and gutter heights when using horizontal mode. The gutters will not be visible if their height is 0px. Here's some basic CSS to style the gutters with, although it's not required:

@@ -535,6 +535,13 @@ var global = this
                 calculateSizes.call(pair)
                 adjust.call(pair, pair.aGutterSize)
             }
+        },
+        destroy: function () {
+            for (var i = 0; i < pairs.length; i++) {
+                pairs[i].parent.removeChild(pairs[i].gutter)
+                pairs[i].a.style[dimension] = ''
+                pairs[i].b.style[dimension] = ''
+            }
         }
     }
 }
