@@ -44,6 +44,7 @@ Split(<HTMLElement|selector[]> elements, <options> options?)
 | onDrag | Function | | Callback on drag. |
 | onDragStart | Function | | Callback on drag start. |
 | onDragEnd | Function | | Callback on drag end. |
+| adjust | Function | | Custom function to adjust the width of the elements. Recieves argument `offset`. |
 
 __Important Note__: Split.js does not set CSS beyond the minimum needed to manage the width and height of the elements.
 This is by design. It makes Split.js flexible and useful in many different situations.

@@ -286,7 +286,11 @@ var global = this
             }
 
             // Actually adjust the size.
-            adjust.call(this, offset)
+            if (options.adjust) {
+              options.adjust.call(this, offset)
+            }
+            else
+              adjust.call(this, offset)
 
             // Call the drag callback continously. Don't do anything too intensive
             // in this callback.
