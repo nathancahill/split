@@ -46,7 +46,22 @@ Split(<HTMLElement|selector[]> elements, <options> options?)
 | onDragEnd | Function | | Callback on drag end. |
 | adjust | Function | | Custom function to adjust the width of the elements. Recieves argument `offset`. |
 
+__Important Note__: Split.js does not set CSS beyond the minimum needed to manage the width and height of the elements.
+This is by design. It makes Split.js flexible and useful in many different situations.
+If you create a horizontal split, you are responsible for (likely) floating the elements and the gutter,
+and setting their heights. See the [CSS](#css) section below.
+
 ## Usage Examples
+
+Reference HTML for examples. Gutters are inserted automatically:
+
+```html
+<div>
+    <div id="one">content one</div>
+    <div id="two">content two</div>
+    <div id="three">content three</div>
+</div>
+```
 
 A split with two elements, starting at 25% and 75% wide with 200px minimum width.
 
@@ -83,9 +98,41 @@ Split(['#one', '#two'], {
 
 JSFiddle style is also possible: [Demo](http://nathancahill.github.io/Split.js/examples/jsfiddle.html).
 
+## API
+
+Split.js returns an instance with a couple of functions. The instance is returned on creation:
+
+```
+var instance = Split([], ...)
+```
+
+#### .setSizes([])
+
+setSizes behaves the same as the `sizes` configuration option, passing an array of percents or CSS values. It updates the sizes of the elements in the split:
+
+```
+instance.setSizes([25, 75])
+```
+
+#### .collapse(index)
+
+collapse changes the size of element at `index` to 0. Every element except the last is collapsed towards the front (left or top). The last is collapsed towards the back:
+
+```
+instance.collapse(0)
+```
+
+#### .destroy()
+
+Destroy the instance. It removes the gutter elements, and the size CSS styles Split.js set.
+
+```
+instance.destroy()
+```
+
 ## CSS
 
-In being non-opionionated, the only CSS Split.js sets is the widths or heights of the elements. Everything else is left up to you. However, here's some basic CSS to style the gutters with:
+In being non-opionionated, the only CSS Split.js sets is the widths or heights of the elements. Everything else is left up to you. You must set the elements and gutter heights when using horizontal mode. The gutters will not be visible if their height is 0px. Here's some basic CSS to style the gutters with, although it's not required:
 
 ```css
 .gutter {
@@ -116,16 +163,23 @@ Split.js also works best when the elements are sized using `border-box`. The `sp
 }
 ```
 
-And for horizontal splits, floating the elements with 100% height is useful:
+And for horizontal splits, make sure the layout allows elements (including gutters) to be displayed side-by-side. Floating the elements is one option:
 
 ```css
 .split, .gutter.gutter-horizontal {
-  height: 100%;
   float: left;
 }
 ```
 
-Overflow can be handled as well:
+If you use floats, set the height of the elements including the gutters. The gutters will not be visible otherwise if the height is set to 0px.
+
+```css
+.split, .gutter.gutter-horizontal {
+  height: 300px;
+}
+```
+
+Overflow can be handled as well, to get scrolling within the elements:
 
 ```css
 .split {
@@ -146,7 +200,7 @@ Gracefully falls back in IE 8 and below to only setting the initial widths/heigh
 
 ## License
 
-Copyright (c) 2015 Nathan Cahill
+Copyright (c) 2016 Nathan Cahill
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal

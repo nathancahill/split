@@ -177,4 +177,27 @@ describe('Split', function() {
         expect(this.a.style.width).toBe('150px');
         expect(this.b.style.width).toBe('640px');
     });
+
+    it('adjusts sizes using setSizes', function() {
+        var split = Split(['#a', '#b']);
+
+        split.setSizes([70, 30])
+
+        expect(this.a.style.width).toBe('calc(70% - 5px)');
+        expect(this.b.style.width).toBe('calc(30% - 5px)');
+    });
+
+    it('collapse splits', function() {
+        var split = Split(['#a', '#b']);
+
+        split.collapse(0)
+
+        expect(this.a.getBoundingClientRect().width).toBe(0);
+        expect(this.b.getBoundingClientRect().width).toBe(800 - 10);
+
+        split.collapse(1)
+
+        expect(this.a.getBoundingClientRect().width).toBe(800 - 10);
+        expect(this.b.getBoundingClientRect().width).toBe(0);
+    });
 });
