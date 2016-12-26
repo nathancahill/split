@@ -245,7 +245,7 @@ Split(['#twelve', '#thirteen'], {
           <br><br>
           <h5>API</h5>
           <hr>
-          <p>Use the returned instance to access two methods that control the split: <b>setSizes</b> and <b>collapse</b>.</p>
+          <p>Use the returned instance to access two methods that control the split: <b>setSizes</b> and <b>collapse</b>, and one method for getting the current sizes: <b>getSizes</b>.</p>
           <pre><code>var instance = Split(['#one', '#two']);
 instance.setSizes([33.3, 33.3, 33.3]);
 instance.collapse(0);</code></pre>
@@ -267,6 +267,7 @@ instance.collapse(0);</code></pre>
             <button onclick="instance.collapse(0)">Collapse First</button>
             <button onclick="instance.collapse(1)">Collapse Second</button>
             <button onclick="instance.collapse(2)">Collapse Third</button>
+            <button onclick="console.log(instance.getSizes())">Get Sizes</button>
             <button onclick="instance.setSizes([50, 25, 25])">Reset</button>
             <button onclick="instance.destroy()">Destroy</button>
             <button onclick="instance = Split(['#fourteen', '#fifteen', '#sixteen'], {sizes: [50, 25, 25]});">Create</button>

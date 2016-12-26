@@ -1,3 +1,5 @@
+/* eslint-env jasmine */
+/* global Split */
 
 function calcParts(expr) {
     var re = /calc\(([\d]*\.[\d]*)%\s-\s([\d]+)px\)/,
@@ -199,5 +201,18 @@ describe('Split', function() {
 
         expect(this.a.getBoundingClientRect().width).toBe(800 - 10);
         expect(this.b.getBoundingClientRect().width).toBe(0);
+    });
+
+    it('returns sizes', function() {
+        var split = Split(['#a', '#b']);
+        var sizes = split.getSizes();
+
+        expect(sizes).toEqual([50, 50]);
+
+        split.setSizes([70, 30])
+
+        sizes = split.getSizes();
+
+        expect(sizes).toEqual([70, 30]);
     });
 });

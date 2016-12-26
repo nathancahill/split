@@ -107,15 +107,24 @@ var instance = Split([], ...)
 
 #### .setSizes([])
 
-setSizes behaves the same as the `sizes` configuration option, passing an array of percents or CSS values. It updates the sizes of the elements in the split:
+setSizes behaves the same as the `sizes` configuration option, passing an array of percents or CSS values. It updates the sizes of the elements in the split. Added in v1.1.0:
 
 ```
 instance.setSizes([25, 75])
 ```
 
+#### .getSizes()
+
+getSizes returns an array of percents, suitable for using with `setSizes` or creation. Added in v1.1.2:
+
+```
+instance.getSizes()
+> [25, 75]
+```
+
 #### .collapse(index)
 
-collapse changes the size of element at `index` to 0. Every element except the last is collapsed towards the front (left or top). The last is collapsed towards the back:
+collapse changes the size of element at `index` to 0. Every element except the last is collapsed towards the front (left or top). The last is collapsed towards the back. Added in v1.1.0:
 
 ```
 instance.collapse(0)
@@ -123,7 +132,7 @@ instance.collapse(0)
 
 #### .destroy()
 
-Destroy the instance. It removes the gutter elements, and the size CSS styles Split.js set.
+Destroy the instance. It removes the gutter elements, and the size CSS styles Split.js set. Added in v1.1.1.
 
 ```
 instance.destroy()

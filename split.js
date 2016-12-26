@@ -521,6 +521,23 @@ var global = this
                 }
             }
         },
+        getSizes: function () {
+            var sizes = []
+
+            for (var i = 0; i < pairs.length; i++) {
+                var pair = pairs[i]
+                  , computedStyle = global.getComputedStyle(pair.parent)
+                  , parentSize = pair.parent[clientDimension] - parseFloat(computedStyle[paddingA]) - parseFloat(computedStyle[paddingB])
+
+                sizes.push((pair.a[getBoundingClientRect]()[dimension] + pair.aGutterSize) / parentSize * 100)
+
+                if (i === pairs.length - 1) {
+                    sizes.push((pair.b[getBoundingClientRect]()[dimension] + pair.bGutterSize) / parentSize * 100)
+                }
+            }
+
+            return sizes
+        },
         collapse: function (i) {
             var pair
 
