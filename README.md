@@ -308,24 +308,36 @@ instance.destroy()
 
 ## CSS
 
-In being non-opionionated, the only CSS Split.js sets is the widths or heights of the elements. Everything else is left up to you. You must set the elements and gutter heights when using horizontal mode. The gutters will not be visible if their height is 0px. Here's some basic CSS to style the gutters with, although it's not required:
+In being non-opionionated, the only CSS Split.js sets is the widths or heights of the elements. Everything else is left up to you. You must set the elements and gutter heights when using horizontal mode. The gutters will not be visible if their height is 0px. Here's some basic CSS to style the gutters with, although it's not required. Both grip images are included in this repo:
 
 ```css
 .gutter {
-  background-color: #eee;
+    background-color: #eee;
 
-  background-repeat: no-repeat;
-  background-position: 50%;
+    background-repeat: no-repeat;
+    background-position: 50%;
 }
 
 .gutter.gutter-horizontal {
-  background-image: url('grips/vertical.png');
-  cursor: ew-resize;
+    background-image: url('grips/vertical.png');
+    cursor: ew-resize;
 }
 
 .gutter.gutter-vertical {
-  background-image: url('grips/horizontal.png');
-  cursor: ns-resize;
+    background-image: url('grips/horizontal.png');
+    cursor: ns-resize;
+}
+```
+
+The grip images are small files and can be included with base64 instead:
+
+```css
+.gutter.gutter-vertical {
+    background-image:  url('data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAB4AAAAFAQMAAABo7865AAAABlBMVEVHcEzMzMzyAv2sAAAAAXRSTlMAQObYZgAAABBJREFUeF5jOAMEEAIEEFwAn3kMwcB6I2AAAAAASUVORK5CYII=')
+}
+
+.gutter.gutter-horizontal {
+    background-image:  url('data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAUAAAAeCAYAAADkftS9AAAAIklEQVQoU2M4c+bMfxAGAgYYmwGrIIiDjrELjpo5aiZeMwF+yNnOs5KSvgAAAABJRU5ErkJggg==')
 }
 ```
 
@@ -343,7 +355,7 @@ And for horizontal splits, make sure the layout allows elements (including gutte
 
 ```css
 .split, .gutter.gutter-horizontal {
-  float: left;
+    float: left;
 }
 ```
 
@@ -351,7 +363,7 @@ If you use floats, set the height of the elements including the gutters. The gut
 
 ```css
 .split, .gutter.gutter-horizontal {
-  height: 300px;
+    height: 300px;
 }
 ```
 
@@ -359,8 +371,8 @@ Overflow can be handled as well, to get scrolling within the elements:
 
 ```css
 .split {
-  overflow-y: auto;
-  overflow-x: hidden;
+    overflow-y: auto;
+    overflow-x: hidden;
 }
 ```
 
