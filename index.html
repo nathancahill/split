@@ -47,6 +47,10 @@
     flex-direction: row;
   }
 
+  .example-flex-reverse {
+    flex-direction: row-reverse;
+  }
+
   #one, #two {
     padding: 20px;
   }
@@ -192,10 +196,10 @@
 });</code></pre>
           <div class="example-2">
             <div id="three" class="split split-horizontal">
-              <p>Bacon ipsum dolor amet beef ribs meatloaf picanha pork loin pork chop rump pig sausage bacon shank boudin beef fatback. Pork loin turducken t-bone chicken.</p>
+              <p>#three</p>
             </div>
             <div id="four" class="split split-horizontal">
-              <p>Brisket andouille cow ball tip. Ham ground round short loin tri-tip ribeye t-bone boudin, pork loin turkey drumstick tongue pork chop. Kielbasa doner picanha turducken, swine bacon shank pastrami andouille. Hamburger tongue tenderloin meatball picanha. Rump bresaola chicken bacon, ground round corned beef ribeye salami. Turkey fatback short ribs andouille meatball, brisket pork belly cow t-bone turducken pig beef ribs.</p>
+              <p>#four</p>
             </div>
           </div>
           <br>
@@ -205,16 +209,13 @@
 });</code></pre>
           <div class="example-3">
             <div id="five" class="split split-horizontal">
-              <p>Min width: 100px<br><br>
-              Bacon ipsum dolor amet beef ribs meatloaf picanha pork loin pork chop rump pig sausage bacon shank boudin beef fatback. Pork loin turducken t-bone chicken.</p>
+              <p>#five, minSize: 100px</p>
             </div>
             <div id="six" class="split split-horizontal">
-              <p>Min width: 100px<br><br>
-              Brisket andouille cow ball tip. Ham ground round short loin tri-tip ribeye t-bone boudin, pork loin turkey drumstick tongue pork chop. Kielbasa doner picanha turducken, swine bacon shank pastrami andouille.</p>
+              <p>#six, minSize: 100px</p>
             </div>
             <div id="seven" class="split split-horizontal">
-              <p>Min width: 300px<br><br>
-              Hamburger tongue tenderloin meatball picanha. Rump bresaola chicken bacon, ground round corned beef ribeye salami. Turkey fatback short ribs andouille meatball, brisket pork belly cow t-bone turducken pig beef ribs.</p>
+              <p>#seven, minSize: 300px</p>
             </div>
           </div>
           <br>
@@ -224,10 +225,10 @@
 });</code></pre>
           <div class="example-4">
             <div id="eight" class="split split-vertical">
-              <p>Bacon ipsum dolor amet beef ribs meatloaf picanha pork loin pork chop rump pig sausage bacon shank boudin beef fatback. Pork loin turducken t-bone chicken.</p>
+              <p>#eight</p>
             </div>
             <div id="nine" class="split split-vertical">
-              <p>Brisket andouille cow ball tip. Ham ground round short loin tri-tip ribeye t-bone boudin, pork loin turkey drumstick tongue pork chop. Kielbasa doner picanha turducken, swine bacon shank pastrami andouille.</p>
+              <p>#nine</p>
             </div>
           </div>
           <br>
@@ -240,14 +241,14 @@ Split(['#twelve', '#thirteen'], {
           <div class="example-5">
             <div id="ten" class="split split-horizontal">
               <div id="twelve" class="split split-vertical">
-                <p>Bacon ipsum dolor amet beef ribs meatloaf picanha pork loin pork chop rump pig sausage bacon shank boudin beef fatback. Pork loin turducken t-bone chicken.</p>
+                <p>#twelve</p>
               </div>
               <div id="thirteen" class="split split-vertical">
-                <p>Bacon ipsum dolor amet beef ribs meatloaf picanha pork loin pork chop rump pig sausage bacon shank boudin beef fatback. Pork loin turducken t-bone chicken.</p>
+                <p>#thirteen</p>
               </div>
             </div>
             <div id="eleven" class="split split-horizontal">
-              <p>Brisket andouille cow ball tip. Ham ground round short loin tri-tip ribeye t-bone boudin, pork loin turkey drumstick tongue pork chop. Kielbasa doner picanha turducken, swine bacon shank pastrami andouille.</p>
+              <p>#eleven</p>
             </div>
           </div>
           <br><br>
@@ -262,29 +263,58 @@ Split(['#twelve', '#thirteen'], {
 });</code></pre>
           <div class="example-flex">
               <div id="flex-1" class="split-flex split-horizontal-flex">
-                <p>Bacon ipsum dolor amet beef ribs meatloaf picanha pork loin pork chop rump pig sausage bacon shank boudin beef fatback. Pork loin turducken t-bone chicken.</p>
+                <p>#flex-1</p>
               </div>
               <div id="flex-2" class="split-flex split-horizontal-flex">
-                <p>Bacon ipsum dolor amet beef ribs meatloaf picanha pork loin pork chop rump pig sausage bacon shank boudin beef fatback. Pork loin turducken t-bone chicken.</p>
+                <p>#flex-2</p>
+              </div>
+          </div>
+          <br><br>
+          <p>And with flexbox reverse:</p>
+          <pre><code>Split(['#flex-3', '#flex-4'], {
+    elementStyle: function (dimension, size, gutterSize) {
+        return { 'flex-basis': 'calc(' + size + '% - ' + gutterSize + 'px)' }
+    },
+    gutterStyle: function (dimension, gutterSize) {
+        return { 'flex-basis':  gutterSize + 'px' }
+    }
+});</code></pre>
+          <div class="example-flex example-flex-reverse">
+              <div id="flex-3" class="split-flex">
+                <p>#flex-3</p>
+              </div>
+              <div id="flex-4" class="split-flex">
+                <p>#flex-4</p>
+              </div>
+              <div id="flex-5" class="split-flex">
+                <p>#flex-5</p>
               </div>
           </div>
           <br><br>
           <h5>API</h5>
           <hr>
-          <p>Use the returned instance to access two methods that control the split: <b>setSizes</b> and <b>collapse</b>, and one method for getting the current sizes: <b>getSizes</b>.</p>
-          <pre><code>var instance = Split(['#one', '#two']);
-instance.setSizes([33.3, 33.3, 33.3]);
-instance.collapse(0);</code></pre>
+          <p>Use the returned instance to access two methods that control the split: <b>setSizes</b> and <b>collapse</b>, a method for getting the current sizes: <b>getSizes</b> and a method for destroying the split: <b>destroy</b>.</p>
+          <pre><code>var instance = Split(['#fourteen', '#fifteen', '#sixteen'], {
+    sizes: [50, 25, 25]
+});
+
+instance.setSizes([33.3, 33.3, 33.3]);  // Set Sizes 33%
+instance.collapse(0);  // Collapse First
+instance.collapse(1);  // Collapse Second
+instance.collapse(2);  // Collapse Third
+instance.getSizes();  // Get Sizes
+instance.setSizes([50, 25, 25]);  // Reset
+instance.destroy();  // Destroy</code></pre>
 
           <div class="example-6">
             <div id="fourteen" class="split split-horizontal">
-              <p>Bacon ipsum dolor amet beef ribs meatloaf picanha pork loin pork chop rump pig sausage bacon shank boudin beef fatback. Pork loin turducken t-bone chicken.</p>
+              <p>#fourteen</p>
             </div>
             <div id="fifteen" class="split split-horizontal">
-              <p>Brisket andouille cow ball tip. Ham ground round short loin tri-tip ribeye t-bone boudin, pork loin turkey drumstick tongue pork chop. Kielbasa doner picanha turducken, swine bacon shank pastrami andouille. Hamburger tongue tenderloin meatball picanha. Rump bresaola chicken bacon, ground round corned beef ribeye salami. Turkey fatback short ribs andouille meatball, brisket pork belly cow t-bone turducken pig beef ribs.</p>
+              <p>#fifteen</p>
             </div>
             <div id="sixteen" class="split split-horizontal">
-              <p>Bacon ipsum dolor amet beef ribs meatloaf picanha pork loin pork chop rump pig sausage bacon shank boudin beef fatback. Pork loin turducken t-bone chicken.</p>
+              <p>#sixteen</p>
             </div>
           </div>
           <br><br>
@@ -334,6 +364,15 @@ instance.collapse(0);</code></pre>
     });
 
     Split(['#flex-1', '#flex-2'], {
+      elementStyle: function (dimension, size, gutterSize) {
+        return { 'flex-basis': 'calc(' + size + '% - ' + gutterSize + 'px)' }
+      },
+      gutterStyle: function (dimension, gutterSize) {
+        return { 'flex-basis':  gutterSize + 'px' }
+      }
+    });
+
+    Split(['#flex-3', '#flex-4', '#flex-5'], {
       elementStyle: function (dimension, size, gutterSize) {
         return { 'flex-basis': 'calc(' + size + '% - ' + gutterSize + 'px)' }
       },
