@@ -38,6 +38,7 @@ Split(<HTMLElement|selector[]> elements, <options> options?)
 | sizes | Array | | Initial sizes of each element in percents or CSS values. |
 | minSize | Number or Array | 100 | Minimum size of each element. |
 | gutterSize | Number | 10 | Gutter size in pixels. |
+| gutterElem | DOM Element | | Specify a DOM Element to act as the gutter. |
 | snapOffset | Number | 30 | Snap to minimum width offset in pixels. |
 | direction | String | 'horizontal' | Direction to split: horizontal or vertical. |
 | cursor | String | 'col-resize' | Cursor to display while dragging. |
@@ -92,6 +93,14 @@ Specifying the initial widths with CSS values. Not recommended, the size/gutter 
 ```js
 Split(['#one', '#two'], {
 	sizes: ['200px', '500px']
+});
+```
+
+Create your own gutter element and specify it to act as the gutter.
+
+```js
+Split(['#one', '#two'], {
+    gutterElem: document.getElementById('#MyGutterID');
 });
 ```
 

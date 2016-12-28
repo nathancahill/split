@@ -478,15 +478,20 @@ var global = this
         if (!isIE8) {
             // Create gutter elements for each pair.
             if (i > 0) {
-                var gutter = document.createElement('div')
+                var gutter
+				
+                if (typeof(options.gutterElem) === 'undefined') {
+                    gutter = document.createElement('div')
 
-                gutter.className = gutterClass
-                gutter.style[dimension] = options.gutterSize + 'px'
-
+                    gutter.className = gutterClass
+                    gutter.style[dimension] = options.gutterSize + 'px'
+                    parent.insertBefore(gutter, el)
+                } else {
+                    gutter = options.gutterElem 
+                }
+				
                 gutter[addEventListener]('mousedown', startDragging.bind(pair))
                 gutter[addEventListener]('touchstart', startDragging.bind(pair))
-
-                parent.insertBefore(gutter, el)
 
                 pair.gutter = gutter
             }
