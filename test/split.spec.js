@@ -215,4 +215,17 @@ describe('Split', function() {
 
         expect(sizes).toEqual([70, 30]);
     });
+
+    it('sets element styles using the elementStyle function', function() {
+        Split(['#a', '#b'], {
+            elementStyle: function (dimension, size, gutterSize) {
+                return {
+                    'width': size + '%'
+                }
+            }
+        });
+
+        expect(this.a.style.width).toBe('50%');
+        expect(this.b.style.width).toBe('50%');
+    });
 });

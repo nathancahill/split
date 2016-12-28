@@ -120,6 +120,8 @@ var global = this
             } else {
                 style[dimension] = size + '%'
             }
+        } else {
+            style[dimension] = size
         }
 
         return style
