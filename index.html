@@ -252,7 +252,14 @@ Split(['#twelve', '#thirteen'], {
           </div>
           <br><br>
           <p>The actual size calculation falls back from calc() to support IE8, or can be configured to use flexbox.</p>
-          <pre><code>Split(['#flex-1', '#flex-2']);</code></pre>
+          <pre><code>Split(['#flex-1', '#flex-2'], {
+    elementStyle: function (dimension, size, gutterSize) {
+        return { 'flex-basis': 'calc(' + size + '% - ' + gutterSize + 'px)' }
+    },
+    gutterStyle: function (dimension, gutterSize) {
+        return { 'flex-basis':  gutterSize + 'px' }
+    }
+});</code></pre>
           <div class="example-flex">
               <div id="flex-1" class="split-flex split-horizontal-flex">
                 <p>Bacon ipsum dolor amet beef ribs meatloaf picanha pork loin pork chop rump pig sausage bacon shank boudin beef fatback. Pork loin turducken t-bone chicken.</p>
