@@ -111,6 +111,26 @@ var global = this
     if (typeof options.minSize === 'undefined') options.minSize = 100
     if (typeof options.snapOffset === 'undefined') options.snapOffset = 30
     if (typeof options.direction === 'undefined') options.direction = 'horizontal'
+    if (typeof options.elementStyle === 'undefined') options.elementStyle = function (dimension, size, gutterSize) {
+        var style = {}
+
+        if (typeof size !== 'string' && !(size instanceof String)) {
+            if (!isIE8) {
+                style[dimension] = calc + '(' + size + '% - ' + gutterSize + 'px)'
+            } else {
+                style[dimension] = size + '%'
+            }
+        }
+
+        return style
+    }
+    if (typeof options.gutterStyle === 'undefined') options.gutterStyle = function (dimension, gutterSize) {
+        var style = {}
+
+        style[dimension] = gutterSize + 'px'
+
+        return style
+    }
 
     // 2. Initialize a bunch of strings based on the direction we're splitting.
     // A lot of the behavior in the rest of the library is paramatized down to
@@ -325,8 +345,8 @@ var global = this
       // Element a's size is the same as offset. b's size is total size - a size.
       // Both sizes are calculated from the initial parent percentage, then the gutter size is subtracted.
       , adjust = function (offset) {
-            this.a.style[dimension] = calc + '(' + (offset / this.size * this.percentage) + '% - ' + this.aGutterSize + 'px)'
-            this.b.style[dimension] = calc + '(' + (this.percentage - (offset / this.size * this.percentage)) + '% - ' + this.bGutterSize + 'px)'
+            setElementSize(this.a, (offset / this.size * this.percentage), this.aGutterSize)
+            setElementSize(this.b, (this.percentage - (offset / this.size * this.percentage)), this.bGutterSize)
         }
 
       // 4. Define a few more functions that "balance" the entire split instance.
@@ -375,15 +395,20 @@ var global = this
             // by string, like '300px'. This is less than ideal, because it breaks
             // the fluid layout that `calc(% - px)` provides. You're on your own if you do that,
             // make sure you calculate the gutter size by hand.
-            if (typeof size !== 'string' && !(size instanceof String)) {
-                if (!isIE8) {
-                    size = calc + '(' + size + '% - ' + gutterSize + 'px)'
-                } else {
-                    size = options.sizes[i] + '%'
-                }
-            }
+            var style = options.elementStyle(dimension, size, gutterSize)
+              , props = Object.keys(style)
 
-            el.style[dimension] = size
+            for (var i = 0; i < props.length; i++) {
+                el.style[props[i]] = style[props[i]]
+            }
+        }
+      , setGutterSize = function (gutter, gutterSize) {
+            var style = options.gutterStyle(dimension, gutterSize)
+              , props = Object.keys(style)
+
+            for (var i = 0; i < props.length; i++) {
+                gutter.style[props[i]] = style[props[i]]
+            }
         }
 
       // No-op function to prevent default. Used to prevent selection.
@@ -481,7 +506,8 @@ var global = this
                 var gutter = document.createElement('div')
 
                 gutter.className = gutterClass
-                gutter.style[dimension] = options.gutterSize + 'px'
+
+                setGutterSize(gutter, gutterSize)
 
                 gutter[addEventListener]('mousedown', startDragging.bind(pair))
                 gutter[addEventListener]('touchstart', startDragging.bind(pair))

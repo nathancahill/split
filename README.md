@@ -38,9 +38,11 @@ Split(<HTMLElement|selector[]> elements, <options> options?)
 | sizes | Array | | Initial sizes of each element in percents or CSS values. |
 | minSize | Number or Array | 100 | Minimum size of each element. |
 | gutterSize | Number | 10 | Gutter size in pixels. |
-| snapOffset | Number | 30 | Snap to minimum width offset in pixels. |
+| snapOffset | Number | 30 | Snap to minimum size offset in pixels. |
 | direction | String | 'horizontal' | Direction to split: horizontal or vertical. |
 | cursor | String | 'col-resize' | Cursor to display while dragging. |
+| elementStyle | Function | | Called to set the style of each element. |
+| gutterStyle | Function | | Called to set the style of the gutter. |
 | onDrag | Function | | Callback on drag. |
 | onDragStart | Function | | Callback on drag start. |
 | onDragEnd | Function | | Callback on drag end. |
@@ -49,6 +51,135 @@ __Important Note__: Split.js does not set CSS beyond the minimum needed to manag
 This is by design. It makes Split.js flexible and useful in many different situations.
 If you create a horizontal split, you are responsible for (likely) floating the elements and the gutter,
 and setting their heights. See the [CSS](#css) section below.
+
+## Options
+
+#### sizes
+
+An array of initial sizes of the elements, specified as percentage values. Example: Setting the initial sizes to 25% and 75%.
+
+```js
+Split(['#one', '#two'], {
+    sizes: [25, 75]
+})
+```
+
+#### minSize. Default: 100
+
+An array of minimum sizes of the elements, specified as pixel values. Example: Setting the minimum sizes to 100px and 300px, respectively.
+
+```js
+Split(['#one', '#two'], {
+    sizes: [100, 300]
+})
+```
+
+If a number is passed instead of an array, all elements are set to the same minimum size:
+
+```js
+Split(['#one', '#two'], {
+    sizes: 100
+})
+```
+
+#### gutterSize. Default: 10
+
+Gutter size in pixels. Example: Setting the gutter size to 20px.
+
+```js
+Split(['#one', '#two'], {
+    gutterSize: 20
+})
+```
+
+#### snapOffset. Default: 30
+
+Snap to minimum size at this offset in pixels. Example: Set to 0 to disable to snap effect.
+
+```js
+Split(['#one', '#two'], {
+    snapOffset: 0
+})
+```
+
+#### direction. Default: 'horizontal'
+
+Direction to split in. Can be 'vertical' or 'horizontal'. Determines which CSS properties are applied (ie. width/height) to each element and gutter. Example: split vertically:
+
+```js
+Split(['#one', '#two'], {
+    direction: 'vertical'
+})
+```
+
+#### cursor. Default: 'col-resize'
+
+Cursor to show on the gutter (also applied to the two adjacent elements when dragging to prevent flickering). Defaults to 'col-resize', so should be switched to 'row-resize' when using direction: 'vertical':
+
+```js
+Split(['#one', '#two'], {
+    direction: 'vertical',
+    cursor: 'row-resize'
+})
+```
+
+#### elementStyle
+
+Optional function called setting the CSS style of the elements. The signature looks like this:
+
+```js
+function (dimension, elementSize, gutterSize) {}
+```
+
+Dimension will be a string, 'width' or 'height', and can be used in the return style. elementSize is the target percentage value of the element, and gutterSize is the target pixel value of the gutter.
+
+It should return an object with CSS properties to apply to the element. For horizontal splits, the return object looks like this:
+
+```js
+{
+    'width': 'calc(50% - 5px)'
+}
+```
+
+A vertical split style would look like this:
+
+```js
+{
+    'height': 'calc(50% - 5px)'
+}
+```
+
+Use this function if you're using a different layout like flexbox or grid (see [Flexbox](#flexbox)). A flexbox style for a horizontal split would look like this:
+
+```js
+{
+    'flex-basis': 'calc(50% - 5px)'
+}
+```
+
+#### gutterStyle
+
+Optional function called when setting the CSS style of the gutters. The signature looks like this:
+
+```js
+function (dimension, gutterSize) {}
+```
+
+Dimension is a string, either 'width' or 'height', and gutterSize is a pixel value representing the width of the gutter.
+
+It should return a similar object as `elementStyle`, an object with CSS properties to apply to the gutter. Since gutters have fixed widths, it will generally look like this:
+
+```js
+{
+    'width': '10px'
+}
+```
+
+Both `elementStyle` and `gutterStyle` are called continously while dragging, so don't do anything besides return the style object in these functions.
+
+#### onDrag, onDragStart, onDragEnd
+
+Callbacks that can be added on drag (fired continously), drag start and drag end. If doing more than basic operations in `onDrag`, add a debounce function to rate limit the callback.
 
 ## Usage Examples
 
@@ -96,6 +227,43 @@ Split(['#one', '#two'], {
 ```
 
 JSFiddle style is also possible: [Demo](http://nathancahill.github.io/Split.js/examples/jsfiddle.html).
+
+## Flexbox
+
+Flexbox layout is supported by customizing the `elementStyle` and `gutterStyle` CSS. Given a layout like this:
+
+```html
+<div id="flex">
+    <div id="flex-1"></div>
+    <div id="flex-2"></div>
+</div>
+```
+
+And CSS style like this:
+
+```css
+#flex {
+    display: flex;
+    flex-direction: row;
+}
+```
+
+Then the `elementStyle` and `gutterStyle` can be used to set flex-basis:
+
+```js
+Split(['#flex-1', '#flex-2'], {
+    elementStyle: function (dimension, size, gutterSize) {
+        return {
+            'flex-basis': 'calc(' + size + '% - ' + gutterSize + 'px)'
+        }
+    },
+    gutterStyle: function (dimension, gutterSize) {
+        return {
+            'flex-basis':  gutterSize + 'px'
+        }
+    }
+})
+```
 
 ## API
 
@@ -204,7 +372,7 @@ This library uses [calc()](https://developer.mozilla.org/en-US/docs/Web/CSS/calc
 |:---:|:---:|:---:|:---:|:---:|
 | 19+ ✔ | 4+ ✔ | 9+ ✔ | 32+ ✔ | 7+ ✔ |
 
-Gracefully falls back in IE 8 and below to only setting the initial widths/heights and not allowing dragging. IE 8 requires a [polyfill](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/isArray) for `Array.isArray()`
+Gracefully falls back in IE 8 and below to only setting the initial widths/heights and not allowing dragging. IE 8 requires a [polyfill](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/isArray#Polyfill) for `Array.isArray()` and a [polyfill](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object/keys#Polyfill) for `Object.keys()`.
 
 ## License
 
