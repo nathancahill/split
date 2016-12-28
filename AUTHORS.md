@@ -17,3 +17,4 @@
  - Basarat Ali Syed @basarat
  - Adam Jimenez @adamjimenez
  - @ambischof
+ - Kushagra Gour @chinchang
