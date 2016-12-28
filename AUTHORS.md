@@ -16,3 +16,4 @@
  - Max Waterman @davidmaxwaterman
  - Basarat Ali Syed @basarat
  - Adam Jimenez @adamjimenez
+ - @ambischof
