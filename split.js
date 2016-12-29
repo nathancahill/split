@@ -500,6 +500,19 @@ var global = this
         // Set the element size to our determined size.
         setElementSize(el, size, gutterSize)
 
+        if (i > 0) {
+            var aSize = pair.a[getBoundingClientRect]()[dimension]
+              , bSize = pair.b[getBoundingClientRect]()[dimension]
+
+            if (aSize < pair.aMin) {
+                pair.aMin = aSize
+            }
+
+            if (bSize < pair.bMin) {
+                pair.bMin = bSize
+            }
+        }
+
         // After the first iteration, and we have a pair object, append it to the
         // list of pairs.
         if (i > 0) {
