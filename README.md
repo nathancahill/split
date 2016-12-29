@@ -228,6 +228,21 @@ Split(['#one', '#two'], {
 
 JSFiddle style is also possible: [Demo](http://nathancahill.github.io/Split.js/examples/jsfiddle.html).
 
+## Saving State
+
+Use local storage to save the most recent state:
+
+```js
+var sizes = localStorage.getItem('split-sizes') || [50, 50]  // default sizes
+
+var split = Split(['#one', '#two'], {
+    sizes: sizes,
+    onDragEnd: function () {
+        localStorage.setItem('split-sizes', split.getSizes());
+    }
+})
+```
+
 ## Flexbox
 
 Flexbox layout is supported by customizing the `elementStyle` and `gutterStyle` CSS. Given a layout like this:
