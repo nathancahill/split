@@ -20,12 +20,18 @@
 //
 // Save a couple long function names that are used frequently.
 // This optimization saves around 400 bytes.
+//
+// Set a float fudging global, used when dividing and setting sizes to long floats.
+// There's a chance that sometimes the sum of the floats would end up being slightly
+// larger than 100%, breaking the layout. The float fudging value is subtracted from
+// the percentage size.
 var global = this
   , isIE8 = global.attachEvent && !global[addEventListener]
   , document = global.document
   , addEventListener = 'addEventListener'
   , removeEventListener = 'removeEventListener'
   , getBoundingClientRect = 'getBoundingClientRect'
+  , FLOAT_FUDGING = 0.5
 
   // This library only needs two helper functions:
   //
@@ -306,6 +312,8 @@ var global = this
             } else if (offset >= this.size - (this.bMin + options.snapOffset + this.bGutterSize)) {
                 offset = this.size - (this.bMin + this.bGutterSize)
             }
+
+            offset = offset - FLOAT_FUDGING
 
             // Actually adjust the size.
             adjust.call(this, offset)
