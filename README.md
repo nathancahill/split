@@ -9,16 +9,16 @@ No dependencies or markup required, just two or more elements with a common pare
 
 ## Installation
 
-Install with Bower:
-
-```shell
-bower install Split.js
-```
-
-NPM:
+Install with NPM:
 
 ```shell
 npm install split.js
+```
+
+Bower:
+
+```shell
+bower install Split.js
 ```
 
 Or clone from Github:
