@@ -91,12 +91,9 @@ var global = this
   //    A lot of the behavior in the rest of the library is paramatized down to
   //    rely on CSS strings and classes.
   // 3. Define the dragging helper functions, and a few helpers to go with them.
-  // 4. Define a few more functions that "balance" the entire split instance.
-  //    Split.js tries it's best to cope with min sizes that don't add up.
-  // 5. Loop through the elements while pairing them off. Every pair gets an
+  // 4. Loop through the elements while pairing them off. Every pair gets an
   //    `pair` object, a gutter, and special isFirst/isLast properties.
-  // 6. Actually size the pair elements, insert gutters and attach event listeners.
-  // 7. Balance all of the pairs to accomodate min sizes as best as possible.
+  // 5. Actually size the pair elements, insert gutters and attach event listeners.
   , Split = function (ids, options) {
     var dimension
       , i
@@ -358,48 +355,6 @@ var global = this
             setElementSize(this.a, (offset / this.size * this.percentage), this.aGutterSize)
             setElementSize(this.b, (this.percentage - (offset / this.size * this.percentage)), this.bGutterSize)
         }
-
-      // 4. Define a few more functions that "balance" the entire split instance.
-      // Split.js tries it's best to cope with min sizes that don't add up.
-      // At some point this should go away since it breaks out of the calc(% - px) model.
-      // Maybe it's a user error if you pass uncomputable minSizes.
-      , fitMin = function () {
-            var self = this
-              , a = self.a
-              , b = self.b
-
-            if (a[getBoundingClientRect]()[dimension] < self.aMin) {
-                a.style[dimension] = (self.aMin - self.aGutterSize) + 'px'
-                b.style[dimension] = (self.size - self.aMin - self.aGutterSize) + 'px'
-            } else if (b[getBoundingClientRect]()[dimension] < self.bMin) {
-                a.style[dimension] = (self.size - self.bMin - self.bGutterSize) + 'px'
-                b.style[dimension] = (self.bMin - self.bGutterSize) + 'px'
-            }
-        }
-      , fitMinReverse = function () {
-            var self = this
-              , a = self.a
-              , b = self.b
-
-            if (b[getBoundingClientRect]()[dimension] < self.bMin) {
-                a.style[dimension] = (self.size - self.bMin - self.bGutterSize) + 'px'
-                b.style[dimension] = (self.bMin - self.bGutterSize) + 'px'
-            } else if (a[getBoundingClientRect]()[dimension] < self.aMin) {
-                a.style[dimension] = (self.aMin - self.aGutterSize) + 'px'
-                b.style[dimension] = (self.size - self.aMin - self.aGutterSize) + 'px'
-            }
-        }
-      , balancePairs = function (pairs) {
-            for (var i = 0; i < pairs.length; i++) {
-                calculateSizes.call(pairs[i])
-                fitMin.call(pairs[i])
-            }
-
-            for (i = pairs.length - 1; i >= 0; i--) {
-                calculateSizes.call(pairs[i])
-                fitMinReverse.call(pairs[i])
-            }
-        }
       , setElementSize = function (el, size, gutterSize) {
             // Split.js allows setting sizes via numbers (ideally), or if you must,
             // by string, like '300px'. This is less than ideal, because it breaks
@@ -551,9 +506,6 @@ var global = this
             pairs.push(pair)
         }
     }
-
-    // Balance the pairs to try to accomodate min sizes.
-    balancePairs(pairs)
 
     return {
         setSizes: function (sizes) {

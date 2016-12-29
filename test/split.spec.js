@@ -129,48 +129,6 @@ describe('Split', function() {
         expect(calcParts(this.c.style.height).pixels).toBe(10);
     });
 
-    it('overrides size with minSize', function() {
-        Split(['#a', '#b'], {
-            sizes: [5, 95],
-            minSize: [200, 200]
-        });
-
-        expect(this.a.getBoundingClientRect().width).toBe(200 - 5);
-        expect(this.b.getBoundingClientRect().width).toBe(600 - 5);
-    });
-
-    it('overrides size with minSize on second element', function() {
-        Split(['#a', '#b'], {
-            sizes: [95, 5],
-            minSize: [200, 200]
-        });
-
-        expect(this.a.getBoundingClientRect().width).toBe(600 - 5);
-        expect(this.b.getBoundingClientRect().width).toBe(200 - 5);
-    });
-
-    it('overrides size with minSize when direction is vertical', function() {
-        Split(['#a', '#b'], {
-            direction: 'vertical',
-            sizes: [5, 95],
-            minSize: [200, 200]
-        });
-
-        expect(this.a.getBoundingClientRect().height).toBe(200 - 5);
-        expect(this.b.getBoundingClientRect().height).toBe(400 - 5);
-    });
-
-    it('overrides size with minSize with more than two elements', function() {
-        Split(['#a', '#b', '#c'], {
-            sizes: [90, 5, 5],
-            minSize: [200, 200, 200]
-        });
-
-        expect(this.a.getBoundingClientRect().width).toBe(390 - 5);
-        expect(this.b.getBoundingClientRect().width).toBe(200 - 10);
-        expect(this.c.getBoundingClientRect().width).toBe(200 - 5);
-    });
-
     it('set size directly when given css values', function() {
         Split(['#a', '#b'], {
             sizes: ['150px', '640px']
