@@ -233,12 +233,18 @@ JSFiddle style is also possible: [Demo](http://nathancahill.github.io/Split.js/e
 Use local storage to save the most recent state:
 
 ```js
-var sizes = localStorage.getItem('split-sizes') || [50, 50]  // default sizes
+var sizes = localStorage.getItem('split-sizes')
+
+if (sizes) {
+    sizes = JSON.parse(sizes)
+} else {
+    sizes = [50, 50]  // default sizes
+}
 
 var split = Split(['#one', '#two'], {
     sizes: sizes,
     onDragEnd: function () {
-        localStorage.setItem('split-sizes', split.getSizes());
+        localStorage.setItem('split-sizes', JSON.stringify(split.getSizes()));
     }
 })
 ```
