@@ -9,6 +9,12 @@ No dependencies or markup required, just two or more elements with a common pare
 
 ## Installation
 
+Grab the minified build from Github:
+
+```
+https://raw.githubusercontent.com/nathancahill/Split.js/master/split.min.js
+```
+
 Install with NPM:
 
 ```shell
