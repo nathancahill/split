@@ -9,10 +9,10 @@ No dependencies or markup required, just two or more elements with a common pare
 
 ## Installation
 
-Grab the minified build from Github:
+Include the minified build from CDNJS:
 
 ```
-https://raw.githubusercontent.com/nathancahill/Split.js/master/split.min.js
+<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/split.js/1.2.0/split.min.js"></script>
 ```
 
 Install with NPM:
