@@ -413,6 +413,10 @@ This library uses [calc()](https://developer.mozilla.org/en-US/docs/Web/CSS/calc
 
 Gracefully falls back in IE 8 and below to only setting the initial widths/heights and not allowing dragging. IE 8 requires a [polyfill](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/isArray#Polyfill) for `Array.isArray()` and a [polyfill](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object/keys#Polyfill) for `Object.keys()`.
 
+This project's tests are run on multiple desktop and mobile browsers sponsored by BrowserStack.
+
+[![](http://i.imgur.com/P8XFJt0.png)](https://www.browserstack.com/)
+
 ## License
 
 Copyright (c) 2016 Nathan Cahill
