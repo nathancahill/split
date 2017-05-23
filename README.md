@@ -15,6 +15,12 @@ Include the minified build from CDNJS:
 <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/split.js/1.3.0/split.min.js"></script>
 ```
 
+Install with Yarn:
+
+```shell
+yarn install split.js
+```
+
 Install with NPM:
 
 ```shell
@@ -35,8 +41,30 @@ git clone https://github.com/nathancahill/Split.js.git
 
 ## Documentation
 
+#### Including
+
+Import:
+
+```
+import Split from 'split.js'
+```
+
+Require:
+
+```
+var Split = require('split.js')
+```
+
+Global:
+
+```
+window.Split
+```
+
+#### Initializing
+
 ```js
-Split(<HTMLElement|selector[]> elements, <options> options?)
+var split = Split(<HTMLElement|selector[]> elements, <options> options?)
 ```
 
 | Options | Type | Default | Description |
