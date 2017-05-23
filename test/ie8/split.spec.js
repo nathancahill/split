@@ -38,20 +38,16 @@ describe('Split', function() {
     it('splits in two when given two elements', function() {
         Split(['#a', '#b'])
 
-        expect(this.a.style.width).toContain('calc(50% - 5px)')
-        expect(this.b.style.width).toContain('calc(50% - 5px)')
+        expect(this.a.style.width).toBe('50%')
+        expect(this.b.style.width).toBe('50%')
     })
 
     it('splits in three when given three elements', function() {
         Split(['#a', '#b', '#c'])
 
-        expect(calcParts(this.a.style.width).percentage).toBeCloseTo(33.33)
-        expect(calcParts(this.b.style.width).percentage).toBeCloseTo(33.33)
-        expect(calcParts(this.c.style.width).percentage).toBeCloseTo(33.33)
-
-        expect(calcParts(this.a.style.width).pixels).toBe(5)
-        expect(calcParts(this.b.style.width).pixels).toBe(10)
-        expect(calcParts(this.c.style.width).pixels).toBe(5)
+        expect(this.a.style.width).toBe('33.33%')
+        expect(this.b.style.width).toBe('33.33%')
+        expect(this.c.style.width).toBe('33.33%')
     })
 
     it('splits vertically when direction is vertical', function() {
@@ -59,8 +55,8 @@ describe('Split', function() {
             direction: 'vertical',
         })
 
-        expect(this.a.style.height).toContain('calc(50% - 5px)')
-        expect(this.b.style.height).toContain('calc(50% - 5px)')
+        expect(this.a.style.height).toBe('50%')
+        expect(this.b.style.height).toBe('50%')
     })
 
     it('splits in percentages when given sizes', function() {
@@ -68,8 +64,8 @@ describe('Split', function() {
             sizes: [25, 75],
         })
 
-        expect(this.a.style.width).toContain('calc(25% - 5px)')
-        expect(this.b.style.width).toContain('calc(75% - 5px)')
+        expect(this.a.style.width).toBe('25%')
+        expect(this.b.style.width).toBe('75%')
     })
 
     it('splits in percentages when given sizes', function() {
@@ -77,8 +73,8 @@ describe('Split', function() {
             sizes: [25, 75],
         })
 
-        expect(this.a.style.width).toContain('calc(25% - 5px)')
-        expect(this.b.style.width).toContain('calc(75% - 5px)')
+        expect(this.a.style.width).toBe('25%')
+        expect(this.b.style.width).toBe('75%')
     })
 
     it('accounts for gutter size', function() {
@@ -86,8 +82,8 @@ describe('Split', function() {
             gutterSize: 20,
         })
 
-        expect(this.a.style.width).toContain('calc(50% - 10px)')
-        expect(this.b.style.width).toContain('calc(50% - 10px)')
+        expect(this.a.style.width).toBe('50%')
+        expect(this.b.style.width).toBe('50%')
     })
 
     it('accounts for gutter size with more than two elements', function() {
@@ -95,13 +91,9 @@ describe('Split', function() {
             gutterSize: 20,
         })
 
-        expect(calcParts(this.a.style.width).percentage).toBeCloseTo(33.33)
-        expect(calcParts(this.b.style.width).percentage).toBeCloseTo(33.33)
-        expect(calcParts(this.c.style.width).percentage).toBeCloseTo(33.33)
-
-        expect(calcParts(this.a.style.width).pixels).toBe(10)
-        expect(calcParts(this.b.style.width).pixels).toBe(20)
-        expect(calcParts(this.c.style.width).pixels).toBe(10)
+        expect(this.a.style.width).toBe('33.33%')
+        expect(this.b.style.width).toBe('33.33%')
+        expect(this.c.style.width).toBe('33.33%')
     })
 
     it('accounts for gutter size when direction is vertical', function() {
@@ -110,8 +102,8 @@ describe('Split', function() {
             gutterSize: 20,
         })
 
-        expect(this.a.style.height).toContain('calc(50% - 10px)')
-        expect(this.b.style.height).toContain('calc(50% - 10px)')
+        expect(this.a.style.height).toBe('50%')
+        expect(this.b.style.height).toBe('50%')
     })
 
     it('accounts for gutter size with more than two elements when direction is vertical', function() {
@@ -120,13 +112,9 @@ describe('Split', function() {
             gutterSize: 20,
         })
 
-        expect(calcParts(this.a.style.height).percentage).toBeCloseTo(33.33)
-        expect(calcParts(this.b.style.height).percentage).toBeCloseTo(33.33)
-        expect(calcParts(this.c.style.height).percentage).toBeCloseTo(33.33)
-
-        expect(calcParts(this.a.style.height).pixels).toBe(10)
-        expect(calcParts(this.b.style.height).pixels).toBe(20)
-        expect(calcParts(this.c.style.height).pixels).toBe(10)
+        expect(this.a.style.height).toBe('33.33%')
+        expect(this.b.style.height).toBe('33.33%')
+        expect(this.c.style.height).toBe('33.33%')
     })
 
     it('set size directly when given css values', function() {
@@ -143,35 +131,8 @@ describe('Split', function() {
 
         split.setSizes([70, 30])
 
-        expect(this.a.style.width).toContain('calc(70% - 5px)')
-        expect(this.b.style.width).toContain('calc(30% - 5px)')
-    })
-
-    it('collapse splits', function() {
-        var split = Split(['#a', '#b'])
-
-        split.collapse(0)
-
-        expect(this.a.getBoundingClientRect().width).toBe(0)
-        expect(this.b.getBoundingClientRect().width).toBeCloseTo(800 - 10, 0)
-
-        split.collapse(1)
-
-        expect(this.a.getBoundingClientRect().width).toBeCloseTo(800 - 10, 0)
-        expect(this.b.getBoundingClientRect().width).toBe(0)
-    })
-
-    it('returns sizes', function() {
-        var split = Split(['#a', '#b'])
-        var sizes = split.getSizes()
-
-        expect(sizes).toEqual([50, 50])
-
-        split.setSizes([70, 30])
-
-        sizes = split.getSizes()
-
-        expect(sizes).toEqual([70, 30])
+        expect(this.a.style.width).toBe('70%')
+        expect(this.b.style.width).toBe('30%')
     })
 
     it('sets element styles using the elementStyle function', function() {

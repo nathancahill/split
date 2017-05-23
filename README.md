@@ -409,9 +409,15 @@ This library uses [CSS calc()](https://developer.mozilla.org/en-US/docs/Web/CSS/
 
 | <img src="http://i.imgur.com/dJC1GUv.png" width="48px" height="48px" alt="Chrome logo"> | <img src="http://i.imgur.com/o1m5RcQ.png" width="48px" height="48px" alt="Firefox logo"> | <img src="http://i.imgur.com/8h3iz5H.png" width="48px" height="48px" alt="Internet Explorer logo"> | <img src="http://i.imgur.com/iQV4nmJ.png" width="48px" height="48px" alt="Opera logo"> | <img src="http://i.imgur.com/j3tgNKJ.png" width="48px" height="48px" alt="Safari logo"> | [<img src="http://i.imgur.com/70as3qf.png" height="48px" alt="BrowserStack logo">](http://browserstack.com/) |
 |:---:|:---:|:---:|:---:|:---:|:----|
-| 19+ ✔ | 4+ ✔ | 9+ ✔ | 32+ ✔ | 7+ ✔ | Sponsored ✔ |
+| 22+ ✔ | 6+ ✔ | 9+ ✔ | 15+ ✔ | 6.2+ ✔ | Sponsored ✔ |
 
-Gracefully falls back in IE 8 and below to only setting the initial widths/heights and not allowing dragging. IE 8 requires a [polyfill](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/isArray#Polyfill) for `Array.isArray()` and a [polyfill](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object/keys#Polyfill) for `Object.keys()`.
+Gracefully falls back in IE 8 and below to only setting the initial widths/heights and not allowing dragging. IE 8 requires polyfills for `Array.isArray()`, `Array.forEach`, `Array.map`, `Array.filter`, `Object.keys()` and `getComputedStyle`. This script from [Polyfill.io](https://polyfill.io/) includes all of these, adding 1.91 kb to the gzipped size.
+
+This is __ONLY NEEDED__ if you are supporting __IE8:__
+
+```
+<script src="///polyfill.io/v2/polyfill.min.js?features=Array.isArray,Array.prototype.forEach,Array.prototype.map,Object.keys,Array.prototype.filter,getComputedStyle"></script>
+```
 
 This project's tests are run on multiple desktop and mobile browsers sponsored by [BrowserStack](http://browserstack.com/).
 

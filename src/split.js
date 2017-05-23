@@ -1,34 +1,26 @@
-/*! Split.js - v1.2.0 */
-
-(function (global, factory) {
-	typeof exports === 'object' && typeof module !== 'undefined' ? module.exports = factory() :
-	typeof define === 'function' && define.amd ? define(factory) :
-	(global.Split = factory());
-}(this, (function () { 'use strict';
-
 // The programming goals of Split.js are to deliver readable, understandable and
 // maintainable code, while at the same time manually optimizing for tiny minified file size,
 // browser compatibility without additional requirements, graceful fallback (IE8 is supported)
 // and very few assumptions about the user's page layout.
-var global = window;
-var document = global.document;
+const global = window
+const document = global.document
 
 // Save a couple long function names that are used frequently.
 // This optimization saves around 400 bytes.
-var addEventListener = 'addEventListener';
-var removeEventListener = 'removeEventListener';
-var getBoundingClientRect = 'getBoundingClientRect';
-var NOOP = function () { return false; };
+const addEventListener = 'addEventListener'
+const removeEventListener = 'removeEventListener'
+const getBoundingClientRect = 'getBoundingClientRect'
+const NOOP = () => false
 
 // Set a float fudging global, used when dividing and setting sizes to long floats.
 // There's a chance that sometimes the sum of the floats would end up being slightly
 // larger than 100%, breaking the layout. The float fudging value is subtracted from
 // the percentage size.
-var FLOAT_FUDGING = 0.5;
+const FLOAT_FUDGING = 0.5
 
 // Figure out if we're in IE8 or not. IE8 will still render correctly,
 // but will be static instead of draggable.
-var isIE8 = global.attachEvent && !global[addEventListener];
+const isIE8 = global.attachEvent && !global[addEventListener]
 
 // This library only needs two helper functions:
 //
@@ -37,23 +29,23 @@ var isIE8 = global.attachEvent && !global[addEventListener];
 //
 // Tests -webkit, -moz and -o prefixes. Modified from StackOverflow:
 // http://stackoverflow.com/questions/16625140/js-feature-detection-to-detect-the-usage-of-webkit-calc-over-calc/16625167#16625167
-var calc = (['', '-webkit-', '-moz-', '-o-'].filter(function (prefix) {
-    var el = document.createElement('div');
-    el.style.cssText = "width:" + prefix + "calc(9px)";
+const calc = `${['', '-webkit-', '-moz-', '-o-'].filter(prefix => {
+    const el = document.createElement('div')
+    el.style.cssText = `width:${prefix}calc(9px)`
 
     return (!!el.style.length)
-}).shift()) + "calc";
+}).shift()}calc`
 
 // The second helper function allows elements and string selectors to be used
 // interchangeably. In either case an element is returned. This allows us to
 // do `Split(elem1, elem2)` as well as `Split('#id1', '#id2')`.
-var elementOrSelector = function (el) {
+const elementOrSelector = el => {
     if (typeof el === 'string' || el instanceof String) {
         return document.querySelector(el)
     }
 
     return el
-};
+}
 
 // The main function to initialize a split. Split.js thinks about each pair
 // of elements as an independant pair. Dragging the gutter between two elements
@@ -84,71 +76,68 @@ var elementOrSelector = function (el) {
 // 4. Loop through the elements while pairing them off. Every pair gets an
 //    `pair` object, a gutter, and special isFirst/isLast properties.
 // 5. Actually size the pair elements, insert gutters and attach event listeners.
-var Split = function (ids, options) {
-    if ( options === void 0 ) options = {};
-
-    var dimension;
-    var clientDimension;
-    var clientAxis;
-    var position;
-    var gutterClass;
-    var paddingA;
-    var paddingB;
+const Split = (ids, options = {}) => {
+    let dimension
+    let clientDimension
+    let clientAxis
+    let position
+    let gutterClass
+    let paddingA
+    let paddingB
 
     // All DOM elements in the split should have a common parent. We can grab
     // the first elements parent and hope users read the docs because the
     // behavior will be whacky otherwise.
-    var parent = elementOrSelector(ids[0]).parentNode;
-    var parentFlexDirection = global.getComputedStyle(parent).flexDirection;
+    const parent = elementOrSelector(ids[0]).parentNode
+    const parentFlexDirection = global.getComputedStyle(parent).flexDirection
 
     // Set default options.sizes to equal percentages of the parent element.
-    var sizes = options.sizes || ids.map(function () { return 100 / ids.length; });
+    const sizes = options.sizes || ids.map(() => 100 / ids.length)
 
     // Standardize minSize to an array if it isn't already. This allows minSize
     // to be passed as a number.
-    var minSize = options.minSize || 100;
-    var minSizes = Array.isArray(minSize) ? minSize : ids.map(function () { return minSize; });
-    var gutterSize = options.gutterSize || 10;
-    var snapOffset = options.snapOffset || 30;
-    var direction = options.direction || 'horizontal';
-    var cursor = options.cursor || (direction === 'horizontal' ? 'ew-resize' : 'ns-resize');
-    var elementStyle = options.elementStyle || (function (dim, size, gutSize) {
-        var style = {};
+    const minSize = options.minSize || 100
+    const minSizes = Array.isArray(minSize) ? minSize : ids.map(() => minSize)
+    const gutterSize = options.gutterSize || 10
+    const snapOffset = options.snapOffset || 30
+    const direction = options.direction || 'horizontal'
+    const cursor = options.cursor || (direction === 'horizontal' ? 'ew-resize' : 'ns-resize')
+    const elementStyle = options.elementStyle || ((dim, size, gutSize) => {
+        const style = {}
 
         if (typeof size !== 'string' && !(size instanceof String)) {
             if (!isIE8) {
-                style[dim] = calc + "(" + size + "% - " + gutSize + "px)";
+                style[dim] = `${calc}(${size}% - ${gutSize}px)`
             } else {
-                style[dim] = size + "%";
+                style[dim] = `${size}%`
             }
         } else {
-            style[dim] = size;
+            style[dim] = size
         }
 
         return style
-    });
-    var gutterStyle = options.gutterStyle || (function (dim, gutSize) { return (( obj = {}, obj[dim] = (gutSize + "px"), obj ))
-        var obj; });
+    })
+    const gutterStyle = options.gutterStyle || ((dim, gutSize) => ({ [dim]: `${gutSize}px` }))
 
     // 2. Initialize a bunch of strings based on the direction we're splitting.
     // A lot of the behavior in the rest of the library is paramatized down to
     // rely on CSS strings and classes.
     if (direction === 'horizontal') {
-        dimension = 'width';
-        clientDimension = 'clientWidth';
-        clientAxis = 'clientX';
-        position = 'left';
-        gutterClass = 'gutter gutter-horizontal';
-        paddingA = 'paddingLeft';
-        paddingB = 'paddingRight';
+        dimension = 'width'
+        clientDimension = 'clientWidth'
+        clientAxis = 'clientX'
+        position = 'left'
+        gutterClass = 'gutter gutter-horizontal'
+        paddingA = 'paddingLeft'
+        paddingB = 'paddingRight'
     } else if (direction === 'vertical') {
-        dimension = 'height';
-        clientDimension = 'clientHeight';
-        clientAxis = 'clientY';
-        position = 'top';
-        gutterClass = 'gutter gutter-vertical';
-        paddingA = 'paddingTop';
-        paddingB = 'paddingBottom';
+        dimension = 'height'
+        clientDimension = 'clientHeight'
+        clientAxis = 'clientY'
+        position = 'top'
+        gutterClass = 'gutter gutter-vertical'
+        paddingA = 'paddingTop'
+        paddingB = 'paddingBottom'
     }
 
     // 3. Define the dragging helper functions, and a few helpers to go with them.
@@ -167,17 +156,17 @@ var Split = function (ids, options) {
         // by string, like '300px'. This is less than ideal, because it breaks
         // the fluid layout that `calc(% - px)` provides. You're on your own if you do that,
         // make sure you calculate the gutter size by hand.
-        var style = elementStyle(dimension, size, gutSize);
+        const style = elementStyle(dimension, size, gutSize)
 
         // eslint-disable-next-line no-param-reassign
-        Object.keys(style).forEach(function (prop) { return (el.style[prop] = style[prop]); });
+        Object.keys(style).forEach(prop => (el.style[prop] = style[prop]))
     }
 
     function setGutterSize (gutter, gutSize) {
-        var style = gutterStyle(dimension, gutSize);
+        const style = gutterStyle(dimension, gutSize)
 
         // eslint-disable-next-line no-param-reassign
-        Object.keys(style).forEach(function (prop) { return (gutter.style[prop] = style[prop]); });
+        Object.keys(style).forEach(prop => (gutter.style[prop] = style[prop]))
     }
 
     // Actually adjust the size of elements `a` and `b` to `offset` while dragging.
@@ -187,8 +176,8 @@ var Split = function (ids, options) {
     // Both sizes are calculated from the initial parent percentage,
     // then the gutter size is subtracted.
     function adjust (offset) {
-        setElementSize(this.a, ((offset / this.size) * this.percentage), this.aGutterSize);
-        setElementSize(this.b, (this.percentage - ((offset / this.size) * this.percentage)), this.bGutterSize);
+        setElementSize(this.a, ((offset / this.size) * this.percentage), this.aGutterSize)
+        setElementSize(this.b, (this.percentage - ((offset / this.size) * this.percentage)), this.bGutterSize)
     }
 
     // drag, where all the magic happens. The logic is really quite simple:
@@ -206,37 +195,37 @@ var Split = function (ids, options) {
     // ---------------------------------------------------------------------
     // | <- this.start                                        this.size -> |
     function drag (e) {
-        var offset;
+        let offset
 
-        if (!this.dragging) { return }
+        if (!this.dragging) return
 
         // Get the offset of the event from the first side of the
         // pair `this.start`. Supports touch events, but not multitouch, so only the first
         // finger `touches[0]` is counted.
         if ('touches' in e) {
-            offset = e.touches[0][clientAxis] - this.start;
+            offset = e.touches[0][clientAxis] - this.start
         } else {
-            offset = e[clientAxis] - this.start;
+            offset = e[clientAxis] - this.start
         }
 
         // If within snapOffset of min or max, set offset to min or max.
         // snapOffset buffers aMin and bMin, so logic is opposite for both.
         // Include the appropriate gutter sizes to prevent overflows.
         if (offset <= this.aMin + snapOffset + this.aGutterSize) {
-            offset = this.aMin + this.aGutterSize;
+            offset = this.aMin + this.aGutterSize
         } else if (offset >= this.size - (this.bMin + snapOffset + this.bGutterSize)) {
-            offset = this.size - (this.bMin + this.bGutterSize);
+            offset = this.size - (this.bMin + this.bGutterSize)
         }
 
-        offset -= FLOAT_FUDGING;
+        offset -= FLOAT_FUDGING
 
         // Actually adjust the size.
-        adjust.call(this, offset);
+        adjust.call(this, offset)
 
         // Call the drag callback continously. Don't do anything too intensive
         // in this callback.
         if (options.onDrag) {
-            options.onDrag();
+            options.onDrag()
         }
     }
 
@@ -256,56 +245,56 @@ var Split = function (ids, options) {
     // | <- start                             size -> |       parentSize -> |
     function calculateSizes () {
         // Figure out the parent size minus padding.
-        var computedStyle = global.getComputedStyle(this.parent);
-        var parentSize = this.parent[clientDimension] - parseFloat(computedStyle[paddingA] || 0) - parseFloat(computedStyle[paddingB] || 0);
+        const computedStyle = global.getComputedStyle(this.parent)
+        const parentSize = this.parent[clientDimension] - parseFloat(computedStyle[paddingA] || 0) - parseFloat(computedStyle[paddingB] || 0)
 
-        this.size = this.a[getBoundingClientRect]()[dimension] + this.b[getBoundingClientRect]()[dimension] + this.aGutterSize + this.bGutterSize;
-        this.percentage = Math.min((this.size / parentSize) * 100, 100);
-        this.start = this.a[getBoundingClientRect]()[position];
+        this.size = this.a[getBoundingClientRect]()[dimension] + this.b[getBoundingClientRect]()[dimension] + this.aGutterSize + this.bGutterSize
+        this.percentage = Math.min((this.size / parentSize) * 100, 100)
+        this.start = this.a[getBoundingClientRect]()[position]
     }
 
     // stopDragging is very similar to startDragging in reverse.
     function stopDragging () {
-        var self = this;
-        var a = self.a;
-        var b = self.b;
+        const self = this
+        const a = self.a
+        const b = self.b
 
         if (self.dragging && options.onDragEnd) {
-            options.onDragEnd();
+            options.onDragEnd()
         }
 
-        self.dragging = false;
+        self.dragging = false
 
         // Remove the stored event listeners. This is why we store them.
-        global[removeEventListener]('mouseup', self.stop);
-        global[removeEventListener]('touchend', self.stop);
-        global[removeEventListener]('touchcancel', self.stop);
+        global[removeEventListener]('mouseup', self.stop)
+        global[removeEventListener]('touchend', self.stop)
+        global[removeEventListener]('touchcancel', self.stop)
 
-        self.parent[removeEventListener]('mousemove', self.move);
-        self.parent[removeEventListener]('touchmove', self.move);
+        self.parent[removeEventListener]('mousemove', self.move)
+        self.parent[removeEventListener]('touchmove', self.move)
 
         // Delete them once they are removed. I think this makes a difference
         // in memory usage with a lot of splits on one page. But I don't know for sure.
-        delete self.stop;
-        delete self.move;
+        delete self.stop
+        delete self.move
 
-        a[removeEventListener]('selectstart', NOOP);
-        a[removeEventListener]('dragstart', NOOP);
-        b[removeEventListener]('selectstart', NOOP);
-        b[removeEventListener]('dragstart', NOOP);
+        a[removeEventListener]('selectstart', NOOP)
+        a[removeEventListener]('dragstart', NOOP)
+        b[removeEventListener]('selectstart', NOOP)
+        b[removeEventListener]('dragstart', NOOP)
 
-        a.style.userSelect = '';
-        a.style.webkitUserSelect = '';
-        a.style.MozUserSelect = '';
-        a.style.pointerEvents = '';
+        a.style.userSelect = ''
+        a.style.webkitUserSelect = ''
+        a.style.MozUserSelect = ''
+        a.style.pointerEvents = ''
 
-        b.style.userSelect = '';
-        b.style.webkitUserSelect = '';
-        b.style.MozUserSelect = '';
-        b.style.pointerEvents = '';
+        b.style.userSelect = ''
+        b.style.webkitUserSelect = ''
+        b.style.MozUserSelect = ''
+        b.style.pointerEvents = ''
 
-        self.gutter.style.cursor = '';
-        self.parent.style.cursor = '';
+        self.gutter.style.cursor = ''
+        self.parent.style.cursor = ''
     }
 
     // startDragging calls `calculateSizes` to store the inital size in the pair object.
@@ -313,57 +302,57 @@ var Split = function (ids, options) {
     // and prevents selection while dragging so avoid the selecting text.
     function startDragging (e) {
         // Alias frequently used variables to save space. 200 bytes.
-        var self = this;
-        var a = self.a;
-        var b = self.b;
+        const self = this
+        const a = self.a
+        const b = self.b
 
         // Call the onDragStart callback.
         if (!self.dragging && options.onDragStart) {
-            options.onDragStart();
+            options.onDragStart()
         }
 
         // Don't actually drag the element. We emulate that in the drag function.
-        e.preventDefault();
+        e.preventDefault()
 
         // Set the dragging property of the pair object.
-        self.dragging = true;
+        self.dragging = true
 
         // Create two event listeners bound to the same pair object and store
         // them in the pair object.
-        self.move = drag.bind(self);
-        self.stop = stopDragging.bind(self);
+        self.move = drag.bind(self)
+        self.stop = stopDragging.bind(self)
 
         // All the binding. `window` gets the stop events in case we drag out of the elements.
-        global[addEventListener]('mouseup', self.stop);
-        global[addEventListener]('touchend', self.stop);
-        global[addEventListener]('touchcancel', self.stop);
+        global[addEventListener]('mouseup', self.stop)
+        global[addEventListener]('touchend', self.stop)
+        global[addEventListener]('touchcancel', self.stop)
 
-        self.parent[addEventListener]('mousemove', self.move);
-        self.parent[addEventListener]('touchmove', self.move);
+        self.parent[addEventListener]('mousemove', self.move)
+        self.parent[addEventListener]('touchmove', self.move)
 
         // Disable selection. Disable!
-        a[addEventListener]('selectstart', NOOP);
-        a[addEventListener]('dragstart', NOOP);
-        b[addEventListener]('selectstart', NOOP);
-        b[addEventListener]('dragstart', NOOP);
+        a[addEventListener]('selectstart', NOOP)
+        a[addEventListener]('dragstart', NOOP)
+        b[addEventListener]('selectstart', NOOP)
+        b[addEventListener]('dragstart', NOOP)
 
-        a.style.userSelect = 'none';
-        a.style.webkitUserSelect = 'none';
-        a.style.MozUserSelect = 'none';
-        a.style.pointerEvents = 'none';
+        a.style.userSelect = 'none'
+        a.style.webkitUserSelect = 'none'
+        a.style.MozUserSelect = 'none'
+        a.style.pointerEvents = 'none'
 
-        b.style.userSelect = 'none';
-        b.style.webkitUserSelect = 'none';
-        b.style.MozUserSelect = 'none';
-        b.style.pointerEvents = 'none';
+        b.style.userSelect = 'none'
+        b.style.webkitUserSelect = 'none'
+        b.style.MozUserSelect = 'none'
+        b.style.pointerEvents = 'none'
 
         // Set the cursor, both on the gutter and the parent element.
         // Doing only a, b and gutter causes flickering.
-        self.gutter.style.cursor = cursor;
-        self.parent.style.cursor = cursor;
+        self.gutter.style.cursor = cursor
+        self.parent.style.cursor = cursor
 
         // Cache the initial sizes of the pair.
-        calculateSizes.call(self);
+        calculateSizes.call(self)
     }
 
     // 5. Loop through the elements while pairing them off. Every pair gets a
@@ -384,13 +373,13 @@ var Split = function (ids, options) {
     // |           pair 0                pair 1             pair 2           |
     // |             |                     |                  |              |
     // -----------------------------------------------------------------------
-    var pairs = ids.map(function (id, i) {
-        var el = elementOrSelector(id);
-        var isFirstPair = (i === 1);
-        var isLastPair = (i === ids.length - 1);
-        var size = sizes[i];
+    const pairs = ids.map((id, i) => {
+        const el = elementOrSelector(id)
+        const isFirstPair = (i === 1)
+        const isLastPair = (i === ids.length - 1)
+        const size = sizes[i]
 
-        var pair;
+        let pair
 
         if (i > 0) {
             // Create the pair object with it's metadata.
@@ -402,27 +391,27 @@ var Split = function (ids, options) {
                 dragging: false,
                 isFirst: isFirstPair,
                 isLast: isLastPair,
-                direction: direction,
-                parent: parent,
-            };
+                direction,
+                parent,
+            }
 
             // For first and last pairs, first and last gutter width is half.
-            pair.aGutterSize = gutterSize;
-            pair.bGutterSize = gutterSize;
+            pair.aGutterSize = gutterSize
+            pair.bGutterSize = gutterSize
 
             if (isFirstPair) {
-                pair.aGutterSize = gutterSize / 2;
+                pair.aGutterSize = gutterSize / 2
             }
 
             if (isLastPair) {
-                pair.bGutterSize = gutterSize / 2;
+                pair.bGutterSize = gutterSize / 2
             }
 
             // if the parent has a reverse flex-direction, switch the pair elements.
             if (parentFlexDirection === 'row-reverse' || parentFlexDirection === 'column-reverse') {
-                var temp = pair.a;
-                pair.a = pair.b;
-                pair.b = temp;
+                const temp = pair.a
+                pair.a = pair.b
+                pair.b = temp
             }
         }
 
@@ -434,39 +423,39 @@ var Split = function (ids, options) {
         if (!isIE8) {
             // Create gutter elements for each pair.
             if (i > 0) {
-                var gutter = document.createElement('div');
+                const gutter = document.createElement('div')
 
-                gutter.className = gutterClass;
+                gutter.className = gutterClass
 
-                setGutterSize(gutter, gutterSize);
+                setGutterSize(gutter, gutterSize)
 
-                gutter[addEventListener]('mousedown', startDragging.bind(pair));
-                gutter[addEventListener]('touchstart', startDragging.bind(pair));
+                gutter[addEventListener]('mousedown', startDragging.bind(pair))
+                gutter[addEventListener]('touchstart', startDragging.bind(pair))
 
-                parent.insertBefore(gutter, el);
+                parent.insertBefore(gutter, el)
 
-                pair.gutter = gutter;
+                pair.gutter = gutter
             }
         }
 
         // Set the element size to our determined size.
         // Half-size gutters for first and last elements.
         if (i === 0 || i === ids.length - 1) {
-            setElementSize(el, size, gutterSize / 2);
+            setElementSize(el, size, gutterSize / 2)
         } else {
-            setElementSize(el, size, gutterSize);
+            setElementSize(el, size, gutterSize)
         }
 
         if (i > 0) {
-            var aSize = pair.a[getBoundingClientRect]()[dimension];
-            var bSize = pair.b[getBoundingClientRect]()[dimension];
+            const aSize = pair.a[getBoundingClientRect]()[dimension]
+            const bSize = pair.b[getBoundingClientRect]()[dimension]
 
             if (aSize < pair.aMin) {
-                pair.aMin = aSize;
+                pair.aMin = aSize
             }
 
             if (bSize < pair.bMin) {
-                pair.bMin = bSize;
+                pair.bMin = bSize
             }
         }
 
@@ -477,77 +466,75 @@ var Split = function (ids, options) {
         }
 
         return null
-    });
+    })
 
-    pairs.shift();
+    pairs.shift()
 
     function setSizes (newSizes) {
-        newSizes.forEach(function (newSize, i) {
+        newSizes.forEach((newSize, i) => {
             if (i > 0) {
-                var pair = pairs[i - 1];
+                const pair = pairs[i - 1]
 
-                setElementSize(pair.a, newSizes[i - 1], pair.aGutterSize);
-                setElementSize(pair.b, newSize, pair.bGutterSize);
+                setElementSize(pair.a, newSizes[i - 1], pair.aGutterSize)
+                setElementSize(pair.b, newSize, pair.bGutterSize)
             }
-        });
+        })
     }
 
     function destroy () {
-        pairs.forEach(function (pair) {
-            pair.parent.removeChild(pair.gutter);
-            pair.a.style[dimension] = '';  // eslint-disable-line no-param-reassign
-            pair.b.style[dimension] = '';  // eslint-disable-line no-param-reassign
-        });
+        pairs.forEach(pair => {
+            pair.parent.removeChild(pair.gutter)
+            pair.a.style[dimension] = ''  // eslint-disable-line no-param-reassign
+            pair.b.style[dimension] = ''  // eslint-disable-line no-param-reassign
+        })
     }
 
     if (isIE8) {
         return {
-            setSizes: setSizes,
-            destroy: destroy,
+            setSizes,
+            destroy,
         }
     }
 
     return {
-        setSizes: setSizes,
-        getSizes: function getSizes () {
-            var newSizes = [];
+        setSizes,
+        getSizes () {
+            const newSizes = []
 
-            pairs.forEach(function (pair, i) {
-                var computedStyle = global.getComputedStyle(pair.parent);
-                var parentSize = pair.parent[clientDimension] - parseFloat(computedStyle[paddingA] || 0) - parseFloat(computedStyle[paddingB] || 0);
+            pairs.forEach((pair, i) => {
+                const computedStyle = global.getComputedStyle(pair.parent)
+                const parentSize = pair.parent[clientDimension] - parseFloat(computedStyle[paddingA] || 0) - parseFloat(computedStyle[paddingB] || 0)
 
-                newSizes.push(((pair.a[getBoundingClientRect]()[dimension] + pair.aGutterSize) / parentSize) * 100);
+                newSizes.push(((pair.a[getBoundingClientRect]()[dimension] + pair.aGutterSize) / parentSize) * 100)
 
                 if (i === pairs.length - 1) {
-                    newSizes.push(((pair.b[getBoundingClientRect]()[dimension] + pair.bGutterSize) / parentSize) * 100);
+                    newSizes.push(((pair.b[getBoundingClientRect]()[dimension] + pair.bGutterSize) / parentSize) * 100)
                 }
-            });
+            })
 
             return newSizes
         },
-        collapse: function collapse (i) {
+        collapse (i) {
             if (i === pairs.length) {
-                var pair = pairs[i - 1];
+                const pair = pairs[i - 1]
 
-                calculateSizes.call(pair);
+                calculateSizes.call(pair)
 
                 if (!isIE8) {
-                    adjust.call(pair, pair.size - pair.bGutterSize);
+                    adjust.call(pair, pair.size - pair.bGutterSize)
                 }
             } else {
-                var pair$1 = pairs[i];
+                const pair = pairs[i]
 
-                calculateSizes.call(pair$1);
+                calculateSizes.call(pair)
 
                 if (!isIE8) {
-                    adjust.call(pair$1, pair$1.aGutterSize);
+                    adjust.call(pair, pair.aGutterSize)
                 }
             }
         },
-        destroy: destroy,
+        destroy,
     }
-};
+}
 
-return Split;
-
-})));
+export default Split
