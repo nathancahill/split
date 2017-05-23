@@ -41,7 +41,7 @@
     "test": "npm run lint && npm run build && grunt jasmine",
     "build": "rollup-multiple -c && npm run size",
     "watch": "rollup-multiple -cw",
-    "size": "echo \"gzip size: $(gzip-size $npm_package_minified_main --raw)\""
+    "size": "echo \"gzip size: $(gzip-size $npm_package_minified_main)\""
   },
   "browserslist": [
     "Chrome >= 22",
