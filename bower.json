@@ -10,12 +10,16 @@
   "keywords": [
     "css"
   ],
+  "moduleType": [
+    "globals",
+    "amd",
+    "node"
+  ],
   "license": "MIT",
   "ignore": [
     "**/.*",
+    "src",
     "node_modules",
-    "bower_components",
     "test",
-    "tests"
   ]
 }
