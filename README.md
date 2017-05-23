@@ -12,7 +12,7 @@ No dependencies or markup required, just two or more elements with a common pare
 Include the minified build from CDNJS:
 
 ```
-<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/split.js/1.2.0/split.min.js"></script>
+<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/split.js/1.3.0/split.min.js"></script>
 ```
 
 Install with NPM:
@@ -310,7 +310,7 @@ instance.setSizes([25, 75])
 
 #### .getSizes()
 
-getSizes returns an array of percents, suitable for using with `setSizes` or creation. Added in v1.1.2:
+getSizes returns an array of percents, suitable for using with `setSizes` or creation. Not supported in IE8. Added in v1.1.2:
 
 ```
 instance.getSizes()
@@ -319,7 +319,7 @@ instance.getSizes()
 
 #### .collapse(index)
 
-collapse changes the size of element at `index` to 0. Every element except the last is collapsed towards the front (left or top). The last is collapsed towards the back. Added in v1.1.0:
+collapse changes the size of element at `index` to 0. Every element except the last is collapsed towards the front (left or top). The last is collapsed towards the back. Not supported in IE8. Added in v1.1.0:
 
 ```
 instance.collapse(0)
