@@ -20,6 +20,6 @@
     "**/.*",
     "src",
     "node_modules",
-    "test",
+    "test"
   ]
 }
