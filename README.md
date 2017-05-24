@@ -1,68 +1,60 @@
+<p align="center">
+<img alt="Split.js" title="Split.js" src="https://cdn.rawgit.com/nathancahill/Split.js/master/logo.svg" width="430">
+<br><br>
+<a href="https://travis-ci.org/nathancahill/Split.js"><img src="https://travis-ci.org/nathancahill/Split.js.svg" alt="Build Status"></a>
+<a href="https://raw.githubusercontent.com/nathancahill/Split.js/master/split.min.js"><img src="https://badge-size.herokuapp.com/nathancahill/Split.js/master/split.min.js.svg?compression=gzip&label=size" alt="File Size"></a>
+<img src="https://david-dm.org/nathancahill/Split.js/status.svg" alt="Dependencies">
+</p>
+
 ## Split.js
 
-[![Build Status](https://travis-ci.org/nathancahill/Split.js.svg?branch=v0.4.4)](https://travis-ci.org/nathancahill/Split.js)
-[![File Size](https://badge-size.herokuapp.com/nathancahill/Split.js/master/split.min.js.svg?compression=gzip&label=size)](https://raw.githubusercontent.com/nathancahill/Split.js/master/split.min.js)
-![Dependencies](https://david-dm.org/nathancahill/Split.js/status.svg)
+> < 2kb unopinionated utility for resizeable split views. 
 
-Split.js is a lightweight, unopinionated utility for creating adjustable split views or panes. [Demo](http://nathancahill.github.io/Split.js/).
-
-No dependencies or markup required, just two or more elements with a common parent. Views can be split horizontally or vertically, with draggable gutters inserted between every two elements.
+ - __Zero Deps__
+ - __Tiny:__ Weights less than 2kb gzipped. 
+ - __Fast:__ No overheard or attached window event listeners, uses pure CSS for resizing.
+ - __Unopinionated:__ Plays nicely with `calc`, `flex` and `grid`.
+ - __Compatible:__ Works great in IE9, and _even loads in IE8_ with polyfills. Early Firefox/Chrome/Safari/Opera supported too.
 
 ## Installation
 
-Include the minified build from CDNJS:
+Yarn:
 
 ```
-<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/split.js/1.3.0/split.min.js"></script>
+$ yarn install --save split.js
 ```
 
-Install with Yarn:
+npm:
 
-```shell
-yarn install split.js
 ```
-
-Install with NPM:
-
-```shell
-npm install split.js
+$ npm install --save split.js
 ```
 
 Bower:
 
-```shell
-bower install Split.js
+```
+$ bower install --save Split.js
 ```
 
-Or clone from Github:
+Include with a module bundler like [rollup](http://rollupjs.org/) or [webpack](https://webpack.github.io/):
 
-```shell
-git clone https://github.com/nathancahill/Split.js.git
-```
-
-## Documentation
-
-#### Including
-
-Import:
-
-```
+```js
+// using ES6 modules
 import Split from 'split.js'
-```
 
-Require:
-
-```
+// using CommonJS modules
 var Split = require('split.js')
 ```
 
-Global:
+The [UMD](https://github.com/umdjs/umd) build is also available on [unpkg](http://unpkg.com/):
 
-```
-window.Split
+```html
+<script src="https://unpkg.com/split.js/split.min.js"></script>
 ```
 
-#### Initializing
+You can find the library on `window.Split`.
+
+## Documentation
 
 ```js
 var split = Split(<HTMLElement|selector[]> elements, <options> options?)
