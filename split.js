@@ -1,4 +1,4 @@
-/*! Split.js - v1.3.2 */
+/*! Split.js - v1.3.3 */
 
 (function (global, factory) {
 	typeof exports === 'object' && typeof module !== 'undefined' ? module.exports = factory() :
@@ -91,7 +91,6 @@ var Split = function (ids, options) {
     var clientDimension;
     var clientAxis;
     var position;
-    var gutterClass;
     var paddingA;
     var paddingB;
 
@@ -112,6 +111,11 @@ var Split = function (ids, options) {
     var snapOffset = options.snapOffset || 30;
     var direction = options.direction || 'horizontal';
     var cursor = options.cursor || (direction === 'horizontal' ? 'ew-resize' : 'ns-resize');
+    var gutter = options.gutter || (function (i, gutterDirection) {
+        var gut = document.createElement('div');
+        gut.className = "gutter gutter-" + gutterDirection;
+        return gut
+    });
     var elementStyle = options.elementStyle || (function (dim, size, gutSize) {
         var style = {};
 
@@ -138,7 +142,6 @@ var Split = function (ids, options) {
         clientDimension = 'clientWidth';
         clientAxis = 'clientX';
         position = 'left';
-        gutterClass = 'gutter gutter-horizontal';
         paddingA = 'paddingLeft';
         paddingB = 'paddingRight';
     } else if (direction === 'vertical') {
@@ -146,7 +149,6 @@ var Split = function (ids, options) {
         clientDimension = 'clientHeight';
         clientAxis = 'clientY';
         position = 'top';
-        gutterClass = 'gutter gutter-vertical';
         paddingA = 'paddingTop';
         paddingB = 'paddingBottom';
     }
@@ -173,11 +175,11 @@ var Split = function (ids, options) {
         Object.keys(style).forEach(function (prop) { return (el.style[prop] = style[prop]); });
     }
 
-    function setGutterSize (gutter, gutSize) {
+    function setGutterSize (gutterElement, gutSize) {
         var style = gutterStyle(dimension, gutSize);
 
         // eslint-disable-next-line no-param-reassign
-        Object.keys(style).forEach(function (prop) { return (gutter.style[prop] = style[prop]); });
+        Object.keys(style).forEach(function (prop) { return (gutterElement.style[prop] = style[prop]); });
     }
 
     // Actually adjust the size of elements `a` and `b` to `offset` while dragging.
@@ -434,18 +436,15 @@ var Split = function (ids, options) {
         if (!isIE8) {
             // Create gutter elements for each pair.
             if (i > 0) {
-                var gutter = document.createElement('div');
+                var gutterElement = gutter(i, direction);
+                setGutterSize(gutterElement, gutterSize);
 
-                gutter.className = gutterClass;
+                gutterElement[addEventListener]('mousedown', startDragging.bind(pair));
+                gutterElement[addEventListener]('touchstart', startDragging.bind(pair));
 
-                setGutterSize(gutter, gutterSize);
+                parent.insertBefore(gutterElement, el);
 
-                gutter[addEventListener]('mousedown', startDragging.bind(pair));
-                gutter[addEventListener]('touchstart', startDragging.bind(pair));
-
-                parent.insertBefore(gutter, el);
-
-                pair.gutter = gutter;
+                pair.gutter = gutterElement;
             }
         }
 

@@ -1,6 +1,6 @@
 {
   "name": "split.js",
-  "version": "1.3.2",
+  "version": "1.3.3",
   "description": "A lightweight utility for creating adjustable split views",
   "main": "split.js",
   "minified:main": "split.min.js",
