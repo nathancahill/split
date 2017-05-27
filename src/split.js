@@ -81,7 +81,6 @@ const Split = (ids, options = {}) => {
     let clientDimension
     let clientAxis
     let position
-    let gutterClass
     let paddingA
     let paddingB
 
@@ -102,6 +101,11 @@ const Split = (ids, options = {}) => {
     const snapOffset = options.snapOffset || 30
     const direction = options.direction || 'horizontal'
     const cursor = options.cursor || (direction === 'horizontal' ? 'ew-resize' : 'ns-resize')
+    const gutter = options.gutter || ((i, gutterDirection) => {
+        const gut = document.createElement('div')
+        gut.className = `gutter gutter-${gutterDirection}`
+        return gut
+    })
     const elementStyle = options.elementStyle || ((dim, size, gutSize) => {
         const style = {}
 
@@ -127,7 +131,6 @@ const Split = (ids, options = {}) => {
         clientDimension = 'clientWidth'
         clientAxis = 'clientX'
         position = 'left'
-        gutterClass = 'gutter gutter-horizontal'
         paddingA = 'paddingLeft'
         paddingB = 'paddingRight'
     } else if (direction === 'vertical') {
@@ -135,7 +138,6 @@ const Split = (ids, options = {}) => {
         clientDimension = 'clientHeight'
         clientAxis = 'clientY'
         position = 'top'
-        gutterClass = 'gutter gutter-vertical'
         paddingA = 'paddingTop'
         paddingB = 'paddingBottom'
     }
@@ -162,11 +164,11 @@ const Split = (ids, options = {}) => {
         Object.keys(style).forEach(prop => (el.style[prop] = style[prop]))
     }
 
-    function setGutterSize (gutter, gutSize) {
+    function setGutterSize (gutterElement, gutSize) {
         const style = gutterStyle(dimension, gutSize)
 
         // eslint-disable-next-line no-param-reassign
-        Object.keys(style).forEach(prop => (gutter.style[prop] = style[prop]))
+        Object.keys(style).forEach(prop => (gutterElement.style[prop] = style[prop]))
     }
 
     // Actually adjust the size of elements `a` and `b` to `offset` while dragging.
@@ -423,18 +425,15 @@ const Split = (ids, options = {}) => {
         if (!isIE8) {
             // Create gutter elements for each pair.
             if (i > 0) {
-                const gutter = document.createElement('div')
+                const gutterElement = gutter(i, direction)
+                setGutterSize(gutterElement, gutterSize)
 
-                gutter.className = gutterClass
+                gutterElement[addEventListener]('mousedown', startDragging.bind(pair))
+                gutterElement[addEventListener]('touchstart', startDragging.bind(pair))
 
-                setGutterSize(gutter, gutterSize)
+                parent.insertBefore(gutterElement, el)
 
-                gutter[addEventListener]('mousedown', startDragging.bind(pair))
-                gutter[addEventListener]('touchstart', startDragging.bind(pair))
-
-                parent.insertBefore(gutter, el)
-
-                pair.gutter = gutter
+                pair.gutter = gutterElement
             }
         }
 

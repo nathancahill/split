@@ -68,6 +68,7 @@ var split = Split(<HTMLElement|selector[]> elements, <options> options?)
 | snapOffset | Number | 30 | Snap to minimum size offset in pixels. |
 | direction | String | 'horizontal' | Direction to split: horizontal or vertical. |
 | cursor | String | 'col-resize' | Cursor to display while dragging. |
+| gutter | Function | | Called to create each gutter element |
 | elementStyle | Function | | Called to set the style of each element. |
 | gutterStyle | Function | | Called to set the style of the gutter. |
 | onDrag | Function | | Callback on drag. |
@@ -150,12 +151,32 @@ Split(['#one', '#two'], {
 })
 ```
 
+#### gutter
+
+Optional function called to create each gutter element. The signature looks like this:
+
+```js
+(index, direction) => HTMLElement
+```
+
+Defaults to creating a `div` with `class="gutter gutter-horizontal"` or `class="gutter gutter-vertical"`, depending on the direction. The default gutter function looks like this:
+
+```js
+(index, direction) => {
+    const gutter = document.createElement('div')
+    gutter.className = `gutter gutter-${gutterDirection}`
+    return gutter
+}
+```
+
+The returned element is then inserted into the DOM, and it's width or height are set. This option can be used to clone an existing DOM element, or to create a new element with custom styles.
+
 #### elementStyle
 
 Optional function called setting the CSS style of the elements. The signature looks like this:
 
 ```js
-function (dimension, elementSize, gutterSize) {}
+(dimension, elementSize, gutterSize) => Object
 ```
 
 Dimension will be a string, 'width' or 'height', and can be used in the return style. elementSize is the target percentage value of the element, and gutterSize is the target pixel value of the gutter.
@@ -189,7 +210,7 @@ Use this function if you're using a different layout like flexbox or grid (see [
 Optional function called when setting the CSS style of the gutters. The signature looks like this:
 
 ```js
-function (dimension, gutterSize) {}
+(dimension, gutterSize) => Object
 ```
 
 Dimension is a string, either 'width' or 'height', and gutterSize is a pixel value representing the width of the gutter.
