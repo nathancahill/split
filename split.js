@@ -1,4 +1,4 @@
-/*! Split.js - v1.3.3 */
+/*! Split.js - v1.3.4 */
 
 (function (global, factory) {
 	typeof exports === 'object' && typeof module !== 'undefined' ? module.exports = factory() :
@@ -24,7 +24,7 @@ var NOOP = function () { return false; };
 // There's a chance that sometimes the sum of the floats would end up being slightly
 // larger than 100%, breaking the layout. The float fudging value is subtracted from
 // the percentage size.
-var FLOAT_FUDGING = 0.5;
+var FLOAT_FUDGING = 0.1;
 
 // Figure out if we're in IE8 or not. IE8 will still render correctly,
 // but will be static instead of draggable.
@@ -105,10 +105,10 @@ var Split = function (ids, options) {
 
     // Standardize minSize to an array if it isn't already. This allows minSize
     // to be passed as a number.
-    var minSize = options.minSize || 100;
+    var minSize = options.minSize !== undefined ? options.minSize : 100;
     var minSizes = Array.isArray(minSize) ? minSize : ids.map(function () { return minSize; });
-    var gutterSize = options.gutterSize || 10;
-    var snapOffset = options.snapOffset || 30;
+    var gutterSize = options.gutterSize !== undefined ? options.gutterSize : 10;
+    var snapOffset = options.snapOffset !== undefined ? options.snapOffset : 30;
     var direction = options.direction || 'horizontal';
     var cursor = options.cursor || (direction === 'horizontal' ? 'ew-resize' : 'ns-resize');
     var gutter = options.gutter || (function (i, gutterDirection) {
@@ -189,8 +189,8 @@ var Split = function (ids, options) {
     // Both sizes are calculated from the initial parent percentage,
     // then the gutter size is subtracted.
     function adjust (offset) {
-        setElementSize(this.a, ((offset / this.size) * this.percentage), this.aGutterSize);
-        setElementSize(this.b, (this.percentage - ((offset / this.size) * this.percentage)), this.bGutterSize);
+        setElementSize(this.a, ((offset / this.size) * this.percentage) - FLOAT_FUDGING, this.aGutterSize);
+        setElementSize(this.b, (this.percentage - ((offset / this.size) * this.percentage)) - FLOAT_FUDGING, this.bGutterSize);
     }
 
     // drag, where all the magic happens. The logic is really quite simple:
@@ -229,8 +229,6 @@ var Split = function (ids, options) {
         } else if (offset >= this.size - (this.bMin + snapOffset + this.bGutterSize)) {
             offset = this.size - (this.bMin + this.bGutterSize);
         }
-
-        offset -= FLOAT_FUDGING;
 
         // Actually adjust the size.
         adjust.call(this, offset);
