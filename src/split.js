@@ -16,7 +16,7 @@ const NOOP = () => false
 // There's a chance that sometimes the sum of the floats would end up being slightly
 // larger than 100%, breaking the layout. The float fudging value is subtracted from
 // the percentage size.
-const FLOAT_FUDGING = 0.5
+const FLOAT_FUDGING = 0.1
 
 // Figure out if we're in IE8 or not. IE8 will still render correctly,
 // but will be static instead of draggable.
@@ -95,10 +95,10 @@ const Split = (ids, options = {}) => {
 
     // Standardize minSize to an array if it isn't already. This allows minSize
     // to be passed as a number.
-    const minSize = options.minSize || 100
+    const minSize = options.minSize !== undefined ? options.minSize : 100
     const minSizes = Array.isArray(minSize) ? minSize : ids.map(() => minSize)
-    const gutterSize = options.gutterSize || 10
-    const snapOffset = options.snapOffset || 30
+    const gutterSize = options.gutterSize !== undefined ? options.gutterSize : 10
+    const snapOffset = options.snapOffset !== undefined ? options.snapOffset : 30
     const direction = options.direction || 'horizontal'
     const cursor = options.cursor || (direction === 'horizontal' ? 'ew-resize' : 'ns-resize')
     const gutter = options.gutter || ((i, gutterDirection) => {
@@ -178,8 +178,8 @@ const Split = (ids, options = {}) => {
     // Both sizes are calculated from the initial parent percentage,
     // then the gutter size is subtracted.
     function adjust (offset) {
-        setElementSize(this.a, ((offset / this.size) * this.percentage), this.aGutterSize)
-        setElementSize(this.b, (this.percentage - ((offset / this.size) * this.percentage)), this.bGutterSize)
+        setElementSize(this.a, ((offset / this.size) * this.percentage) - FLOAT_FUDGING, this.aGutterSize)
+        setElementSize(this.b, (this.percentage - ((offset / this.size) * this.percentage)) - FLOAT_FUDGING, this.bGutterSize)
     }
 
     // drag, where all the magic happens. The logic is really quite simple:
@@ -218,8 +218,6 @@ const Split = (ids, options = {}) => {
         } else if (offset >= this.size - (this.bMin + snapOffset + this.bGutterSize)) {
             offset = this.size - (this.bMin + this.bGutterSize)
         }
-
-        offset -= FLOAT_FUDGING
 
         // Actually adjust the size.
         adjust.call(this, offset)
