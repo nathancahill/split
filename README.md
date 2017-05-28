@@ -98,7 +98,7 @@ An array of minimum sizes of the elements, specified as pixel values. Example: S
 
 ```js
 Split(['#one', '#two'], {
-    sizes: [100, 300]
+    minSize: [100, 300]
 })
 ```
 
@@ -106,7 +106,7 @@ If a number is passed instead of an array, all elements are set to the same mini
 
 ```js
 Split(['#one', '#two'], {
-    sizes: 100
+    minSize: 100
 })
 ```
 
