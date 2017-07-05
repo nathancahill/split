@@ -103,12 +103,13 @@ var Split = function (ids, options) {
     var minSize = options.minSize !== undefined ? options.minSize : 100;
     var minSizes = Array.isArray(minSize) ? minSize : ids.map(function () { return minSize; });
     var gutterSize = options.gutterSize !== undefined ? options.gutterSize : 10;
+    var gutterClass = options.gutterClass !== undefined ? options.gutterClass : "gutter gutter-";
     var snapOffset = options.snapOffset !== undefined ? options.snapOffset : 30;
     var direction = options.direction || 'horizontal';
     var cursor = options.cursor || (direction === 'horizontal' ? 'ew-resize' : 'ns-resize');
     var gutter = options.gutter || (function (i, gutterDirection) {
         var gut = document.createElement('div');
-        gut.className = "gutter gutter-" + gutterDirection;
+        gut.className = gutterClass + gutterDirection;
         return gut
     });
     var elementStyle = options.elementStyle || (function (dim, size, gutSize) {
