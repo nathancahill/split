@@ -1,9 +1,9 @@
 /*! Split.js - v1.3.5 */
 
 (function (global, factory) {
-	typeof exports === 'object' && typeof module !== 'undefined' ? module.exports = factory() :
-	typeof define === 'function' && define.amd ? define(factory) :
-	(global.Split = factory());
+    typeof exports === 'object' && typeof module !== 'undefined' ? module.exports = factory() :
+    typeof define === 'function' && define.amd ? define(factory) :
+    (global.Split = factory());
 }(this, (function () { 'use strict';
 
 // The programming goals of Split.js are to deliver readable, understandable and
@@ -159,12 +159,12 @@ var Split = function (ids, options) {
     // The pair object saves metadata like dragging state, position and
     // event listener references.
 
-    function setElementSize (el, size, gutSize) {
+    function setElementSize (el, size, gutSize, num=-1) {
         // Split.js allows setting sizes via numbers (ideally), or if you must,
         // by string, like '300px'. This is less than ideal, because it breaks
         // the fluid layout that `calc(% - px)` provides. You're on your own if you do that,
         // make sure you calculate the gutter size by hand.
-        var style = elementStyle(dimension, size, gutSize);
+        var style = elementStyle(dimension, size, gutSize, num);
 
         // eslint-disable-next-line no-param-reassign
         Object.keys(style).forEach(function (prop) { return (el.style[prop] = style[prop]); });
@@ -191,8 +191,8 @@ var Split = function (ids, options) {
         a.size = (offset / this.size) * percentage;
         b.size = (percentage - ((offset / this.size) * percentage));
 
-        setElementSize(a.element, a.size, this.aGutterSize);
-        setElementSize(b.element, b.size, this.bGutterSize);
+        setElementSize(a.element, a.size, this.aGutterSize, a.num);
+        setElementSize(b.element, b.size, this.bGutterSize, b.num);
     }
 
     // drag, where all the magic happens. The logic is really quite simple:
@@ -393,6 +393,7 @@ var Split = function (ids, options) {
             element: elementOrSelector(id),
             size: sizes[i],
             minSize: minSizes[i],
+            num: i,
         };
 
         var pair;
@@ -452,9 +453,9 @@ var Split = function (ids, options) {
         // Set the element size to our determined size.
         // Half-size gutters for first and last elements.
         if (i === 0 || i === ids.length - 1) {
-            setElementSize(element.element, element.size, gutterSize / 2);
+            setElementSize(element.element, element.size, gutterSize / 2, element.num);
         } else {
-            setElementSize(element.element, element.size, gutterSize);
+            setElementSize(element.element, element.size, gutterSize, element.num);
         }
 
         var computedSize = element.element[getBoundingClientRect]()[dimension];
@@ -482,8 +483,8 @@ var Split = function (ids, options) {
                 a.size = newSizes[i - 1];
                 b.size = newSize;
 
-                setElementSize(a.element, a.size, pair.aGutterSize);
-                setElementSize(b.element, b.size, pair.bGutterSize);
+                setElementSize(a.element, a.size, pair.aGutterSize, a.num);
+                setElementSize(b.element, b.size, pair.bGutterSize, b.num);
             }
         });
     }
