@@ -211,6 +211,9 @@ var Split = function (ids, options) {
     // | <- this.start                                        this.size -> |
     function drag (e) {
         var offset;
+        var a = elements[this.a].element;
+        var b = elements[this.b].element;
+        var isVertical = e.target.classList.contains("gutter-vertical");
 
         if (!this.dragging) { return }
 
@@ -238,7 +241,7 @@ var Split = function (ids, options) {
         // Call the drag callback continously. Don't do anything too intensive
         // in this callback.
         if (options.onDrag) {
-            options.onDrag();
+            options.onDrag(isVertical, a, b);
         }
     }
 
@@ -265,13 +268,14 @@ var Split = function (ids, options) {
     }
 
     // stopDragging is very similar to startDragging in reverse.
-    function stopDragging () {
+    function stopDragging (e) {
         var self = this;
         var a = elements[self.a].element;
         var b = elements[self.b].element;
+        var isVertical = e.target.classList.contains("gutter-vertical");
 
         if (self.dragging && options.onDragEnd) {
-            options.onDragEnd();
+            options.onDragEnd(isVertical, a, b);
         }
 
         self.dragging = false;
@@ -316,10 +320,12 @@ var Split = function (ids, options) {
         var self = this;
         var a = elements[self.a].element;
         var b = elements[self.b].element;
+        var isVertical = e.target.classList.contains("gutter-vertical");
+        
 
         // Call the onDragStart callback.
         if (!self.dragging && options.onDragStart) {
-            options.onDragStart();
+            options.onDragStart(isVertical, a, b);
         }
 
         // Don't actually drag the element. We emulate that in the drag function.
