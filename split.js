@@ -213,8 +213,7 @@ var Split = function (ids, options) {
         var offset;
         var a = elements[this.a].element;
         var b = elements[this.b].element;
-        var isVertical = e.target.classList.contains("gutter-vertical");
-
+    
         if (!this.dragging) { return }
 
         // Get the offset of the event from the first side of the
@@ -241,7 +240,7 @@ var Split = function (ids, options) {
         // Call the drag callback continously. Don't do anything too intensive
         // in this callback.
         if (options.onDrag) {
-            options.onDrag(isVertical, a, b);
+            options.onDrag(direction, a, b);
         }
     }
 
@@ -272,10 +271,9 @@ var Split = function (ids, options) {
         var self = this;
         var a = elements[self.a].element;
         var b = elements[self.b].element;
-        var isVertical = e.target.classList.contains("gutter-vertical");
-
+    
         if (self.dragging && options.onDragEnd) {
-            options.onDragEnd(isVertical, a, b);
+            options.onDragEnd(direction, a, b);
         }
 
         self.dragging = false;
@@ -320,12 +318,11 @@ var Split = function (ids, options) {
         var self = this;
         var a = elements[self.a].element;
         var b = elements[self.b].element;
-        var isVertical = e.target.classList.contains("gutter-vertical");
-        
+         
 
         // Call the onDragStart callback.
         if (!self.dragging && options.onDragStart) {
-            options.onDragStart(isVertical, a, b);
+            options.onDragStart(direction, a, b);
         }
 
         // Don't actually drag the element. We emulate that in the drag function.
