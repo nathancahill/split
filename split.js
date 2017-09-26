@@ -148,6 +148,14 @@ var Split = function (ids, options) {
         paddingB = 'paddingBottom';
     }
 
+    function  addMaximizedStyles(el, size) {
+   	if(size > 98) {
+          el.classList.add("maximized-" + dimension);
+        }else{
+           el.classList.remove("maximized-" + dimension);
+        }
+    }
+	
     // 3. Define the dragging helper functions, and a few helpers to go with them.
     // Each helper is bound to a pair object that contains it's metadata. This
     // also makes it easy to store references to listeners that that will be
@@ -165,7 +173,7 @@ var Split = function (ids, options) {
         // the fluid layout that `calc(% - px)` provides. You're on your own if you do that,
         // make sure you calculate the gutter size by hand.
         var style = elementStyle(dimension, size, gutSize);
-
+ 	addMaximizedStyles(el, size);
         // eslint-disable-next-line no-param-reassign
         Object.keys(style).forEach(function (prop) { return (el.style[prop] = style[prop]); });
     }
@@ -191,7 +199,8 @@ var Split = function (ids, options) {
         a.size = (offset / this.size) * percentage;
         b.size = (percentage - ((offset / this.size) * percentage));
 
-        setElementSize(a.element, a.size, this.aGutterSize);
+        
+	    (a.element, a.size, this.aGutterSize);
         setElementSize(b.element, b.size, this.bGutterSize);
     }
 
