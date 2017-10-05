@@ -164,7 +164,7 @@ Defaults to creating a `div` with `class="gutter gutter-horizontal"` or `class="
 ```js
 (index, direction) => {
     const gutter = document.createElement('div')
-    gutter.className = `gutter gutter-${gutterDirection}`
+    gutter.className = `gutter gutter-${direction}`
     return gutter
 }
 ```
