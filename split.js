@@ -488,11 +488,16 @@ var Split = function (ids, options) {
         });
     }
 
-    function destroy () {
+    function destroy (preserve) {
         pairs.forEach(function (pair) {
-            pair.parent.removeChild(pair.gutter);
-            elements[pair.a].element.style[dimension] = '';
-            elements[pair.b].element.style[dimension] = '';
+            if (preserve === true) {
+                pair.parent.removeChild(pair.gutter);
+                elements[pair.a].element.style[dimension] = elements[pair.a].size + '%';
+            } else {
+                pair.parent.removeChild(pair.gutter);
+                elements[pair.a].element.style[dimension] = '';
+                elements[pair.b].element.style[dimension] = '';
+            }
         });
     }
 
