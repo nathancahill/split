@@ -21,7 +21,7 @@
 Yarn:
 
 ```
-$ yarn install --save split.js
+$ yarn add split.js
 ```
 
 npm:
