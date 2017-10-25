@@ -62,23 +62,27 @@ var split = Split(<HTMLElement|selector[]> elements, <options> options?)
 
 | Options | Type | Default | Description |
 |---|---|---|---|
-| sizes | Array | | Initial sizes of each element in percents or CSS values. |
-| minSize | Number or Array | 100 | Minimum size of each element. |
-| gutterSize | Number | 10 | Gutter size in pixels. |
-| snapOffset | Number | 30 | Snap to minimum size offset in pixels. |
-| direction | String | 'horizontal' | Direction to split: horizontal or vertical. |
-| cursor | String | 'col-resize' | Cursor to display while dragging. |
-| gutter | Function | | Called to create each gutter element |
-| elementStyle | Function | | Called to set the style of each element. |
-| gutterStyle | Function | | Called to set the style of the gutter. |
-| onDrag | Function | | Callback on drag. |
-| onDragStart | Function | | Callback on drag start. |
-| onDragEnd | Function | | Callback on drag end. |
+| `sizes` | Array | | Initial sizes of each element in percents or CSS values. |
+| `minSize` | Number or Array | 100 | Minimum size of each element. |
+| `gutterSize` | Number | 10 | Gutter size in pixels. |
+| `snapOffset` | Number | 30 | Snap to minimum size offset in pixels. |
+| `direction` | String | 'horizontal' | Direction to split: horizontal or vertical. |
+| `cursor` | String | 'col-resize' | Cursor to display while dragging. |
+| `gutter` | Function | | Called to create each gutter element |
+| `elementStyle` | Function | | Called to set the style of each element. |
+| `gutterStyle` | Function | | Called to set the style of the gutter. |
+| `onDrag` | Function | | Callback on drag. |
+| `onDragStart` | Function | | Callback on drag start. |
+| `onDragEnd` | Function | | Callback on drag end. |
 
-__Important Note__: Split.js does not set CSS beyond the minimum needed to manage the width and height of the elements.
+## Important Note
+
+Split.js does not set CSS beyond the minimum needed to manage the width or height of the elements.
 This is by design. It makes Split.js flexible and useful in many different situations.
 If you create a horizontal split, you are responsible for (likely) floating the elements and the gutter,
-and setting their heights. See the [CSS](#css) section below.
+and setting their heights. See the [CSS](#css) section below. If your gutters are not showing up, check the applied CSS styles.
+
+__THIS IS THE #1 QUESTION ABOUT THE LIBRARY__. 
 
 ## Options
 
