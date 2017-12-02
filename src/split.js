@@ -129,7 +129,7 @@ const Split = (ids, options = {}) => {
     }
 
     // 3. Define the dragging helper functions, and a few helpers to go with them.
-    // Each helper is bound to a pair object that contains it's metadata. This
+    // Each helper is bound to a pair object that contains its metadata. This
     // also makes it easy to store references to listeners that that will be
     // added and removed.
     //
@@ -345,8 +345,7 @@ const Split = (ids, options = {}) => {
         b.style.MozUserSelect = 'none'
         b.style.pointerEvents = 'none'
 
-        // Set the cursor, both on the gutter and the parent element.
-        // Doing only a, b and gutter causes flickering.
+        // Set the cursor at multiple levels
         self.gutter.style.cursor = cursor
         self.parent.style.cursor = cursor
         document.body.style.cursor = cursor
@@ -387,7 +386,7 @@ const Split = (ids, options = {}) => {
         let pair
 
         if (i > 0) {
-            // Create the pair object with it's metadata.
+            // Create the pair object with its metadata.
             pair = {
                 a: i - 1,
                 b: i,
