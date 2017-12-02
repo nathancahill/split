@@ -72,11 +72,8 @@ const elementOrSelector = el => {
 // 5. Actually size the pair elements, insert gutters and attach event listeners.
 const Split = (ids, options = {}) => {
     let dimension
-    let clientDimension
     let clientAxis
     let position
-    let paddingA
-    let paddingB
     let elements
 
     // All DOM elements in the split should have a common parent. We can grab
@@ -123,18 +120,12 @@ const Split = (ids, options = {}) => {
     // rely on CSS strings and classes.
     if (direction === 'horizontal') {
         dimension = 'width'
-        clientDimension = 'clientWidth'
         clientAxis = 'clientX'
         position = 'left'
-        paddingA = 'paddingLeft'
-        paddingB = 'paddingRight'
     } else if (direction === 'vertical') {
         dimension = 'height'
-        clientDimension = 'clientHeight'
         clientAxis = 'clientY'
         position = 'top'
-        paddingA = 'paddingTop'
-        paddingB = 'paddingBottom'
     }
 
     // 3. Define the dragging helper functions, and a few helpers to go with them.
@@ -156,14 +147,18 @@ const Split = (ids, options = {}) => {
         const style = elementStyle(dimension, size, gutSize)
 
         // eslint-disable-next-line no-param-reassign
-        Object.keys(style).forEach(prop => (el.style[prop] = style[prop]))
+        Object.keys(style).forEach(prop => {
+            el.style[prop] = style[prop]
+        })
     }
 
     function setGutterSize (gutterElement, gutSize) {
         const style = gutterStyle(dimension, gutSize)
 
         // eslint-disable-next-line no-param-reassign
-        Object.keys(style).forEach(prop => (gutterElement.style[prop] = style[prop]))
+        Object.keys(style).forEach(prop => {
+            gutterElement.style[prop] = style[prop]
+        })
     }
 
     // Actually adjust the size of elements `a` and `b` to `offset` while dragging.
@@ -200,6 +195,8 @@ const Split = (ids, options = {}) => {
     // | <- this.start                                        this.size -> |
     function drag (e) {
         let offset
+        const a = elements[this.a]
+        const b = elements[this.b]
 
         if (!this.dragging) return
 
@@ -215,10 +212,10 @@ const Split = (ids, options = {}) => {
         // If within snapOffset of min or max, set offset to min or max.
         // snapOffset buffers a.minSize and b.minSize, so logic is opposite for both.
         // Include the appropriate gutter sizes to prevent overflows.
-        if (offset <= elements[this.a].minSize + snapOffset + this.aGutterSize) {
-            offset = elements[this.a].minSize + this.aGutterSize
-        } else if (offset >= this.size - (elements[this.b].minSize + snapOffset + this.bGutterSize)) {
-            offset = this.size - (elements[this.b].minSize + this.bGutterSize)
+        if (offset <= a.minSize + snapOffset + this.aGutterSize) {
+            offset = a.minSize + this.aGutterSize
+        } else if (offset >= this.size - (b.minSize + snapOffset + this.bGutterSize)) {
+            offset = this.size - (b.minSize + this.bGutterSize)
         }
 
         // Actually adjust the size.
@@ -249,8 +246,11 @@ const Split = (ids, options = {}) => {
         const a = elements[this.a].element
         const b = elements[this.b].element
 
-        this.size = a[getBoundingClientRect]()[dimension] + b[getBoundingClientRect]()[dimension] + this.aGutterSize + this.bGutterSize
-        this.start = a[getBoundingClientRect]()[position]
+        const aBounds = a[getBoundingClientRect]()
+        const bBounds = b[getBoundingClientRect]()
+
+        this.size = aBounds[dimension] + bBounds[dimension] + this.aGutterSize + this.bGutterSize
+        this.start = aBounds[position]
     }
 
     // stopDragging is very similar to startDragging in reverse.
