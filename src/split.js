@@ -269,9 +269,8 @@ const Split = (ids, options = {}) => {
         global[removeEventListener]('mouseup', self.stop)
         global[removeEventListener]('touchend', self.stop)
         global[removeEventListener]('touchcancel', self.stop)
-
-        self.parent[removeEventListener]('mousemove', self.move)
-        self.parent[removeEventListener]('touchmove', self.move)
+        global[removeEventListener]('mousemove', self.move)
+        global[removeEventListener]('touchmove', self.move)
 
         // Delete them once they are removed. I think this makes a difference
         // in memory usage with a lot of splits on one page. But I don't know for sure.
@@ -295,6 +294,7 @@ const Split = (ids, options = {}) => {
 
         self.gutter.style.cursor = ''
         self.parent.style.cursor = ''
+        document.body.style.cursor = ''
     }
 
     // startDragging calls `calculateSizes` to store the inital size in the pair object.
@@ -326,9 +326,8 @@ const Split = (ids, options = {}) => {
         global[addEventListener]('mouseup', self.stop)
         global[addEventListener]('touchend', self.stop)
         global[addEventListener]('touchcancel', self.stop)
-
-        self.parent[addEventListener]('mousemove', self.move)
-        self.parent[addEventListener]('touchmove', self.move)
+        global[addEventListener]('mousemove', self.move)
+        global[addEventListener]('touchmove', self.move)
 
         // Disable selection. Disable!
         a[addEventListener]('selectstart', NOOP)
@@ -350,6 +349,7 @@ const Split = (ids, options = {}) => {
         // Doing only a, b and gutter causes flickering.
         self.gutter.style.cursor = cursor
         self.parent.style.cursor = cursor
+        document.body.style.cursor = cursor
 
         // Cache the initial sizes of the pair.
         calculateSizes.call(self)
