@@ -10,15 +10,14 @@ const document = global.document
 const addEventListener = 'addEventListener'
 const removeEventListener = 'removeEventListener'
 const getBoundingClientRect = 'getBoundingClientRect'
+const HORIZONTAL = 'horizontal'
 const NOOP = () => false
 
 // Figure out if we're in IE8 or not. IE8 will still render correctly,
 // but will be static instead of draggable.
 const isIE8 = global.attachEvent && !global[addEventListener]
 
-// This library only needs two helper functions:
-//
-// The first determines which prefixes of CSS calc we need.
+// Helper function determines which prefixes of CSS calc we need.
 // We only need to do this once on startup, when this anonymous function is called.
 //
 // Tests -webkit, -moz and -o prefixes. Modified from StackOverflow:
@@ -30,16 +29,53 @@ const calc = `${['', '-webkit-', '-moz-', '-o-'].filter(prefix => {
     return (!!el.style.length)
 }).shift()}calc`
 
-// The second helper function allows elements and string selectors to be used
+// Helper function checks if its argument is a string-like type
+const isString = v => (typeof v === 'string' || v instanceof String)
+
+// Helper function allows elements and string selectors to be used
 // interchangeably. In either case an element is returned. This allows us to
 // do `Split([elem1, elem2])` as well as `Split(['#id1', '#id2'])`.
 const elementOrSelector = el => {
-    if (typeof el === 'string' || el instanceof String) {
+    if (isString(el)) {
         return document.querySelector(el)
     }
 
     return el
 }
+
+// Helper function gets a property from the properties object, with a default fallback
+const getOption = (options, propName, def) => {
+    const value = options[propName]
+    if (value !== undefined) {
+        return value
+    }
+    return def
+}
+
+// Default options
+const defaultGutterFn = (i, gutterDirection) => {
+    const gut = document.createElement('div')
+    gut.className = `gutter gutter-${gutterDirection}`
+    return gut
+}
+
+const defaultElementStyleFn = (dim, size, gutSize) => {
+    const style = {}
+
+    if (!isString(size)) {
+        if (!isIE8) {
+            style[dim] = `${calc}(${size}% - ${gutSize}px)`
+        } else {
+            style[dim] = `${size}%`
+        }
+    } else {
+        style[dim] = size
+    }
+
+    return style
+}
+
+const defaultGutterStyleFn = (dim, gutSize) => ({ [dim]: `${gutSize}px` })
 
 // The main function to initialize a split. Split.js thinks about each pair
 // of elements as an independant pair. Dragging the gutter between two elements
@@ -83,42 +119,24 @@ const Split = (ids, options = {}) => {
     const parentFlexDirection = global.getComputedStyle(parent).flexDirection
 
     // Set default options.sizes to equal percentages of the parent element.
-    const sizes = options.sizes || ids.map(() => 100 / ids.length)
+    const sizes = getOption(options, 'sizes') || ids.map(() => 100 / ids.length)
 
     // Standardize minSize to an array if it isn't already. This allows minSize
     // to be passed as a number.
-    const minSize = options.minSize !== undefined ? options.minSize : 100
+    const minSize = getOption(options, 'minSize', 100)
     const minSizes = Array.isArray(minSize) ? minSize : ids.map(() => minSize)
-    const gutterSize = options.gutterSize !== undefined ? options.gutterSize : 10
-    const snapOffset = options.snapOffset !== undefined ? options.snapOffset : 30
-    const direction = options.direction || 'horizontal'
-    const cursor = options.cursor || (direction === 'horizontal' ? 'ew-resize' : 'ns-resize')
-    const gutter = options.gutter || ((i, gutterDirection) => {
-        const gut = document.createElement('div')
-        gut.className = `gutter gutter-${gutterDirection}`
-        return gut
-    })
-    const elementStyle = options.elementStyle || ((dim, size, gutSize) => {
-        const style = {}
-
-        if (typeof size !== 'string' && !(size instanceof String)) {
-            if (!isIE8) {
-                style[dim] = `${calc}(${size}% - ${gutSize}px)`
-            } else {
-                style[dim] = `${size}%`
-            }
-        } else {
-            style[dim] = size
-        }
-
-        return style
-    })
-    const gutterStyle = options.gutterStyle || ((dim, gutSize) => ({ [dim]: `${gutSize}px` }))
+    const gutterSize = getOption(options, 'gutterSize', 10)
+    const snapOffset = getOption(options, 'snapOffset', 30)
+    const direction = getOption(options, 'direction', HORIZONTAL)
+    const cursor = getOption(options, 'cursor', direction === HORIZONTAL ? 'ew-resize' : 'ns-resize')
+    const gutter = getOption(options, 'gutter', defaultGutterFn)
+    const elementStyle = getOption(options, 'elementStyle', defaultElementStyleFn)
+    const gutterStyle = getOption(options, 'gutterStyle', defaultGutterStyleFn)
 
     // 2. Initialize a bunch of strings based on the direction we're splitting.
     // A lot of the behavior in the rest of the library is paramatized down to
     // rely on CSS strings and classes.
-    if (direction === 'horizontal') {
+    if (direction === HORIZONTAL) {
         dimension = 'width'
         clientAxis = 'clientX'
         position = 'left'
@@ -223,9 +241,7 @@ const Split = (ids, options = {}) => {
 
         // Call the drag callback continously. Don't do anything too intensive
         // in this callback.
-        if (options.onDrag) {
-            options.onDrag()
-        }
+        getOption(options, 'onDrag', NOOP)()
     }
 
     // Cache some important sizes when drag starts, so we don't have to do that
@@ -259,8 +275,8 @@ const Split = (ids, options = {}) => {
         const a = elements[self.a].element
         const b = elements[self.b].element
 
-        if (self.dragging && options.onDragEnd) {
-            options.onDragEnd()
+        if (self.dragging) {
+            getOption(options, 'onDragEnd', NOOP)()
         }
 
         self.dragging = false
@@ -272,10 +288,9 @@ const Split = (ids, options = {}) => {
         global[removeEventListener]('mousemove', self.move)
         global[removeEventListener]('touchmove', self.move)
 
-        // Delete them once they are removed. I think this makes a difference
-        // in memory usage with a lot of splits on one page. But I don't know for sure.
-        delete self.stop
-        delete self.move
+        // Clear bound function references
+        self.stop = null
+        self.move = null
 
         a[removeEventListener]('selectstart', NOOP)
         a[removeEventListener]('dragstart', NOOP)
@@ -307,8 +322,8 @@ const Split = (ids, options = {}) => {
         const b = elements[self.b].element
 
         // Call the onDragStart callback.
-        if (!self.dragging && options.onDragStart) {
-            options.onDragStart()
+        if (!self.dragging) {
+            getOption(options, 'onDragStart', NOOP)()
         }
 
         // Don't actually drag the element. We emulate that in the drag function.
