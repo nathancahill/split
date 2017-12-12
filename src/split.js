@@ -10,15 +10,14 @@ const document = global.document
 const addEventListener = 'addEventListener'
 const removeEventListener = 'removeEventListener'
 const getBoundingClientRect = 'getBoundingClientRect'
+const HORIZONTAL = 'horizontal'
 const NOOP = () => false
 
 // Figure out if we're in IE8 or not. IE8 will still render correctly,
 // but will be static instead of draggable.
 const isIE8 = global.attachEvent && !global[addEventListener]
 
-// This library only needs two helper functions:
-//
-// The first determines which prefixes of CSS calc we need.
+// Helper function determines which prefixes of CSS calc we need.
 // We only need to do this once on startup, when this anonymous function is called.
 //
 // Tests -webkit, -moz and -o prefixes. Modified from StackOverflow:
@@ -30,16 +29,53 @@ const calc = `${['', '-webkit-', '-moz-', '-o-'].filter(prefix => {
     return (!!el.style.length)
 }).shift()}calc`
 
-// The second helper function allows elements and string selectors to be used
+// Helper function checks if its argument is a string-like type
+const isString = v => (typeof v === 'string' || v instanceof String)
+
+// Helper function allows elements and string selectors to be used
 // interchangeably. In either case an element is returned. This allows us to
 // do `Split([elem1, elem2])` as well as `Split(['#id1', '#id2'])`.
 const elementOrSelector = el => {
-    if (typeof el === 'string' || el instanceof String) {
+    if (isString(el)) {
         return document.querySelector(el)
     }
 
     return el
 }
+
+// Helper function gets a property from the properties object, with a default fallback
+const getOption = (options, propName, def) => {
+    const value = options[propName]
+    if (value !== undefined) {
+        return value
+    }
+    return def
+}
+
+// Default options
+const defaultGutterFn = (i, gutterDirection) => {
+    const gut = document.createElement('div')
+    gut.className = `gutter gutter-${gutterDirection}`
+    return gut
+}
+
+const defaultElementStyleFn = (dim, size, gutSize) => {
+    const style = {}
+
+    if (!isString(size)) {
+        if (!isIE8) {
+            style[dim] = `${calc}(${size}% - ${gutSize}px)`
+        } else {
+            style[dim] = `${size}%`
+        }
+    } else {
+        style[dim] = size
+    }
+
+    return style
+}
+
+const defaultGutterStyleFn = (dim, gutSize) => ({ [dim]: `${gutSize}px` })
 
 // The main function to initialize a split. Split.js thinks about each pair
 // of elements as an independant pair. Dragging the gutter between two elements
@@ -72,11 +108,8 @@ const elementOrSelector = el => {
 // 5. Actually size the pair elements, insert gutters and attach event listeners.
 const Split = (ids, options = {}) => {
     let dimension
-    let clientDimension
     let clientAxis
     let position
-    let paddingA
-    let paddingB
     let elements
 
     // All DOM elements in the split should have a common parent. We can grab
@@ -86,59 +119,35 @@ const Split = (ids, options = {}) => {
     const parentFlexDirection = global.getComputedStyle(parent).flexDirection
 
     // Set default options.sizes to equal percentages of the parent element.
-    const sizes = options.sizes || ids.map(() => 100 / ids.length)
+    const sizes = getOption(options, 'sizes') || ids.map(() => 100 / ids.length)
 
     // Standardize minSize to an array if it isn't already. This allows minSize
     // to be passed as a number.
-    const minSize = options.minSize !== undefined ? options.minSize : 100
+    const minSize = getOption(options, 'minSize', 100)
     const minSizes = Array.isArray(minSize) ? minSize : ids.map(() => minSize)
-    const gutterSize = options.gutterSize !== undefined ? options.gutterSize : 10
-    const snapOffset = options.snapOffset !== undefined ? options.snapOffset : 30
-    const direction = options.direction || 'horizontal'
-    const cursor = options.cursor || (direction === 'horizontal' ? 'ew-resize' : 'ns-resize')
-    const gutter = options.gutter || ((i, gutterDirection) => {
-        const gut = document.createElement('div')
-        gut.className = `gutter gutter-${gutterDirection}`
-        return gut
-    })
-    const elementStyle = options.elementStyle || ((dim, size, gutSize) => {
-        const style = {}
-
-        if (typeof size !== 'string' && !(size instanceof String)) {
-            if (!isIE8) {
-                style[dim] = `${calc}(${size}% - ${gutSize}px)`
-            } else {
-                style[dim] = `${size}%`
-            }
-        } else {
-            style[dim] = size
-        }
-
-        return style
-    })
-    const gutterStyle = options.gutterStyle || ((dim, gutSize) => ({ [dim]: `${gutSize}px` }))
+    const gutterSize = getOption(options, 'gutterSize', 10)
+    const snapOffset = getOption(options, 'snapOffset', 30)
+    const direction = getOption(options, 'direction', HORIZONTAL)
+    const cursor = getOption(options, 'cursor', direction === HORIZONTAL ? 'ew-resize' : 'ns-resize')
+    const gutter = getOption(options, 'gutter', defaultGutterFn)
+    const elementStyle = getOption(options, 'elementStyle', defaultElementStyleFn)
+    const gutterStyle = getOption(options, 'gutterStyle', defaultGutterStyleFn)
 
     // 2. Initialize a bunch of strings based on the direction we're splitting.
     // A lot of the behavior in the rest of the library is paramatized down to
     // rely on CSS strings and classes.
-    if (direction === 'horizontal') {
+    if (direction === HORIZONTAL) {
         dimension = 'width'
-        clientDimension = 'clientWidth'
         clientAxis = 'clientX'
         position = 'left'
-        paddingA = 'paddingLeft'
-        paddingB = 'paddingRight'
     } else if (direction === 'vertical') {
         dimension = 'height'
-        clientDimension = 'clientHeight'
         clientAxis = 'clientY'
         position = 'top'
-        paddingA = 'paddingTop'
-        paddingB = 'paddingBottom'
     }
 
     // 3. Define the dragging helper functions, and a few helpers to go with them.
-    // Each helper is bound to a pair object that contains it's metadata. This
+    // Each helper is bound to a pair object that contains its metadata. This
     // also makes it easy to store references to listeners that that will be
     // added and removed.
     //
@@ -156,14 +165,18 @@ const Split = (ids, options = {}) => {
         const style = elementStyle(dimension, size, gutSize)
 
         // eslint-disable-next-line no-param-reassign
-        Object.keys(style).forEach(prop => (el.style[prop] = style[prop]))
+        Object.keys(style).forEach(prop => {
+            el.style[prop] = style[prop]
+        })
     }
 
     function setGutterSize (gutterElement, gutSize) {
         const style = gutterStyle(dimension, gutSize)
 
         // eslint-disable-next-line no-param-reassign
-        Object.keys(style).forEach(prop => (gutterElement.style[prop] = style[prop]))
+        Object.keys(style).forEach(prop => {
+            gutterElement.style[prop] = style[prop]
+        })
     }
 
     // Actually adjust the size of elements `a` and `b` to `offset` while dragging.
@@ -200,6 +213,8 @@ const Split = (ids, options = {}) => {
     // | <- this.start                                        this.size -> |
     function drag (e) {
         let offset
+        const a = elements[this.a]
+        const b = elements[this.b]
 
         if (!this.dragging) return
 
@@ -215,10 +230,10 @@ const Split = (ids, options = {}) => {
         // If within snapOffset of min or max, set offset to min or max.
         // snapOffset buffers a.minSize and b.minSize, so logic is opposite for both.
         // Include the appropriate gutter sizes to prevent overflows.
-        if (offset <= elements[this.a].minSize + snapOffset + this.aGutterSize) {
-            offset = elements[this.a].minSize + this.aGutterSize
-        } else if (offset >= this.size - (elements[this.b].minSize + snapOffset + this.bGutterSize)) {
-            offset = this.size - (elements[this.b].minSize + this.bGutterSize)
+        if (offset <= a.minSize + snapOffset + this.aGutterSize) {
+            offset = a.minSize + this.aGutterSize
+        } else if (offset >= this.size - (b.minSize + snapOffset + this.bGutterSize)) {
+            offset = this.size - (b.minSize + this.bGutterSize)
         }
 
         // Actually adjust the size.
@@ -226,9 +241,7 @@ const Split = (ids, options = {}) => {
 
         // Call the drag callback continously. Don't do anything too intensive
         // in this callback.
-        if (options.onDrag) {
-            options.onDrag()
-        }
+        getOption(options, 'onDrag', NOOP)()
     }
 
     // Cache some important sizes when drag starts, so we don't have to do that
@@ -249,8 +262,11 @@ const Split = (ids, options = {}) => {
         const a = elements[this.a].element
         const b = elements[this.b].element
 
-        this.size = a[getBoundingClientRect]()[dimension] + b[getBoundingClientRect]()[dimension] + this.aGutterSize + this.bGutterSize
-        this.start = a[getBoundingClientRect]()[position]
+        const aBounds = a[getBoundingClientRect]()
+        const bBounds = b[getBoundingClientRect]()
+
+        this.size = aBounds[dimension] + bBounds[dimension] + this.aGutterSize + this.bGutterSize
+        this.start = aBounds[position]
     }
 
     // stopDragging is very similar to startDragging in reverse.
@@ -259,8 +275,8 @@ const Split = (ids, options = {}) => {
         const a = elements[self.a].element
         const b = elements[self.b].element
 
-        if (self.dragging && options.onDragEnd) {
-            options.onDragEnd()
+        if (self.dragging) {
+            getOption(options, 'onDragEnd', NOOP)()
         }
 
         self.dragging = false
@@ -269,14 +285,12 @@ const Split = (ids, options = {}) => {
         global[removeEventListener]('mouseup', self.stop)
         global[removeEventListener]('touchend', self.stop)
         global[removeEventListener]('touchcancel', self.stop)
+        global[removeEventListener]('mousemove', self.move)
+        global[removeEventListener]('touchmove', self.move)
 
-        self.parent[removeEventListener]('mousemove', self.move)
-        self.parent[removeEventListener]('touchmove', self.move)
-
-        // Delete them once they are removed. I think this makes a difference
-        // in memory usage with a lot of splits on one page. But I don't know for sure.
-        delete self.stop
-        delete self.move
+        // Clear bound function references
+        self.stop = null
+        self.move = null
 
         a[removeEventListener]('selectstart', NOOP)
         a[removeEventListener]('dragstart', NOOP)
@@ -295,6 +309,7 @@ const Split = (ids, options = {}) => {
 
         self.gutter.style.cursor = ''
         self.parent.style.cursor = ''
+        document.body.style.cursor = ''
     }
 
     // startDragging calls `calculateSizes` to store the inital size in the pair object.
@@ -307,8 +322,8 @@ const Split = (ids, options = {}) => {
         const b = elements[self.b].element
 
         // Call the onDragStart callback.
-        if (!self.dragging && options.onDragStart) {
-            options.onDragStart()
+        if (!self.dragging) {
+            getOption(options, 'onDragStart', NOOP)()
         }
 
         // Don't actually drag the element. We emulate that in the drag function.
@@ -326,9 +341,8 @@ const Split = (ids, options = {}) => {
         global[addEventListener]('mouseup', self.stop)
         global[addEventListener]('touchend', self.stop)
         global[addEventListener]('touchcancel', self.stop)
-
-        self.parent[addEventListener]('mousemove', self.move)
-        self.parent[addEventListener]('touchmove', self.move)
+        global[addEventListener]('mousemove', self.move)
+        global[addEventListener]('touchmove', self.move)
 
         // Disable selection. Disable!
         a[addEventListener]('selectstart', NOOP)
@@ -346,10 +360,10 @@ const Split = (ids, options = {}) => {
         b.style.MozUserSelect = 'none'
         b.style.pointerEvents = 'none'
 
-        // Set the cursor, both on the gutter and the parent element.
-        // Doing only a, b and gutter causes flickering.
+        // Set the cursor at multiple levels
         self.gutter.style.cursor = cursor
         self.parent.style.cursor = cursor
+        document.body.style.cursor = cursor
 
         // Cache the initial sizes of the pair.
         calculateSizes.call(self)
@@ -387,7 +401,7 @@ const Split = (ids, options = {}) => {
         let pair
 
         if (i > 0) {
-            // Create the pair object with it's metadata.
+            // Create the pair object with its metadata.
             pair = {
                 a: i - 1,
                 b: i,

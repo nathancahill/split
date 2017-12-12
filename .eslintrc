@@ -19,5 +19,6 @@
     "quote-props": ["error", "consistent"],
     "space-before-function-paren": ["error", { "anonymous": "never", "named": "always" }],
     "arrow-parens": [2, "as-needed", { "requireForBlockBody": false }],
+    "no-param-reassign": ["error", { "props": false }],
   }
 }
