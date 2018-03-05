@@ -4,6 +4,8 @@
 <a href="https://travis-ci.org/nathancahill/Split.js"><img src="https://travis-ci.org/nathancahill/Split.js.svg" alt="Build Status"></a>
 <a href="https://raw.githubusercontent.com/nathancahill/Split.js/master/split.min.js"><img src="https://badge-size.herokuapp.com/nathancahill/Split.js/master/split.min.js.svg?compression=gzip&label=size" alt="File Size"></a>
 <img src="https://david-dm.org/nathancahill/Split.js/status.svg" alt="Dependencies">
+<img src = "https://opencollective.com/splitjs/backers/badge.svg" alt="Backers on Open Collective"/>
+<img src = "https://opencollective.com/splitjs/sponsors/badge.svg" alt="Sponsors on Open Collective"/>
 </p>
 
 # Split.js
@@ -466,6 +468,37 @@ This is __ONLY NEEDED__ if you are supporting __IE8:__
 ```
 
 This project's tests are run on multiple desktop and mobile browsers sponsored by [BrowserStack](http://browserstack.com/).
+
+## Credits
+### Contributors
+
+This project exists thanks to all the people who contribute. [[Contribute](CONTRIBUTING.md)].
+<a href="graphs/contributors"><img src="https://opencollective.com/splitjs/contributors.svg?width=890&button=false" /></a>
+
+
+### Backers
+
+Thank you to all our backers! 🙏 [[Become a backer](https://opencollective.com/splitjs#backer)]
+
+<a href="https://opencollective.com/splitjs#backers" target="_blank"><img src="https://opencollective.com/splitjs/backers.svg?width=890"></a>
+
+
+### Sponsors
+
+Support this project by becoming a sponsor. Your logo will show up here with a link to your website. [[Become a sponsor](https://opencollective.com/splitjs#sponsor)]
+
+<a href="https://opencollective.com/splitjs/sponsor/0/website" target="_blank"><img src="https://opencollective.com/splitjs/sponsor/0/avatar.svg"></a>
+<a href="https://opencollective.com/splitjs/sponsor/1/website" target="_blank"><img src="https://opencollective.com/splitjs/sponsor/1/avatar.svg"></a>
+<a href="https://opencollective.com/splitjs/sponsor/2/website" target="_blank"><img src="https://opencollective.com/splitjs/sponsor/2/avatar.svg"></a>
+<a href="https://opencollective.com/splitjs/sponsor/3/website" target="_blank"><img src="https://opencollective.com/splitjs/sponsor/3/avatar.svg"></a>
+<a href="https://opencollective.com/splitjs/sponsor/4/website" target="_blank"><img src="https://opencollective.com/splitjs/sponsor/4/avatar.svg"></a>
+<a href="https://opencollective.com/splitjs/sponsor/5/website" target="_blank"><img src="https://opencollective.com/splitjs/sponsor/5/avatar.svg"></a>
+<a href="https://opencollective.com/splitjs/sponsor/6/website" target="_blank"><img src="https://opencollective.com/splitjs/sponsor/6/avatar.svg"></a>
+<a href="https://opencollective.com/splitjs/sponsor/7/website" target="_blank"><img src="https://opencollective.com/splitjs/sponsor/7/avatar.svg"></a>
+<a href="https://opencollective.com/splitjs/sponsor/8/website" target="_blank"><img src="https://opencollective.com/splitjs/sponsor/8/avatar.svg"></a>
+<a href="https://opencollective.com/splitjs/sponsor/9/website" target="_blank"><img src="https://opencollective.com/splitjs/sponsor/9/avatar.svg"></a>
+
+
 
 ## License
 
