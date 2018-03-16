@@ -244,10 +244,10 @@ const Split = (ids, options = {}) => {
 
         if (!pair.dragging) return
 
-        let eventOffset
         const a = elements[pair.a]
         const b = elements[pair.b]
 
+        let eventOffset
         // Get the offset of the event from the first side of the
         // pair `this.start`. Supports touch events, but not multitouch, so only the first
         // finger `touches[0]` is counted.
@@ -257,14 +257,19 @@ const Split = (ids, options = {}) => {
             eventOffset = e[clientAxis] - pair.start
         }
 
+        let pairOffset = eventOffset
+
         if (pushablePanes && pairs.length > 1) {
             let pushedPair
 
-            // if (!pair.isFirst && eventOffset < 0) {
-            //     pushedPair = pairs[this.pairIndex - 1]
-            //     pair.a = pushedPair.a
-            //     pair.aGutterSize = pushedPair.aGutterSize
-            // }
+            if (!pair.isFirst && eventOffset < 0) {
+                pushedPair = pairs[this.pairIndex - 1]
+                console.log(pairOffset)
+
+                pairOffset += pair.start - pushedPair.start
+                pair.a = pushedPair.a
+                pair.aGutterSize = pushedPair.aGutterSize
+            }
 
             if (!pair.isLast && eventOffset > pair.size) {
                 pushedPair = pairs[this.pairIndex + 1]
@@ -281,13 +286,13 @@ const Split = (ids, options = {}) => {
         // If within snapOffset of min or max, set offset to min or max.
         // snapOffset buffers a.minSize and b.minSize, so logic is opposite for both.
         // Include the appropriate gutter sizes to prevent overflows.
-        let pairOffset = eventOffset
         if (pairOffset <= a.minSize + snapOffset + pair.aGutterSize) {
             pairOffset = a.minSize + pair.aGutterSize
         } else if (pairOffset >= pair.size - (b.minSize + snapOffset + pair.bGutterSize)) {
             pairOffset = pair.size - (b.minSize + pair.bGutterSize)
         }
 
+        console.log(pairOffset)
         // Actually adjust the dragged pair size.
         adjust.call(pair, pairOffset)
 
