@@ -111,8 +111,8 @@ const Split = (ids, options = {}) => {
     let clientAxis
     let position
     let elements
+    let draggingPair = null
     const pairs = []
-
 
     // All DOM elements in the split should have a common parent. We can grab
     // the first elements parent and hope users read the docs because the
@@ -243,7 +243,7 @@ const Split = (ids, options = {}) => {
         const i = this.pairIndex
         const pair = Object.assign({}, pairs[i])
 
-        if (!pair.dragging) return
+        if (draggingPair === null) return
 
         const a = elements[pair.a]
         const b = elements[pair.b]
@@ -278,7 +278,8 @@ const Split = (ids, options = {}) => {
                 pair.b = pushedPair.b
             }
 
-            if (pushedPair !== undefined) {
+            if (draggingPair !== pair) {
+                draggingPair = pair
                 calculateSizes.call(pair)
             }
         }
@@ -306,7 +307,7 @@ const Split = (ids, options = {}) => {
         const a = elements[pair.a].element
         const b = elements[pair.b].element
 
-        if (pair.dragging) {
+        if (draggingPair !== null) {
             getOption(options, 'onDragEnd', NOOP)()
         }
 
@@ -353,7 +354,7 @@ const Split = (ids, options = {}) => {
         const b = elements[pair.b].element
 
         // Call the onDragStart callback.
-        if (!pair.dragging) {
+        if (draggingPair === null) {
             getOption(options, 'onDragStart', NOOP)()
         }
 
@@ -361,7 +362,7 @@ const Split = (ids, options = {}) => {
         e.preventDefault()
 
         // Set the dragging property of the pair object.
-        pair.dragging = true
+        draggingPair = pair
 
         // Create two event listeners bound to the same pair object and store
         // them in the pair object.

@@ -122,8 +122,8 @@ var Split = function (ids, options) {
     var clientAxis;
     var position;
     var elements;
+    var draggingPair = null;
     var pairs = [];
-
 
     // All DOM elements in the split should have a common parent. We can grab
     // the first elements parent and hope users read the docs because the
@@ -254,7 +254,7 @@ var Split = function (ids, options) {
         var i = this.pairIndex;
         var pair = Object.assign({}, pairs[i]);
 
-        if (!pair.dragging) { return }
+        if (draggingPair === null) { return }
 
         var a = elements[pair.a];
         var b = elements[pair.b];
@@ -289,7 +289,8 @@ var Split = function (ids, options) {
                 pair.b = pushedPair.b;
             }
 
-            if (pushedPair !== undefined) {
+            if (draggingPair !== pair) {
+                draggingPair = pair;
                 calculateSizes.call(pair);
             }
         }
@@ -317,7 +318,7 @@ var Split = function (ids, options) {
         var a = elements[pair.a].element;
         var b = elements[pair.b].element;
 
-        if (pair.dragging) {
+        if (draggingPair !== null) {
             getOption(options, 'onDragEnd', NOOP)();
         }
 
@@ -364,7 +365,7 @@ var Split = function (ids, options) {
         var b = elements[pair.b].element;
 
         // Call the onDragStart callback.
-        if (!pair.dragging) {
+        if (draggingPair === null) {
             getOption(options, 'onDragStart', NOOP)();
         }
 
@@ -372,7 +373,7 @@ var Split = function (ids, options) {
         e.preventDefault();
 
         // Set the dragging property of the pair object.
-        pair.dragging = true;
+        draggingPair = pair;
 
         // Create two event listeners bound to the same pair object and store
         // them in the pair object.
