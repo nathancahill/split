@@ -251,7 +251,8 @@ var Split = function (ids, options) {
     // ---------------------------------------------------------------------
     // | <- this.start                                        this.size -> |
     function drag (e) {
-        var pair = Object.assign({}, pairs[this.pairIndex]);
+        var i = this.pairIndex;
+        var pair = Object.assign({}, pairs[i]);
 
         if (!pair.dragging) { return }
 
@@ -274,8 +275,7 @@ var Split = function (ids, options) {
             var pushedPair;
 
             if (!pair.isFirst && eventOffset < 0) {
-                pushedPair = pairs[this.pairIndex - 1];
-                console.log(pairOffset);
+                pushedPair = pairs[i - 1];
 
                 pairOffset += pair.start - pushedPair.start;
                 pair.a = pushedPair.a;
@@ -283,7 +283,7 @@ var Split = function (ids, options) {
             }
 
             if (!pair.isLast && eventOffset > pair.size) {
-                pushedPair = pairs[this.pairIndex + 1];
+                pushedPair = pairs[i + 1];
 
                 pair.b = pushedPair.b;
                 pair.bGutterSize = pushedPair.bGutterSize;
@@ -303,7 +303,6 @@ var Split = function (ids, options) {
             pairOffset = pair.size - (b.minSize + pair.bGutterSize);
         }
 
-        console.log(pairOffset);
         // Actually adjust the dragged pair size.
         adjust.call(pair, pairOffset);
 
