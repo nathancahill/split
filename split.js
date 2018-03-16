@@ -223,32 +223,43 @@ var Split = function (ids, options) {
     // ---------------------------------------------------------------------
     // | <- this.start                                        this.size -> |
     function drag (e) {
-        var offset;
-        var a = elements[this.a];
-        var b = elements[this.b];
 
-        if (!this.dragging) { return }
+        var pair = pairs[this.pairIndex];
+
+        if (!pair.dragging) { return }
+
+        var offset;
+        var a = elements[pair.a];
+        var b = elements[pair.b];
+
+        var offsetBelowPairConcern = a.minSize + snapOffset + pair.aGutterSize;
+        var offsetAbovePairConcern = pair.size - (b.minSize + snapOffset + pair.bGutterSize);
 
         // Get the offset of the event from the first side of the
         // pair `this.start`. Supports touch events, but not multitouch, so only the first
         // finger `touches[0]` is counted.
         if ('touches' in e) {
-            offset = e.touches[0][clientAxis] - this.start;
+            offset = e.touches[0][clientAxis] - pair.start;
         } else {
-            offset = e[clientAxis] - this.start;
+            offset = e[clientAxis] - pair.start;
         }
+
+        console.log('drag', offset);
+
+        console.log('min', offsetBelowPairConcern);
+        console.log('max', offsetAbovePairConcern);
 
         // If within snapOffset of min or max, set offset to min or max.
         // snapOffset buffers a.minSize and b.minSize, so logic is opposite for both.
         // Include the appropriate gutter sizes to prevent overflows.
-        if (offset <= a.minSize + snapOffset + this.aGutterSize) {
-            offset = a.minSize + this.aGutterSize;
-        } else if (offset >= this.size - (b.minSize + snapOffset + this.bGutterSize)) {
-            offset = this.size - (b.minSize + this.bGutterSize);
+        if (offset <= offsetBelowPairConcern) {
+            offset = a.minSize + pair.aGutterSize;
+        } else if (offset >= offsetAbovePairConcern) {
+            offset = pair.size - (b.minSize + pair.bGutterSize);
         }
 
         // Actually adjust the size.
-        adjust.call(this, offset);
+        adjust.call(pair, offset);
 
         // Call the drag callback continously. Don't do anything too intensive
         // in this callback.
@@ -282,26 +293,26 @@ var Split = function (ids, options) {
 
     // stopDragging is very similar to startDragging in reverse.
     function stopDragging () {
-        var self = this;
-        var a = elements[self.a].element;
-        var b = elements[self.b].element;
+        var pair = pairs[this.pairIndex];
+        var a = elements[pair.a].element;
+        var b = elements[pair.b].element;
 
-        if (self.dragging) {
+        if (pair.dragging) {
             getOption(options, 'onDragEnd', NOOP)();
         }
 
-        self.dragging = false;
+        pair.dragging = false;
 
         // Remove the stored event listeners. This is why we store them.
-        global[removeEventListener]('mouseup', self.stop);
-        global[removeEventListener]('touchend', self.stop);
-        global[removeEventListener]('touchcancel', self.stop);
-        global[removeEventListener]('mousemove', self.move);
-        global[removeEventListener]('touchmove', self.move);
+        global[removeEventListener]('mouseup', pair.stop);
+        global[removeEventListener]('touchend', pair.stop);
+        global[removeEventListener]('touchcancel', pair.stop);
+        global[removeEventListener]('mousemove', pair.move);
+        global[removeEventListener]('touchmove', pair.move);
 
         // Clear bound function references
-        self.stop = null;
-        self.move = null;
+        pair.stop = null;
+        pair.move = null;
 
         a[removeEventListener]('selectstart', NOOP);
         a[removeEventListener]('dragstart', NOOP);
@@ -318,8 +329,8 @@ var Split = function (ids, options) {
         b.style.MozUserSelect = '';
         b.style.pointerEvents = '';
 
-        self.gutter.style.cursor = '';
-        self.parent.style.cursor = '';
+        pair.gutter.style.cursor = '';
+        pair.parent.style.cursor = '';
         document.body.style.cursor = '';
     }
 
@@ -328,12 +339,12 @@ var Split = function (ids, options) {
     // and prevents selection while dragging so avoid the selecting text.
     function startDragging (e) {
         // Alias frequently used variables to save space. 200 bytes.
-        var self = this;
-        var a = elements[self.a].element;
-        var b = elements[self.b].element;
+        var pair = pairs[this.pairIndex];
+        var a = elements[pair.a].element;
+        var b = elements[pair.b].element;
 
         // Call the onDragStart callback.
-        if (!self.dragging) {
+        if (!pair.dragging) {
             getOption(options, 'onDragStart', NOOP)();
         }
 
@@ -341,19 +352,19 @@ var Split = function (ids, options) {
         e.preventDefault();
 
         // Set the dragging property of the pair object.
-        self.dragging = true;
+        pair.dragging = true;
 
         // Create two event listeners bound to the same pair object and store
         // them in the pair object.
-        self.move = drag.bind(self);
-        self.stop = stopDragging.bind(self);
+        pair.move = drag.bind(this);
+        pair.stop = stopDragging.bind(this);
 
         // All the binding. `window` gets the stop events in case we drag out of the elements.
-        global[addEventListener]('mouseup', self.stop);
-        global[addEventListener]('touchend', self.stop);
-        global[addEventListener]('touchcancel', self.stop);
-        global[addEventListener]('mousemove', self.move);
-        global[addEventListener]('touchmove', self.move);
+        global[addEventListener]('mouseup', pair.stop);
+        global[addEventListener]('touchend', pair.stop);
+        global[addEventListener]('touchcancel', pair.stop);
+        global[addEventListener]('mousemove', pair.move);
+        global[addEventListener]('touchmove', pair.move);
 
         // Disable selection. Disable!
         a[addEventListener]('selectstart', NOOP);
@@ -372,12 +383,12 @@ var Split = function (ids, options) {
         b.style.pointerEvents = 'none';
 
         // Set the cursor at multiple levels
-        self.gutter.style.cursor = cursor;
-        self.parent.style.cursor = cursor;
+        pair.gutter.style.cursor = cursor;
+        pair.parent.style.cursor = cursor;
         document.body.style.cursor = cursor;
 
         // Cache the initial sizes of the pair.
-        calculateSizes.call(self);
+        calculateSizes.call(pair);
     }
 
     // 5. Create pair and element objects. Each pair has an index reference to
@@ -410,6 +421,7 @@ var Split = function (ids, options) {
         };
 
         var pair;
+        var pairIndex = pairs.length;
 
         if (i > 0) {
             // Create the pair object with its metadata.
@@ -454,8 +466,8 @@ var Split = function (ids, options) {
                 var gutterElement = gutter(i, direction);
                 setGutterSize(gutterElement, gutterSize);
 
-                gutterElement[addEventListener]('mousedown', startDragging.bind(pair));
-                gutterElement[addEventListener]('touchstart', startDragging.bind(pair));
+                gutterElement[addEventListener]('mousedown', startDragging.bind({ pairIndex: pairIndex }));
+                gutterElement[addEventListener]('touchstart', startDragging.bind({ pairIndex: pairIndex }));
 
                 parent.insertBefore(gutterElement, element.element);
 
