@@ -53,12 +53,12 @@
   </style>
 </head>
 <body>
-    <div id="a" class="split split-vertical">
+    <div id="a" class="split">
       <div id="c" class="split split-horizontal content">HTML</div>
       <div id="d" class="split split-horizontal content">CSS</div>
       <div id="e" class="split split-horizontal content">JS</div>
     </div>
-    <div id="b" class="split split-vertical content">
+    <div id="b" class="split content">
       Result
     </div>
 </body>
@@ -72,6 +72,7 @@
     })
 
     Split(['#c', '#d', '#e'], {
+      pushablePanes: true,
       gutterSize: 8,
       minSize: 2,
       cursor: 'col-resize'

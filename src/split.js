@@ -111,6 +111,8 @@ const Split = (ids, options = {}) => {
     let clientAxis
     let position
     let elements
+    const pairs = []
+
 
     // All DOM elements in the split should have a common parent. We can grab
     // the first elements parent and hope users read the docs because the
@@ -127,6 +129,7 @@ const Split = (ids, options = {}) => {
     const minSizes = Array.isArray(minSize) ? minSize : ids.map(() => minSize)
     const gutterSize = getOption(options, 'gutterSize', 10)
     const snapOffset = getOption(options, 'snapOffset', 30)
+    const pushablePanes = getOption(options, 'pushablePanes', false)
     const direction = getOption(options, 'direction', HORIZONTAL)
     const cursor = getOption(options, 'cursor', direction === HORIZONTAL ? 'ew-resize' : 'ns-resize')
     const gutter = getOption(options, 'gutter', defaultGutterFn)
@@ -197,64 +200,6 @@ const Split = (ids, options = {}) => {
         setElementSize(b.element, b.size, this.bGutterSize)
     }
 
-    // drag, where all the magic happens. The logic is really quite simple:
-    //
-    // 1. Ignore if the pair is not dragging.
-    // 2. Get the offset of the event.
-    // 3. Snap offset to min if within snappable range (within min + snapOffset).
-    // 4. Actually adjust each element in the pair to offset.
-    //
-    // ---------------------------------------------------------------------
-    // |    | <- a.minSize               ||              b.minSize -> |    |
-    // |    |  | <- this.snapOffset      ||     this.snapOffset -> |  |    |
-    // |    |  |                         ||                        |  |    |
-    // |    |  |                         ||                        |  |    |
-    // ---------------------------------------------------------------------
-    // | <- this.start                                        this.size -> |
-    function drag (e) {
-
-        const pair = pairs[this.pairIndex]
-
-        if (!pair.dragging) return
-
-        let offset
-        const a = elements[pair.a]
-        const b = elements[pair.b]
-
-        const offsetBelowPairConcern = a.minSize + snapOffset + pair.aGutterSize
-        const offsetAbovePairConcern = pair.size - (b.minSize + snapOffset + pair.bGutterSize)
-
-        // Get the offset of the event from the first side of the
-        // pair `this.start`. Supports touch events, but not multitouch, so only the first
-        // finger `touches[0]` is counted.
-        if ('touches' in e) {
-            offset = e.touches[0][clientAxis] - pair.start
-        } else {
-            offset = e[clientAxis] - pair.start
-        }
-
-        console.log('drag', offset)
-
-        console.log('min', offsetBelowPairConcern)
-        console.log('max', offsetAbovePairConcern)
-
-        // If within snapOffset of min or max, set offset to min or max.
-        // snapOffset buffers a.minSize and b.minSize, so logic is opposite for both.
-        // Include the appropriate gutter sizes to prevent overflows.
-        if (offset <= offsetBelowPairConcern) {
-            offset = a.minSize + pair.aGutterSize
-        } else if (offset >= offsetAbovePairConcern) {
-            offset = pair.size - (b.minSize + pair.bGutterSize)
-        }
-
-        // Actually adjust the size.
-        adjust.call(pair, offset)
-
-        // Call the drag callback continously. Don't do anything too intensive
-        // in this callback.
-        getOption(options, 'onDrag', NOOP)()
-    }
-
     // Cache some important sizes when drag starts, so we don't have to do that
     // continously:
     //
@@ -278,6 +223,77 @@ const Split = (ids, options = {}) => {
 
         this.size = aBounds[dimension] + bBounds[dimension] + this.aGutterSize + this.bGutterSize
         this.start = aBounds[position]
+    }
+
+    // drag, where all the magic happens. The logic is really quite simple:
+    //
+    // 1. Ignore if the pair is not dragging.
+    // 2. Get the offset of the event.
+    // 3. Snap offset to min if within snappable range (within min + snapOffset).
+    // 4. Actually adjust each element in the pair to offset.
+    //
+    // ---------------------------------------------------------------------
+    // |    | <- a.minSize               ||              b.minSize -> |    |
+    // |    |  | <- this.snapOffset      ||     this.snapOffset -> |  |    |
+    // |    |  |                         ||                        |  |    |
+    // |    |  |                         ||                        |  |    |
+    // ---------------------------------------------------------------------
+    // | <- this.start                                        this.size -> |
+    function drag (e) {
+        const pair = Object.assign({}, pairs[this.pairIndex])
+
+        if (!pair.dragging) return
+
+        let eventOffset
+        const a = elements[pair.a]
+        const b = elements[pair.b]
+
+        // Get the offset of the event from the first side of the
+        // pair `this.start`. Supports touch events, but not multitouch, so only the first
+        // finger `touches[0]` is counted.
+        if ('touches' in e) {
+            eventOffset = e.touches[0][clientAxis] - pair.start
+        } else {
+            eventOffset = e[clientAxis] - pair.start
+        }
+
+        if (pushablePanes && pairs.length > 1) {
+            let pushedPair
+
+            // if (!pair.isFirst && eventOffset < 0) {
+            //     pushedPair = pairs[this.pairIndex - 1]
+            //     pair.a = pushedPair.a
+            //     pair.aGutterSize = pushedPair.aGutterSize
+            // }
+
+            if (!pair.isLast && eventOffset > pair.size) {
+                pushedPair = pairs[this.pairIndex + 1]
+
+                pair.b = pushedPair.b
+                pair.bGutterSize = pushedPair.bGutterSize
+            }
+
+            if (pushedPair !== undefined) {
+                calculateSizes.call(pair)
+            }
+        }
+
+        // If within snapOffset of min or max, set offset to min or max.
+        // snapOffset buffers a.minSize and b.minSize, so logic is opposite for both.
+        // Include the appropriate gutter sizes to prevent overflows.
+        let pairOffset = eventOffset
+        if (pairOffset <= a.minSize + snapOffset + pair.aGutterSize) {
+            pairOffset = a.minSize + pair.aGutterSize
+        } else if (pairOffset >= pair.size - (b.minSize + snapOffset + pair.bGutterSize)) {
+            pairOffset = pair.size - (b.minSize + pair.bGutterSize)
+        }
+
+        // Actually adjust the dragged pair size.
+        adjust.call(pair, pairOffset)
+
+        // Call the drag callback continously. Don't do anything too intensive
+        // in this callback.
+        getOption(options, 'onDrag', NOOP)()
     }
 
     // stopDragging is very similar to startDragging in reverse.
@@ -376,7 +392,6 @@ const Split = (ids, options = {}) => {
         pair.parent.style.cursor = cursor
         document.body.style.cursor = cursor
 
-        // Cache the initial sizes of the pair.
         calculateSizes.call(pair)
     }
 
@@ -400,7 +415,6 @@ const Split = (ids, options = {}) => {
     // |           pair 0                pair 1             pair 2           |
     // |             |                     |                  |              |
     // -----------------------------------------------------------------------
-    const pairs = []
     elements = ids.map((id, i) => {
         // Create the element object.
         const element = {
