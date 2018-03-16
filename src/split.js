@@ -263,19 +263,19 @@ const Split = (ids, options = {}) => {
         if (pushablePanes && pairs.length > 1) {
             let pushedPair
 
-            if (!pair.isFirst && eventOffset < 0) {
-                pushedPair = pairs[i - 1]
+            if (!pair.isFirst && eventOffset < a.minSize) {
+                pushedPair = pairs[this.pairIndex - 1]
 
-                pairOffset += pair.start - pushedPair.start
-                pair.a = pushedPair.a
+                pairOffset += pair.start - pushedPair.start - a.minSize
                 pair.aGutterSize = pushedPair.aGutterSize
+                pair.a = pushedPair.a
             }
 
-            if (!pair.isLast && eventOffset > pair.size) {
-                pushedPair = pairs[i + 1]
+            if (!pair.isLast && eventOffset > pair.size - b.minSize) {
+                pushedPair = pairs[this.pairIndex + 1]
 
-                pair.b = pushedPair.b
                 pair.bGutterSize = pushedPair.bGutterSize
+                pair.b = pushedPair.b
             }
 
             if (pushedPair !== undefined) {

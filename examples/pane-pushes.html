@@ -54,27 +54,38 @@
 </head>
 <body>
     <div id="a" class="split">
-      <div id="c" class="split split-horizontal content">HTML</div>
-      <div id="d" class="split split-horizontal content">CSS</div>
-      <div id="e" class="split split-horizontal content">JS</div>
+      <div id="d" class="split split-horizontal content">HTML</div>
+      <div id="e" class="split split-horizontal content">CSS</div>
+      <div id="f" class="split split-horizontal content">JS</div>
     </div>
     <div id="b" class="split content">
       Result
     </div>
+    <div id="c" class="split">
+      <div id="g" class="split split-horizontal content">HTML</div>
+      <div id="h" class="split split-horizontal content">CSS</div>
+      <div id="i" class="split split-horizontal content">JS</div>
+    </div>
 </body>
 <script src="../split.js"></script>
 <script>
-    Split(['#a', '#b'], {
-      sizes: [40, 60],
+    Split(['#a', '#b', '#c'], {
+      sizes: [40, 20, 40],
       direction: 'vertical',
       gutterSize: 8,
       cursor: 'row-resize'
     })
 
-    Split(['#c', '#d', '#e'], {
+    Split(['#d', '#e', '#f'], {
       pushablePanes: true,
       gutterSize: 8,
       minSize: 2,
+      cursor: 'col-resize'
+    })
+
+    Split(['#g', '#h', '#i'], {
+      pushablePanes: true,
+      gutterSize: 8,
       cursor: 'col-resize'
     })
 

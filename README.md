@@ -8,10 +8,10 @@
 
 # Split.js
 
-> < 2kb unopinionated utility for resizeable split views. 
+> < 2kb unopinionated utility for resizeable split views.
 
  - __Zero Deps__
- - __Tiny:__ Weights less than 2kb gzipped. 
+ - __Tiny:__ Weights less than 2kb gzipped.
  - __Fast:__ No overhead or attached window event listeners, uses pure CSS for resizing.
  - __Unopinionated:__ Plays nicely with `calc`, `flex` and `grid`.
  - __Compatible:__ Works great in IE9, and _even loads in IE8_ with polyfills. Early Firefox/Chrome/Safari/Opera supported too.
@@ -66,6 +66,7 @@ var split = Split(<HTMLElement|selector[]> elements, <options> options?)
 | `minSize` | Number or Array | 100 | Minimum size of each element. |
 | `gutterSize` | Number | 10 | Gutter size in pixels. |
 | `snapOffset` | Number | 30 | Snap to minimum size offset in pixels. |
+| `pushablePanes` | Boolean  | false | Allow pushing panes while dragging |
 | `direction` | String | 'horizontal' | Direction to split: horizontal or vertical. |
 | `cursor` | String | 'col-resize' | Cursor to display while dragging. |
 | `gutter` | Function | | Called to create each gutter element |
@@ -82,7 +83,7 @@ This is by design. It makes Split.js flexible and useful in many different situa
 If you create a horizontal split, you are responsible for (likely) floating the elements and the gutter,
 and setting their heights. See the [CSS](#css) section below. If your gutters are not showing up, check the applied CSS styles.
 
-__THIS IS THE #1 QUESTION ABOUT THE LIBRARY__. 
+__THIS IS THE #1 QUESTION ABOUT THE LIBRARY__.
 
 ## Options
 
@@ -131,6 +132,17 @@ Snap to minimum size at this offset in pixels. Example: Set to 0 to disable to s
 ```js
 Split(['#one', '#two'], {
     snapOffset: 0
+})
+```
+
+
+#### pushablePanes. Default: false
+
+Allow pushing panes while dragging. Example: Set to true to allow pushing panes.
+
+```js
+Split(['#one', '#two'], {
+    pushablePanes: true
 })
 ```
 
