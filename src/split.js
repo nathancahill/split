@@ -531,8 +531,8 @@ const Split = (ids, options = {}) => {
             }
         },
         destroy,
-        parent: parent,
-        pairs: pairs
+        parent,
+        pairs,
     }
 }
 
