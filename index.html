@@ -104,7 +104,7 @@
     <div class="container">
         <h3>Split.js</h3>
         <div class="row example-1">
-            <div id="one" class="split split-horizontal">
+            <div id="api-one" class="split split-horizontal">
                 <p>Split.js is a lightweight, unopinionated utility for creating adjustable split views or panes.</p>
                 <p>
                   No dependencies or markup required, just two or more elements with a common parent.
@@ -113,7 +113,7 @@
                   Views can be split horizontally or vertically, with draggable gutters inserted between every two elements.
                 </p>
             </div>
-            <div id="two" class="split split-horizontal">
+            <div id="api-two" class="split split-horizontal">
               <h5>Documentation</h5>
               <hr>
               <pre><code>Split(&lt;HTMLElement|selector[]&gt; elements, &lt;options&gt; options?)</code></pre>
@@ -150,6 +150,12 @@
                     <td>Number</td>
                     <td>30</td>
                     <td>Snap to minimum size offset.</td>
+                  </tr>
+                  <tr>
+                    <td>pushablePanes</td>
+                    <td>Boolean</td>
+                    <td>false</td>
+                    <td>Allow pushing panes while dragging</td>
                   </tr>
                   <tr>
                     <td>direction</td>
@@ -195,60 +201,80 @@
     minSize: 200
 });</code></pre>
           <div class="example-2">
-            <div id="three" class="split split-horizontal">
-              <p>#three</p>
+            <div id="one" class="split split-horizontal">
+              <p>#one</p>
             </div>
-            <div id="four" class="split split-horizontal">
-              <p>#four</p>
+            <div id="two" class="split split-horizontal">
+              <p>#two</p>
             </div>
           </div>
           <br>
-        <p>A split with three elements, starting with even widths with 100px, 100px and 300px minimum widths, respectively.</p>
-                <pre><code>Split(['#one', '#two', '#three'], {
+          <p>A split with three elements, starting with even widths with 100px, 100px and 300px minimum widths, respectively.</p>
+                <pre><code>Split(['#three', '#four', '#five'], {
     minSize: [100, 100, 300]
 });</code></pre>
           <div class="example-3">
+            <div id="three" class="split split-horizontal">
+              <p>#three, minSize: 100px</p>
+            </div>
+            <div id="four" class="split split-horizontal">
+              <p>#four, minSize: 100px</p>
+            </div>
             <div id="five" class="split split-horizontal">
-              <p>#five, minSize: 100px</p>
-            </div>
-            <div id="six" class="split split-horizontal">
-              <p>#six, minSize: 100px</p>
-            </div>
-            <div id="seven" class="split split-horizontal">
-              <p>#seven, minSize: 300px</p>
+              <p>#five, minSize: 300px</p>
             </div>
           </div>
           <br>
+          <p>A split with four elements, starting with even widths with 100px, 100px, 100px and 300px minimum widths, respectively.</p>
+                  <pre><code>Split(['#six', '#seven', '#eight', '#nine'], {
+      minSize: [0, 0, 0, 300],
+      pushingPanes: true
+  });</code></pre>
+            <div class="example-3">
+              <div id="six" class="split split-horizontal">
+                <p>#six, minSize: 0</p>
+              </div>
+              <div id="seven" class="split split-horizontal">
+                <p>#seven, minSize: 0</p>
+              </div>
+              <div id="eight" class="split split-horizontal">
+                <p>#eight, minSize: 0</p>
+              </div>
+              <div id="nine" class="split split-horizontal">
+                <p>#nine, minSize: 300px</p>
+              </div>
+            </div>
+            <br>
         <p>A vertical split with two elements, starting with even heights.</p>
-                <pre><code>Split(['#eight', '#nine'], {
+                <pre><code>Split(['#ten', '#eleven'], {
     direction: 'vertical'
 });</code></pre>
           <div class="example-4">
-            <div id="eight" class="split split-vertical">
-              <p>#eight</p>
+            <div id="ten" class="split split-vertical">
+              <p>#ten</p>
             </div>
-            <div id="nine" class="split split-vertical">
-              <p>#nine</p>
+            <div id="eleven" class="split split-vertical">
+              <p>#eleven</p>
             </div>
           </div>
           <br>
         <p>Nested splits, horizontal and vertical.</p>
-                <pre><code>Split(['#ten', '#eleven']);
+                <pre><code>Split(['#twelve', '#thirteen']);
 
-Split(['#twelve', '#thirteen'], {
+Split(['#fourteen', '#fifteen'], {
     direction: 'vertical'
 });</code></pre>
           <div class="example-5">
-            <div id="ten" class="split split-horizontal">
-              <div id="twelve" class="split split-vertical">
-                <p>#twelve</p>
+            <div id="twelve" class="split split-horizontal">
+              <div id="fourteen" class="split split-vertical">
+                <p>#fourteen</p>
               </div>
-              <div id="thirteen" class="split split-vertical">
-                <p>#thirteen</p>
+              <div id="fifteen" class="split split-vertical">
+                <p>#fifteen</p>
               </div>
             </div>
-            <div id="eleven" class="split split-horizontal">
-              <p>#eleven</p>
+            <div id="thirteen" class="split split-horizontal">
+              <p>#thirteen</p>
             </div>
           </div>
           <br><br>
@@ -294,7 +320,7 @@ Split(['#twelve', '#thirteen'], {
           <h5>API</h5>
           <hr>
           <p>Use the returned instance to access two methods that control the split: <b>setSizes</b> and <b>collapse</b>, a method for getting the current sizes: <b>getSizes</b> and a method for destroying the split: <b>destroy</b>.</p>
-          <pre><code>var instance = Split(['#fourteen', '#fifteen', '#sixteen'], {
+          <pre><code>var instance = Split(['#sixteen', '#seventeen', '#eighteen'], {
     sizes: [50, 25, 25]
 });
 
@@ -307,14 +333,14 @@ instance.setSizes([50, 25, 25]);  // Reset
 instance.destroy();  // Destroy</code></pre>
 
           <div class="example-6">
-            <div id="fourteen" class="split split-horizontal">
-              <p>#fourteen</p>
-            </div>
-            <div id="fifteen" class="split split-horizontal">
-              <p>#fifteen</p>
-            </div>
             <div id="sixteen" class="split split-horizontal">
               <p>#sixteen</p>
+            </div>
+            <div id="seventeen" class="split split-horizontal">
+              <p>#seventeen</p>
+            </div>
+            <div id="eighteen" class="split split-horizontal">
+              <p>#eighteen</p>
             </div>
           </div>
           <br><br>
@@ -326,7 +352,7 @@ instance.destroy();  // Destroy</code></pre>
             <button onclick="console.log(instance.getSizes())">Get Sizes</button>
             <button onclick="instance.setSizes([50, 25, 25])">Reset</button>
             <button onclick="instance.destroy()">Destroy</button>
-            <button onclick="instance = Split(['#fourteen', '#fifteen', '#sixteen'], {sizes: [50, 25, 25]});">Create</button>
+            <button onclick="instance = Split(['#sixteen', '#seventeen', '#eighteen'], {sizes: [50, 25, 25]});">Create</button>
           </div>
 
           <br>
@@ -339,28 +365,36 @@ instance.destroy();  // Destroy</code></pre>
 <script>hljs.initHighlightingOnLoad();</script>
 <script src="split.js"></script>
 <script>
-    Split(['#one', '#two'], {
+    Split(['#api-one', '#api-two'], {
         sizes: [29, 71],
         minSize: 200
     });
 
-    Split(['#three', '#four'], {
+    Split(['#one', '#two'], {
         sizes: [25, 75],
         minSize: 200
     });
 
-    Split(['#five', '#six', '#seven'], {
+    Split(['#three', '#four', '#five'], {
         minSize: [100, 100, 300]
     });
 
-    Split(['#eight', '#nine'], {
+    Split(['#six', '#seven', '#eight', '#nine'], {
+        minSize: [0, 0, 0, 300],
+        pushingPanes: true
+    });
+
+    Split(['#ten', '#eleven'], {
         direction: 'vertical'
     });
 
-    Split(['#ten', '#eleven']);
+    Split(['#twelve', '#thirteen']);
+    Split(['#fourteen', '#fifteen'], {
+      direction: 'vertical'
+    });
 
-    Split(['#twelve', '#thirteen'], {
-        direction: 'vertical'
+    var instance = Split(['#sixteen', '#seventeen', '#eighteen'], {
+      sizes: [50, 25, 25]
     });
 
     Split(['#flex-1', '#flex-2'], {
@@ -381,8 +415,5 @@ instance.destroy();  // Destroy</code></pre>
       }
     });
 
-    var instance = Split(['#fourteen', '#fifteen', '#sixteen'], {
-      sizes: [50, 25, 25]
-    });
 </script>
 </html>
