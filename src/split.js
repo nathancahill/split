@@ -215,11 +215,11 @@ const Split = (ids, options = {}) => {
     // | <- start                             size -> |
     function calculateSizes () {
         // Figure out the parent size minus padding.
-        const a = elements[this.a].element
-        const b = elements[this.b].element
+        const a = elements[this.a]
+        const b = elements[this.b]
 
-        const aBounds = a[getBoundingClientRect]()
-        const bBounds = b[getBoundingClientRect]()
+        const aBounds = a.element[getBoundingClientRect]()
+        const bBounds = b.element[getBoundingClientRect]()
 
         this.size = aBounds[dimension] + bBounds[dimension] + this.aGutterSize + this.bGutterSize
         this.start = aBounds[position]
@@ -265,6 +265,7 @@ const Split = (ids, options = {}) => {
 
             if (!pair.isFirst && eventOffset < a.minSize) {
                 pushedPair = pairs[this.pairIndex - 1]
+                if (!pushedPair.size) calculateSizes.call(pushedPair)
 
                 pairOffset += pair.start - pushedPair.start - a.minSize
                 pair.aGutterSize = pushedPair.aGutterSize
@@ -273,15 +274,13 @@ const Split = (ids, options = {}) => {
 
             if (!pair.isLast && eventOffset > pair.size - b.minSize) {
                 pushedPair = pairs[this.pairIndex + 1]
+                if (!pushedPair.size) calculateSizes.call(pushedPair)
 
                 pair.bGutterSize = pushedPair.bGutterSize
                 pair.b = pushedPair.b
             }
 
-            if (draggingPair !== pair) {
-                draggingPair = pair
-                calculateSizes.call(pair)
-            }
+            calculateSizes.call(pair)
         }
 
         // If within snapOffset of min or max, set offset to min or max.
