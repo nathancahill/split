@@ -225,10 +225,10 @@
             </div>
           </div>
           <br>
-          <p>A split with four elements, starting with even widths with 100px, 100px, 100px and 300px minimum widths, respectively.</p>
+          <p>A split with four elements, starting with even widths with 0px, 0px, 0px and 300px minimum widths, respectively.</p>
                   <pre><code>Split(['#six', '#seven', '#eight', '#nine'], {
       minSize: [0, 0, 0, 300],
-      pushingPanes: true
+      pushablePanes: true
   });</code></pre>
             <div class="example-3">
               <div id="six" class="split split-horizontal">
@@ -381,7 +381,7 @@ instance.destroy();  // Destroy</code></pre>
 
     Split(['#six', '#seven', '#eight', '#nine'], {
         minSize: [0, 0, 0, 300],
-        pushingPanes: true
+        pushablePanes: true
     });
 
     Split(['#ten', '#eleven'], {
