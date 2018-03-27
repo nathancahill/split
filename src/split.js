@@ -115,6 +115,10 @@ const Split = (ids, options = {}) => {
     // All DOM elements in the split should have a common parent. We can grab
     // the first elements parent and hope users read the docs because the
     // behavior will be whacky otherwise.
+    const firstElement = elementOrSelector(ids[0])
+    if (firstElement === null) {
+        throw new Error(`no element found matching selector ${ids[0]}`)
+    }
     const parent = elementOrSelector(ids[0]).parentNode
     const parentFlexDirection = global.getComputedStyle(parent).flexDirection
 
@@ -396,6 +400,10 @@ const Split = (ids, options = {}) => {
             element: elementOrSelector(id),
             size: sizes[i],
             minSize: minSizes[i],
+        }
+
+        if (element.element === null) {
+            throw new Error(`no element found matching selector ${id}`)
         }
 
         let pair
