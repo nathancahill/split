@@ -110,7 +110,7 @@ const Split = (ids, options = {}) => {
     let dimension
     let clientAxis
     let position
-    let elements
+    let panes
     let draggingPair = null
     const pairs = []
 
@@ -120,7 +120,7 @@ const Split = (ids, options = {}) => {
     const parent = elementOrSelector(ids[0]).parentNode
     const parentFlexDirection = global.getComputedStyle(parent).flexDirection
 
-    // Set default options.sizes to equal percentages of the parent element.
+    // Set default options.sizes to equal percentages of the parent pane.
     const sizes = getOption(options, 'sizes') || ids.map(() => 100 / ids.length)
 
     // Standardize minSize to an array if it isn't already. This allows minSize
@@ -160,16 +160,16 @@ const Split = (ids, options = {}) => {
     // The pair object saves metadata like dragging state, position and
     // event listener references.
 
-    function setElementSize (el, size, gutSize) {
+    function applyPaneSize (pane) {
         // Split.js allows setting sizes via numbers (ideally), or if you must,
         // by string, like '300px'. This is less than ideal, because it breaks
         // the fluid layout that `calc(% - px)` provides. You're on your own if you do that,
         // make sure you calculate the gutter size by hand.
-        const style = elementStyle(dimension, size, gutSize)
+        const style = elementStyle(dimension, pane.size, pane.gutterSize)
 
         // eslint-disable-next-line no-param-reassign
         Object.keys(style).forEach(prop => {
-            el.style[prop] = style[prop]
+            pane.element.style[prop] = style[prop]
         })
     }
 
@@ -189,22 +189,22 @@ const Split = (ids, options = {}) => {
     // Both sizes are calculated from the initial parent percentage,
     // then the gutter size is subtracted.
     function adjust (offset) {
-        const a = elements[this.a]
-        const b = elements[this.b]
+        const a = panes[this.a]
+        const b = panes[this.b]
         const percentage = a.size + b.size
 
         a.size = (offset / this.size) * percentage
         b.size = (percentage - ((offset / this.size) * percentage))
 
-        setElementSize(a.element, a.size, this.aGutterSize)
-        setElementSize(b.element, b.size, this.bGutterSize)
+        applyPaneSize(a, a.gutterSize)
+        applyPaneSize(b, b.gutterSize)
     }
 
     // Cache some important sizes when drag starts, so we don't have to do that
     // continously:
     //
     // `size`: The total size of the pair. First + second + first gutter + second gutter.
-    // `start`: The leading side of the first element.
+    // `start`: The leading side of the first pane.
     //
     // ------------------------------------------------
     // |      aGutterSize -> |||                      |
@@ -215,13 +215,13 @@ const Split = (ids, options = {}) => {
     // | <- start                             size -> |
     function calculateSizes () {
         // Figure out the parent size minus padding.
-        const a = elements[this.a]
-        const b = elements[this.b]
+        const a = panes[this.a]
+        const b = panes[this.b]
 
         const aBounds = a.element[getBoundingClientRect]()
         const bBounds = b.element[getBoundingClientRect]()
 
-        this.size = aBounds[dimension] + bBounds[dimension] + this.aGutterSize + this.bGutterSize
+        this.size = aBounds[dimension] + bBounds[dimension] + a.gutterSize + b.gutterSize
         this.start = aBounds[position]
     }
 
@@ -245,8 +245,8 @@ const Split = (ids, options = {}) => {
 
         if (draggingPair === null) return
 
-        const a = elements[pair.a]
-        const b = elements[pair.b]
+        const a = panes[pair.a]
+        const b = panes[pair.b]
 
         let eventOffset
         // Get the offset of the event from the first side of the
@@ -268,7 +268,6 @@ const Split = (ids, options = {}) => {
                 if (!pushedPair.size) calculateSizes.call(pushedPair)
 
                 pairOffset += pair.start - pushedPair.start - a.minSize
-                pair.aGutterSize = pushedPair.aGutterSize
                 pair.a = pushedPair.a
             }
 
@@ -276,7 +275,6 @@ const Split = (ids, options = {}) => {
                 pushedPair = pairs[this.pairIndex + 1]
                 if (!pushedPair.size) calculateSizes.call(pushedPair)
 
-                pair.bGutterSize = pushedPair.bGutterSize
                 pair.b = pushedPair.b
             }
 
@@ -286,10 +284,10 @@ const Split = (ids, options = {}) => {
         // If within snapOffset of min or max, set offset to min or max.
         // snapOffset buffers a.minSize and b.minSize, so logic is opposite for both.
         // Include the appropriate gutter sizes to prevent overflows.
-        if (pairOffset <= a.minSize + snapOffset + pair.aGutterSize) {
-            pairOffset = a.minSize + pair.aGutterSize
-        } else if (pairOffset >= pair.size - (b.minSize + snapOffset + pair.bGutterSize)) {
-            pairOffset = pair.size - (b.minSize + pair.bGutterSize)
+        if (pairOffset <= a.minSize + snapOffset + panes[pair.a].gutterSize) {
+            pairOffset = a.minSize + panes[pair.a].gutterSize
+        } else if (pairOffset >= pair.size - (b.minSize + snapOffset + panes[pair.b].gutterSize)) {
+            pairOffset = pair.size - (b.minSize + panes[pair.b].gutterSize)
         }
 
         // Actually adjust the dragged pair size.
@@ -303,8 +301,8 @@ const Split = (ids, options = {}) => {
     // stopDragging is very similar to startDragging in reverse.
     function stopDragging () {
         const pair = pairs[this.pairIndex]
-        const a = elements[pair.a].element
-        const b = elements[pair.b].element
+        const a = panes[pair.a].element
+        const b = panes[pair.b].element
 
         if (draggingPair !== null) {
             getOption(options, 'onDragEnd', NOOP)()
@@ -349,15 +347,15 @@ const Split = (ids, options = {}) => {
     function startDragging (e) {
         // Alias frequently used variables to save space. 200 bytes.
         const pair = pairs[this.pairIndex]
-        const a = elements[pair.a].element
-        const b = elements[pair.b].element
+        const a = panes[pair.a].element
+        const b = panes[pair.b].element
 
         // Call the onDragStart callback.
         if (draggingPair === null) {
             getOption(options, 'onDragStart', NOOP)()
         }
 
-        // Don't actually drag the element. We emulate that in the drag function.
+        // Don't actually drag the pane. We emulate that in the drag function.
         e.preventDefault()
 
         // Set the dragging property of the pair object.
@@ -399,19 +397,19 @@ const Split = (ids, options = {}) => {
         calculateSizes.call(pair)
     }
 
-    // 5. Create pair and element objects. Each pair has an index reference to
-    // elements `a` and `b` of the pair (first and second elements).
-    // Loop through the elements while pairing them off. Every pair gets a
+    // 5. Create pair and pane objects. Each pair has an index reference to
+    // panes `a` and `b` of the pair (first and second panes).
+    // Loop through the panes while pairing them off. Every pair gets a
     // `pair` object, a gutter, and isFirst/isLast properties.
     //
     // Basic logic:
     //
-    // - Starting with the second element `i > 0`, create `pair` objects with
+    // - Starting with the second pane `i > 0`, create `pair` objects with
     //   `a = i - 1` and `b = i`
     // - Set gutter sizes based on the _pair_ being first/last. The first and last
     //   pair have gutterSize / 2, since they only have one half gutter, and not two.
     // - Create gutter elements and add event listeners.
-    // - Set the size of the elements, minus the gutter sizes.
+    // - Set the size of the panes, minus the gutter sizes.
     //
     // -----------------------------------------------------------------------
     // |     i=0     |         i=1         |        i=2       |      i=3     |
@@ -419,12 +417,13 @@ const Split = (ids, options = {}) => {
     // |           pair 0                pair 1             pair 2           |
     // |             |                     |                  |              |
     // -----------------------------------------------------------------------
-    elements = ids.map((id, i) => {
+    panes = ids.map((id, i) => {
         // Create the element object.
-        const element = {
+        const pane = {
             element: elementOrSelector(id),
-            size: sizes[i],
+            gutterSize: (i === 0 || i === ids.length - 1) ? gutterSize / 2 : gutterSize,
             minSize: minSizes[i],
+            size: sizes[i],
         }
 
         let pair
@@ -442,18 +441,6 @@ const Split = (ids, options = {}) => {
                 parent,
             }
 
-            // For first and last pairs, first and last gutter width is half.
-            pair.aGutterSize = gutterSize
-            pair.bGutterSize = gutterSize
-
-            if (pair.isFirst) {
-                pair.aGutterSize = gutterSize / 2
-            }
-
-            if (pair.isLast) {
-                pair.bGutterSize = gutterSize / 2
-            }
-
             // if the parent has a reverse flex-direction, switch the pair elements.
             if (parentFlexDirection === 'row-reverse' || parentFlexDirection === 'column-reverse') {
                 const temp = pair.a
@@ -462,7 +449,7 @@ const Split = (ids, options = {}) => {
             }
         }
 
-        // Determine the size of the current element. IE8 is supported by
+        // Determine the size of the current pane. IE8 is supported by
         // staticly assigning sizes without draggable gutters. Assigns a string
         // to `size`.
         //
@@ -476,24 +463,18 @@ const Split = (ids, options = {}) => {
                 gutterElement[addEventListener]('mousedown', startDragging.bind({ pairIndex }))
                 gutterElement[addEventListener]('touchstart', startDragging.bind({ pairIndex }))
 
-                parent.insertBefore(gutterElement, element.element)
+                parent.insertBefore(gutterElement, pane.element)
 
                 pair.gutter = gutterElement
             }
         }
 
-        // Set the element size to our determined size.
-        // Half-size gutters for first and last elements.
-        if (i === 0 || i === ids.length - 1) {
-            setElementSize(element.element, element.size, gutterSize / 2)
-        } else {
-            setElementSize(element.element, element.size, gutterSize)
-        }
+        applyPaneSize(pane)
 
-        const computedSize = element.element[getBoundingClientRect]()[dimension]
+        const computedSize = pane.element[getBoundingClientRect]()[dimension]
 
-        if (computedSize < element.minSize) {
-            element.minSize = computedSize
+        if (computedSize < pane.minSize) {
+            pane.minSize = computedSize
         }
 
         // After the first iteration, and we have a pair object, append it to the
@@ -502,30 +483,21 @@ const Split = (ids, options = {}) => {
             pairs.push(pair)
         }
 
-        return element
+        return pane
     })
 
     function setSizes (newSizes) {
         newSizes.forEach((newSize, i) => {
-            if (i > 0) {
-                const pair = pairs[i - 1]
-                const a = elements[pair.a]
-                const b = elements[pair.b]
-
-                a.size = newSizes[i - 1]
-                b.size = newSize
-
-                setElementSize(a.element, a.size, pair.aGutterSize)
-                setElementSize(b.element, b.size, pair.bGutterSize)
-            }
+            panes[i].size = newSize
+            applyPaneSize(panes[i])
         })
     }
 
     function destroy () {
         pairs.forEach(pair => {
             pair.parent.removeChild(pair.gutter)
-            elements[pair.a].element.style[dimension] = ''
-            elements[pair.b].element.style[dimension] = ''
+            panes[pair.a].pane.style[dimension] = ''
+            panes[pair.b].pane.style[dimension] = ''
         })
     }
 
@@ -539,7 +511,7 @@ const Split = (ids, options = {}) => {
     return {
         setSizes,
         getSizes () {
-            return elements.map(element => element.size)
+            return panes.map(pane => pane.size)
         },
         collapse (i) {
             if (i === pairs.length) {
@@ -548,7 +520,7 @@ const Split = (ids, options = {}) => {
                 calculateSizes.call(pair)
 
                 if (!isIE8) {
-                    adjust.call(pair, pair.size - pair.bGutterSize)
+                    adjust.call(pair, pair.size - panes[pair.b].gutterSize)
                 }
             } else {
                 const pair = pairs[i]
@@ -556,7 +528,7 @@ const Split = (ids, options = {}) => {
                 calculateSizes.call(pair)
 
                 if (!isIE8) {
-                    adjust.call(pair, pair.aGutterSize)
+                    adjust.call(pair, panes[pair.a].gutterSize)
                 }
             }
         },
