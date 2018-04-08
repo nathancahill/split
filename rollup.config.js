@@ -1,6 +1,7 @@
 
 import buble from 'rollup-plugin-buble'
 import uglify from 'rollup-plugin-uglify'
+import sourceMaps from 'rollup-plugin-sourcemaps'
 
 const pkg = require('./package.json')
 
@@ -15,7 +16,9 @@ export default [Object.assign({}, common, {
     dest: 'split.js',
     plugins: [
         buble(),
+        sourceMaps(),
     ],
+    sourceMap: true,
 }), Object.assign({}, common, {
     dest: 'split.min.js',
     plugins: [

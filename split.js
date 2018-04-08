@@ -402,10 +402,10 @@ var Split = function (ids, options) {
         global[addEventListener]('touchmove', gutter.move);
 
         // Disable selection. Disable!
-        a[addEventListener]('selectstart', NOOP);
-        a[addEventListener]('dragstart', NOOP);
-        b[addEventListener]('selectstart', NOOP);
-        b[addEventListener]('dragstart', NOOP);
+        a.el[addEventListener]('selectstart', NOOP);
+        a.el[addEventListener]('dragstart', NOOP);
+        b.el[addEventListener]('selectstart', NOOP);
+        b.el[addEventListener]('dragstart', NOOP);
 
         a.el.style.userSelect = 'none';
         a.el.style.webkitUserSelect = 'none';
@@ -475,7 +475,9 @@ var Split = function (ids, options) {
 
             parent.insertBefore(gutterElement, pane.el);
 
-            gutters.push(gutterElement);
+            gutters.push({
+                el: gutterElement,
+            });
         }
 
         applyPaneSize(pane);
@@ -553,3 +555,4 @@ var Split = function (ids, options) {
 return Split;
 
 })));
+//# sourceMappingURL=split.js.map
