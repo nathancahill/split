@@ -37,6 +37,13 @@ var calc = (['', '-webkit-', '-moz-', '-o-'].filter(function (prefix) {
     return (!!el.style.length)
 }).shift()) + "calc";
 
+var userSelect = (['', '-webkit-', '-moz-', '-o-'].filter(function (prefix) {
+    var el = document.createElement('div');
+    el.style.cssText = prefix + "user-select: none";
+
+    return (!!el.style.length)
+}).shift()) + "userSelect";
+
 // Helper function checks if its argument is a string-like type
 var isString = function (v) { return (typeof v === 'string' || v instanceof String); };
 
@@ -90,7 +97,7 @@ var defaultGutterStyleFn = function (dim, gutSize) { return (( obj = {}, obj[dim
 // {
 //     a: Number (Pane index)
 //     b: Number (Pane index)
-//     d: Number ( dragging Gutter index)
+//     g: Number ( dragging Gutter index)
 // }
 //
 // Pane object is shaped like this:
@@ -205,6 +212,16 @@ var Split = function (ids, options) {
         });
     }
 
+    function widthBetween (start, end) {
+        var guttersSize = gutters.slice(start, end).reduce(function (S, ref) {
+            var size = ref.size;
+
+            return S + size;
+        }, 0);
+        console.log(start, end, gutters.slice(start, end), guttersSize);
+        return guttersSize
+    }
+
     // Actually adjust the size of elements `a` and `b` to `offset` while dragging.
     // calc is used to allow calc(percentage + gutterpx) on the whole split instance,
     // which allows the viewport to be resized without additional logic.
@@ -215,9 +232,10 @@ var Split = function (ids, options) {
         var a = panes[this.a];
         var b = panes[this.b];
         var percentage = a.size + b.size;
+        var pairSize = a.pixelSize + widthBetween(this.a, this.b) + b.pixelSize;
 
-        a.size = (offset / this.size) * percentage;
-        b.size = (percentage - ((offset / this.size) * percentage));
+        a.size = (offset / pairSize) * percentage;
+        b.size = (percentage - ((offset / pairSize) * percentage));
 
         applyPaneSize(a);
         applyPaneSize(b);
@@ -237,19 +255,13 @@ var Split = function (ids, options) {
     // ------------------------------------------------
     // | <- start                             size -> |
     function calculateSizes () {
+        console.log(this);
+
+        var aBounds = panes[this.a].el[getBoundingClientRect]();
+        var bBounds = panes[this.b].el[getBoundingClientRect]();
+
         // Figure out the parent size minus padding.
-        var a = panes[this.a];
-        var b = panes[this.b];
-        var gutWidth = gutters.slice(this.a, this.b).reduce(function (S, ref) {
-            var size = ref.size;
-
-            return S + size;
-        }, 0);
-
-        var aBounds = a.el[getBoundingClientRect]();
-        var bBounds = b.el[getBoundingClientRect]();
-
-        this.size = aBounds[dimension] + bBounds[dimension] + gutWidth;
+        this.size = aBounds[dimension] + widthBetween(this.a, this.b) + bBounds[dimension];
         this.start = aBounds[position];
     }
 
@@ -271,6 +283,7 @@ var Split = function (ids, options) {
         var pair = {
             a: this.gutterIndex,
             b: this.gutterIndex + 1,
+            g: this.gutterIndex,
         };
         var a = panes[pair.a];
         var b = panes[pair.b];
@@ -290,17 +303,15 @@ var Split = function (ids, options) {
         var pairOffset = eventOffset;
 
         if (pushablePanes) {
-            var pushedPair;
-
             while (!a.isFirst && eventOffset < (a.start + a.minSize)) {
                 pair.a -= 1;
-                if (!pushedPair.size) { calculateSizes.call(pushedPair); }
-                pairOffset += pair.start - pushedPair.start - a.minSize;
+                if (!pair.size) { calculateSizes.call(pair); }
+                pairOffset += pair.start - pair.start - a.minSize;
             }
 
             while (!b.isLast && eventOffset > (pair.size - b.minSize)) {
                 pair.b += 1;
-                if (!pushedPair.size) { calculateSizes.call(pushedPair); }
+                if (!pair.size) { calculateSizes.call(pair); }
             }
 
             calculateSizes.call(pair);
@@ -328,7 +339,7 @@ var Split = function (ids, options) {
 
     // stopDragging is very similar to startDragging in reverse.
     function stopDragging () {
-        var gutter = gutters[this.gutterIndex];
+        var g = gutters[this.gutterIndex];
         var a = panes[this.gutterIndex];
         var b = panes[this.gutterIndex + 1];
 
@@ -336,35 +347,28 @@ var Split = function (ids, options) {
             getOption(options, 'onDragEnd', NOOP)();
         }
 
-        gutter.isDragging = false;
+        g.isDragging = false;
 
         // Remove the stored event listeners. This is why we store them.
-        global[removeEventListener]('mouseup', gutter.stop);
-        global[removeEventListener]('touchend', gutter.stop);
-        global[removeEventListener]('touchcancel', gutter.stop);
-        global[removeEventListener]('mousemove', gutter.move);
-        global[removeEventListener]('touchmove', gutter.move);
+        global[removeEventListener]('mouseup', g.stop);
+        global[removeEventListener]('touchend', g.stop);
+        global[removeEventListener]('touchcancel', g.stop);
+        global[removeEventListener]('mousemove', g.move);
+        global[removeEventListener]('touchmove', g.move);
 
         // Clear bound function references
-        gutter.stop = null;
-        gutter.move = null;
+        g.stop = null;
+        g.move = null;
+        g.el.style.cursor = '';
 
         a.el[removeEventListener]('selectstart', NOOP);
         a.el[removeEventListener]('dragstart', NOOP);
+        a.el.style[userSelect] = '';
+
         b.el[removeEventListener]('selectstart', NOOP);
         b.el[removeEventListener]('dragstart', NOOP);
+        b.el.style[userSelect] = '';
 
-        a.el.style.userSelect = '';
-        a.el.style.webkitUserSelect = '';
-        a.el.style.MozUserSelect = '';
-        a.el.style.pointerEvents = '';
-
-        b.el.style.userSelect = '';
-        b.el.style.webkitUserSelect = '';
-        b.el.style.MozUserSelect = '';
-        b.el.style.pointerEvents = '';
-
-        gutter.el.style.cursor = '';
         parent.style.cursor = '';
         document.body.style.cursor = '';
     }
@@ -373,10 +377,15 @@ var Split = function (ids, options) {
     // It also adds event listeners for mouse/touch events,
     // and prevents selection while dragging so avoid the selecting text.
     function startDragging (e) {
+        var pair = {
+            a: this.gutterIndex,
+            b: this.gutterIndex + 1,
+            g: this.gutterIndex,
+        };
         // Alias frequently used variables to save space. 200 bytes.
-        var gutter = gutters[this.gutterIndex];
-        var a = panes[this.gutterIndex];
-        var b = panes[this.gutterIndex + 1];
+        var a = panes[pair.a];
+        var b = panes[pair.b];
+        var g = gutters[pair.g];
 
         // Call the onDragStart callback.
         if (draggingGutter === null) {
@@ -387,45 +396,38 @@ var Split = function (ids, options) {
         e.preventDefault();
 
         // Set the dragging property of the pair object.
-        draggingGutter = gutter;
+        draggingGutter = g;
 
         // Create two event listeners bound to the same gutter object and store
         // them in the gutter object.
-        gutter.move = drag.bind(this);
-        gutter.stop = stopDragging.bind(this);
+        g.move = drag.bind(this);
+        g.stop = stopDragging.bind(this);
+        g.el.style.cursor = cursor;
 
         // All the binding. `window` gets the stop events in case we drag out of the elements.
-        global[addEventListener]('mouseup', gutter.stop);
-        global[addEventListener]('touchend', gutter.stop);
-        global[addEventListener]('touchcancel', gutter.stop);
-        global[addEventListener]('mousemove', gutter.move);
-        global[addEventListener]('touchmove', gutter.move);
+        global[addEventListener]('mouseup', g.stop);
+        global[addEventListener]('touchend', g.stop);
+        global[addEventListener]('touchcancel', g.stop);
+        global[addEventListener]('mousemove', g.move);
+        global[addEventListener]('touchmove', g.move);
 
         // Disable selection. Disable!
         a.el[addEventListener]('selectstart', NOOP);
         a.el[addEventListener]('dragstart', NOOP);
+        a.el.style[userSelect] = 'none';
+
         b.el[addEventListener]('selectstart', NOOP);
         b.el[addEventListener]('dragstart', NOOP);
-
-        a.el.style.userSelect = 'none';
-        a.el.style.webkitUserSelect = 'none';
-        a.el.style.MozUserSelect = 'none';
-        a.el.style.pointerEvents = 'none';
-
-        b.el.style.userSelect = 'none';
-        b.el.style.webkitUserSelect = 'none';
-        b.el.style.MozUserSelect = 'none';
-        b.el.style.pointerEvents = 'none';
+        b.el.style[userSelect] = 'none';
 
         // Set the cursor at multiple levels
-        gutter.el.style.cursor = cursor;
         parent.style.cursor = cursor;
         document.body.style.cursor = cursor;
 
-        calculateSizes.call(gutter);
+        calculateSizes.call(pair);
     }
 
-    // 5. Create pair from pane objects. Each pair has an index reference to
+    // 5. Create Pane objects. Each pair has an index reference to
     // panes `a` and `b` of the pair (first and second panes).
     // Loop through the panes while pairing them off. Every pair gets a
     // `pair` object, a gutter, and isFirst/isLast properties.
@@ -455,6 +457,7 @@ var Split = function (ids, options) {
             el: elementOrSelector(id),
             minSize: minSizes[i],
             size: sizes[i],
+
             isFirst: isFirstPane,
             isLast: isLastPane,
             isCollapsed: false,
