@@ -190,8 +190,6 @@ var Split = function (ids, options) {
         position = 'top';
     }
 
-    // const parentBounds = parent[getBoundingClientRect]()
-
     // 3. Define the dragging helper functions, and a few helpers to go with them.
     // Each helper is bound to a Gutter object that contains its metadata. This
     // also makes it easy to store references to listeners that that will be
@@ -235,10 +233,6 @@ var Split = function (ids, options) {
         });
     }
 
-    function getSizeBetween (start, end) {
-        return panes.slice(start, end).reduce(function (S) { return S + gutterSize; }, 0)
-    }
-
     // Actually adjust the size of elements `a` and `b` to `offset` while dragging.
     // calc is used to allow calc(percentage + gutterpx) on the whole split instance,
     // which allows the viewport to be resized without additional logic.
@@ -271,12 +265,13 @@ var Split = function (ids, options) {
     // ------------------------------------------------
     // | <- start                             size -> |
     function calculateSizes () {
-        var aBounds = panes[this.a].el[getBoundingClientRect]();
-        var bBounds = panes[this.b].el[getBoundingClientRect]();
-        var allGuttersSize = getSizeBetween(this.a, this.b);
+        var a = panes[this.a];
+        var b = panes[this.b];
+        var aBounds = a.el[getBoundingClientRect]();
+        var bBounds = b.el[getBoundingClientRect]();
 
         // Figure out the parent size minus padding.
-        this.size = aBounds[dimension] + allGuttersSize + bBounds[dimension];
+        this.size = aBounds[dimension] + gutterSize + bBounds[dimension];
         this.start = aBounds[position];
     }
 
@@ -317,7 +312,7 @@ var Split = function (ids, options) {
                 a = panes[this$1.a];
             }
 
-            while (!b.isLast && eventOffset > (this.size - b.minSize)) {
+            while (!b.isLast && pairOffset > (this.size - b.minSize)) {
                 this$1.b += 1;
                 calculateSizes.call(this$1);
                 b = panes[this$1.b];
@@ -516,6 +511,22 @@ var Split = function (ids, options) {
         });
     }
 
+    function collapse (i) {
+        var isLast = i === panes.length - 1;
+
+        var pair = {
+            g: i,
+            a: isLast ? i - 1 : i,
+            b: isLast ? i : i + 1,
+        };
+
+        calculateSizes.call(pair);
+
+        if (!isIE8) {
+            adjust.call(pair, isLast ? pair.size : 0);
+        }
+    }
+
     if (isIE8) {
         return {
             setSizes: setSizes,
@@ -528,21 +539,7 @@ var Split = function (ids, options) {
         getSizes: function getSizes () {
             return panes.map(function (pane) { return pane.size; })
         },
-        collapse: function collapse (i) {
-            var isLast = i === panes.length - 1;
-
-            var pair = {
-                g: i,
-                a: isLast ? i - 1 : i,
-                b: isLast ? i : i + 1,
-            };
-
-            calculateSizes.call(pair);
-
-            if (!isIE8) {
-                adjust.call(pair, isLast ? pair.size : 0);
-            }
-        },
+        collapse: collapse,
         destroy: destroy,
         parent: parent,
     }

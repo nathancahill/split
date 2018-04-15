@@ -179,8 +179,6 @@ const Split = (ids, options = {}) => {
         position = 'top'
     }
 
-    // const parentBounds = parent[getBoundingClientRect]()
-
     // 3. Define the dragging helper functions, and a few helpers to go with them.
     // Each helper is bound to a Gutter object that contains its metadata. This
     // also makes it easy to store references to listeners that that will be
@@ -216,10 +214,6 @@ const Split = (ids, options = {}) => {
         })
     }
 
-    function getSizeBetween (start, end) {
-        return panes.slice(start, end).reduce(S => S + gutterSize, 0)
-    }
-
     // Actually adjust the size of elements `a` and `b` to `offset` while dragging.
     // calc is used to allow calc(percentage + gutterpx) on the whole split instance,
     // which allows the viewport to be resized without additional logic.
@@ -252,12 +246,13 @@ const Split = (ids, options = {}) => {
     // ------------------------------------------------
     // | <- start                             size -> |
     function calculateSizes () {
-        const aBounds = panes[this.a].el[getBoundingClientRect]()
-        const bBounds = panes[this.b].el[getBoundingClientRect]()
-        const allGuttersSize = getSizeBetween(this.a, this.b)
+        const a = panes[this.a]
+        const b = panes[this.b]
+        const aBounds = a.el[getBoundingClientRect]()
+        const bBounds = b.el[getBoundingClientRect]()
 
         // Figure out the parent size minus padding.
-        this.size = aBounds[dimension] + allGuttersSize + bBounds[dimension]
+        this.size = aBounds[dimension] + gutterSize + bBounds[dimension]
         this.start = aBounds[position]
     }
 
@@ -296,7 +291,7 @@ const Split = (ids, options = {}) => {
                 a = panes[this.a]
             }
 
-            while (!b.isLast && eventOffset > (this.size - b.minSize)) {
+            while (!b.isLast && pairOffset > (this.size - b.minSize)) {
                 this.b += 1
                 calculateSizes.call(this)
                 b = panes[this.b]
@@ -495,6 +490,22 @@ const Split = (ids, options = {}) => {
         })
     }
 
+    function collapse (i) {
+        const isLast = i === panes.length - 1
+
+        const pair = {
+            g: i,
+            a: isLast ? i - 1 : i,
+            b: isLast ? i : i + 1,
+        }
+
+        calculateSizes.call(pair)
+
+        if (!isIE8) {
+            adjust.call(pair, isLast ? pair.size : 0)
+        }
+    }
+
     if (isIE8) {
         return {
             setSizes,
@@ -507,21 +518,7 @@ const Split = (ids, options = {}) => {
         getSizes () {
             return panes.map(pane => pane.size)
         },
-        collapse (i) {
-            const isLast = i === panes.length - 1
-
-            const pair = {
-                g: i,
-                a: isLast ? i - 1 : i,
-                b: isLast ? i : i + 1,
-            }
-
-            calculateSizes.call(pair)
-
-            if (!isIE8) {
-                adjust.call(pair, isLast ? pair.size : 0)
-            }
-        },
+        collapse,
         destroy,
         parent,
     }
