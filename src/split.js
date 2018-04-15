@@ -7,17 +7,22 @@ const document = global.document
 
 // Save a couple long function names that are used frequently.
 // This optimization saves around 400 bytes.
-const addEventListener = 'addEventListener'
-const removeEventListener = 'removeEventListener'
+const add = 'addEventListener'
+const remove = 'removeEventListener'
 const getBoundingClientRect = 'getBoundingClientRect'
+
+const eDragStart = ['selectstart', 'dragstart']
+const eDragMove = ['mousemove', 'touchmove']
+const eDragStop = ['mouseup', 'touchend', 'touchcancel']
+
 const HORIZONTAL = 'horizontal'
 const NOOP = () => false
 
 // Figure out if we're in IE8 or not. IE8 will still render correctly,
 // but will be static instead of draggable.
-const isIE8 = global.attachEvent && !global[addEventListener]
+const isIE8 = global.attachEvent && !global[add]
 
-// Helper function determines which prefixes of CSS calc we need.
+// Helpers function determines which prefixes CSS props and CSS values needs.
 // We only need to do this once on startup, when this anonymous function is called.
 //
 // Tests -webkit, -moz and -o prefixes. Modified from StackOverflow:
@@ -38,6 +43,7 @@ const userSelect = `${['', '-webkit-', '-moz-', '-o-'].filter(prefix => {
 
 // Helper function checks if its argument is a string-like type
 const isString = v => (typeof v === 'string' || v instanceof String)
+const isArray = Array.isArray || (arg => Object.prototype.toString.call(arg) === '[object Array]')
 
 // Helper function allows elements and string selectors to be used
 // interchangeably. In either case an element is returned. This allows us to
@@ -51,6 +57,15 @@ const getOption = (options, propName, def) => {
         return value
     }
     return def
+}
+
+const eventListeners = (els, operation, events, callback) => {
+    const elArr = !isArray(els) ? [els] : els
+    const eArr = !isArray(events) ? [events] : events
+
+    elArr.forEach(el => {
+        eArr.forEach(eName => el[operation](eName, callback))
+    })
 }
 
 // Default options
@@ -125,7 +140,6 @@ const Split = (ids, options = {}) => {
     let position
     let panes
     const gutters = []
-    let draggingGutter = null
 
     // All DOM elements in the split should have a common parent. We can grab
     // the first elements parent and hope users read the docs because the
@@ -139,7 +153,7 @@ const Split = (ids, options = {}) => {
     // Standardize minSize to an array if it isn't already. This allows minSize
     // to be passed as a number.
     const minSize = getOption(options, 'minSize', 100)
-    const minSizes = Array.isArray(minSize) ? minSize : ids.map(() => minSize)
+    const minSizes = isArray(minSize) ? minSize : ids.map(() => minSize)
     const gutterSize = getOption(options, 'gutterSize', 10)
     const snapOffset = getOption(options, 'snapOffset', 30)
     const pushablePanes = getOption(options, 'pushablePanes', false)
@@ -162,6 +176,8 @@ const Split = (ids, options = {}) => {
         position = 'top'
     }
 
+    // const parentBounds = parent[getBoundingClientRect]()
+
     // 3. Define the dragging helper functions, and a few helpers to go with them.
     // Each helper is bound to a Gutter object that contains its metadata. This
     // also makes it easy to store references to listeners that that will be
@@ -173,7 +189,8 @@ const Split = (ids, options = {}) => {
     // The Gutter object saves metadata like dragging state, position and
     // event listener references.
 
-    function applyPaneSize ({ el, size, isFirst, isLast }) {
+    function applyPaneSize (pane) {
+        const { el, size, isFirst, isLast } = pane
         const gutSize = isFirst || isLast ? gutterSize / 2 : gutterSize
         // Split.js allows setting sizes via numbers (ideally), or if you must,
         // by string, like '300px'. This is less than ideal, because it breaks
@@ -187,19 +204,17 @@ const Split = (ids, options = {}) => {
         })
     }
 
-    function setGutterSize (gutterElement, gutSize) {
+    function applyGutterSize (el, gutSize) {
         const style = gutterStyle(dimension, gutSize)
 
         // eslint-disable-next-line no-param-reassign
         Object.keys(style).forEach(prop => {
-            gutterElement.style[prop] = style[prop]
+            el.style[prop] = style[prop]
         })
     }
 
     function widthBetween (start, end) {
-        const guttersSize = gutters.slice(start, end).reduce((S, { size }) => S + size, 0)
-        console.log(start, end, gutters.slice(start, end), guttersSize)
-        return guttersSize
+        return gutters.slice(start, end).reduce(S => S + gutterSize, 0)
     }
 
     // Actually adjust the size of elements `a` and `b` to `offset` while dragging.
@@ -209,13 +224,13 @@ const Split = (ids, options = {}) => {
     // Both sizes are calculated from the initial parent percentage,
     // then the gutter size is subtracted.
     function adjust (offset) {
+        console.log('adjust', this, offset)
         const a = panes[this.a]
         const b = panes[this.b]
         const percentage = a.size + b.size
-        const pairSize = a.pixelSize + widthBetween(this.a, this.b) + b.pixelSize
 
-        a.size = (offset / pairSize) * percentage
-        b.size = (percentage - ((offset / pairSize) * percentage))
+        a.size = (offset / this.size) * percentage
+        b.size = (percentage - ((offset / this.size) * percentage))
 
         applyPaneSize(a)
         applyPaneSize(b)
@@ -235,8 +250,6 @@ const Split = (ids, options = {}) => {
     // ------------------------------------------------
     // | <- start                             size -> |
     function calculateSizes () {
-        console.log(this)
-
         const aBounds = panes[this.a].el[getBoundingClientRect]()
         const bBounds = panes[this.b].el[getBoundingClientRect]()
 
@@ -260,57 +273,44 @@ const Split = (ids, options = {}) => {
     // ---------------------------------------------------------------------
     // | <- this.start                                        this.size -> |
     function drag (e) {
-        const pair = {
-            a: this.gutterIndex,
-            b: this.gutterIndex + 1,
-            g: this.gutterIndex,
-        }
-        let a = panes[pair.a]
-        let b = panes[pair.b]
+        const g = gutters[this.g]
+        let a = panes[this.a]
+        let b = panes[this.b]
 
-        if (draggingGutter === null) return
+        if (!g.isDragging) return
 
-        let eventOffset
         // Get the offset of the event from the first side of the
         // pair `this.start`. Supports touch events, but not multitouch, so only the first
         // finger `touches[0]` is counted.
-        if ('touches' in e) {
-            eventOffset = e.touches[0][clientAxis] - pair.start
-        } else {
-            eventOffset = e[clientAxis] - pair.start
-        }
-
-        let pairOffset = eventOffset
+        const eventOffset = ('touches' in e ? e.touches[0] : e)[clientAxis]
+        let pairOffset = eventOffset - this.start
 
         if (pushablePanes) {
-            while (!a.isFirst && eventOffset < (a.start + a.minSize)) {
-                pair.a -= 1
-                if (!pair.size) calculateSizes.call(pair)
-                pairOffset += pair.start - pair.start - a.minSize
+            while (!a.isFirst && eventOffset < (this.start + a.minSize)) {
+                this.a -= 1
+                calculateSizes.call(this)
+                pairOffset = eventOffset - this.start
+                a = panes[this.a]
             }
 
-            while (!b.isLast && eventOffset > (pair.size - b.minSize)) {
-                pair.b += 1
-                if (!pair.size) calculateSizes.call(pair)
+            while (!b.isLast && eventOffset > (this.size - b.minSize)) {
+                this.b += 1
+                calculateSizes.call(this)
+                b = panes[this.b]
             }
-
-            calculateSizes.call(pair)
-
-            a = panes[pair.a]
-            b = panes[pair.b]
         }
 
         // If within snapOffset of min or max, set offset to min or max.
         // snapOffset buffers a.minSize and b.minSize, so logic is opposite for both.
         // Include the appropriate gutter sizes to prevent overflows.
-        if (pairOffset <= a.minSize + snapOffset + panes[pair.a].gutterSize) {
-            pairOffset = a.minSize + panes[pair.a].gutterSize
-        } else if (pairOffset >= pair.size - (b.minSize + snapOffset + panes[pair.b].gutterSize)) {
-            pairOffset = pair.size - (b.minSize + panes[pair.b].gutterSize)
+        if (pairOffset <= a.minSize + snapOffset + gutterSize) {
+            pairOffset = a.minSize + gutterSize
+        } else if (pairOffset >= this.size - (b.minSize + snapOffset + gutterSize)) {
+            pairOffset = this.size - (b.minSize + gutterSize)
         }
 
         // Actually adjust the dragged pair size.
-        adjust.call(pair, pairOffset)
+        adjust.call(this, pairOffset)
 
         // Call the drag callback continously. Don't do anything too intensive
         // in this callback.
@@ -319,34 +319,28 @@ const Split = (ids, options = {}) => {
 
     // stopDragging is very similar to startDragging in reverse.
     function stopDragging () {
-        const g = gutters[this.gutterIndex]
-        const a = panes[this.gutterIndex]
-        const b = panes[this.gutterIndex + 1]
+        const g = gutters[this.g]
+        const a = panes[this.g]
+        const b = panes[this.g + 1]
 
-        if (draggingGutter !== null) {
+        if (g.isDragging) {
             getOption(options, 'onDragEnd', NOOP)()
         }
 
         g.isDragging = false
 
         // Remove the stored event listeners. This is why we store them.
-        global[removeEventListener]('mouseup', g.stop)
-        global[removeEventListener]('touchend', g.stop)
-        global[removeEventListener]('touchcancel', g.stop)
-        global[removeEventListener]('mousemove', g.move)
-        global[removeEventListener]('touchmove', g.move)
+        eventListeners(global, remove, eDragStop, g.stop)
+        eventListeners(global, remove, eDragMove, g.move)
 
         // Clear bound function references
         g.stop = null
         g.move = null
         g.el.style.cursor = ''
 
-        a.el[removeEventListener]('selectstart', NOOP)
-        a.el[removeEventListener]('dragstart', NOOP)
-        a.el.style[userSelect] = ''
+        eventListeners([a.el, b.el], remove, eDragStart, NOOP)
 
-        b.el[removeEventListener]('selectstart', NOOP)
-        b.el[removeEventListener]('dragstart', NOOP)
+        a.el.style[userSelect] = ''
         b.el.style[userSelect] = ''
 
         parent.style.cursor = ''
@@ -357,26 +351,24 @@ const Split = (ids, options = {}) => {
     // It also adds event listeners for mouse/touch events,
     // and prevents selection while dragging so avoid the selecting text.
     function startDragging (e) {
-        const pair = {
-            a: this.gutterIndex,
-            b: this.gutterIndex + 1,
-            g: this.gutterIndex,
-        }
-        // Alias frequently used variables to save space. 200 bytes.
-        const a = panes[pair.a]
-        const b = panes[pair.b]
-        const g = gutters[pair.g]
-
-        // Call the onDragStart callback.
-        if (draggingGutter === null) {
-            getOption(options, 'onDragStart', NOOP)()
-        }
-
         // Don't actually drag the pane. We emulate that in the drag function.
         e.preventDefault()
 
+        this.a = this.g
+        this.b = this.g + 1
+        calculateSizes.call(this)
+
+        // Alias frequently used variables to save space. 200 bytes.
+        const a = panes[this.a]
+        const b = panes[this.b]
+        const g = gutters[this.g]
+
+        // Call the onDragStart callback.
+        if (!g.isDragging) {
+            getOption(options, 'onDragStart', NOOP)()
+        }
         // Set the dragging property of the pair object.
-        draggingGutter = g
+        g.isDragging = true
 
         // Create two event listeners bound to the same gutter object and store
         // them in the gutter object.
@@ -385,26 +377,17 @@ const Split = (ids, options = {}) => {
         g.el.style.cursor = cursor
 
         // All the binding. `window` gets the stop events in case we drag out of the elements.
-        global[addEventListener]('mouseup', g.stop)
-        global[addEventListener]('touchend', g.stop)
-        global[addEventListener]('touchcancel', g.stop)
-        global[addEventListener]('mousemove', g.move)
-        global[addEventListener]('touchmove', g.move)
+        eventListeners(global, add, eDragStop, g.stop)
+        eventListeners(global, add, eDragMove, g.move)
 
-        // Disable selection. Disable!
-        a.el[addEventListener]('selectstart', NOOP)
-        a.el[addEventListener]('dragstart', NOOP)
+        eventListeners([a.el, b.el], add, eDragStart, NOOP)
+
         a.el.style[userSelect] = 'none'
-
-        b.el[addEventListener]('selectstart', NOOP)
-        b.el[addEventListener]('dragstart', NOOP)
         b.el.style[userSelect] = 'none'
 
         // Set the cursor at multiple levels
         parent.style.cursor = cursor
         document.body.style.cursor = cursor
-
-        calculateSizes.call(pair)
     }
 
     // 5. Create Pane objects. Each pair has an index reference to
@@ -451,10 +434,12 @@ const Split = (ids, options = {}) => {
         if (i > 0 && !isIE8) {
             const gutterIndex = gutters.length
             const gutterElement = gutterCreate(gutterIndex, direction)
-            setGutterSize(gutterElement, gutterSize)
+            applyGutterSize(gutterElement, gutterSize)
 
-            gutterElement[addEventListener]('mousedown', startDragging.bind({ gutterIndex }))
-            gutterElement[addEventListener]('touchstart', startDragging.bind({ gutterIndex }))
+            eventListeners(gutterElement, add, [
+                'mousedown',
+                'touchstart',
+            ], startDragging.bind({ g: gutterIndex }))
 
             parent.insertBefore(gutterElement, pane.el)
 
@@ -527,7 +512,7 @@ const Split = (ids, options = {}) => {
             calculateSizes.call(pair)
 
             if (!isIE8) {
-                adjust.call(pair)
+                adjust.call(pair, i === panes.length ? 100 : 0)
             }
         },
         destroy,
