@@ -151,15 +151,11 @@ describe('Split', function() {
         var split = Split(['#a', '#b'])
 
         split.collapse(0)
-        console.log( this.a.getBoundingClientRect().width )
-        console.log( this.b.getBoundingClientRect().width )
 
         expect(this.a.getBoundingClientRect().width).toBe(0)
         expect(this.b.getBoundingClientRect().width).toBeCloseTo(800 - 10, 0)
 
         split.collapse(1)
-        console.log( this.a.getBoundingClientRect().width )
-        console.log( this.b.getBoundingClientRect().width )
 
         expect(this.a.getBoundingClientRect().width).toBeCloseTo(800 - 10, 0)
         expect(this.b.getBoundingClientRect().width).toBe(0)

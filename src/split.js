@@ -491,19 +491,24 @@ const Split = (ids, options = {}) => {
     }
 
     function collapse (i) {
-        const isLast = i === panes.length - 1
+        const p = panes[i]
 
         const pair = {
             g: i,
-            a: isLast ? i - 1 : i,
-            b: isLast ? i : i + 1,
+            a: p.isLast ? i - 1 : i,
+            b: p.isLast ? i : i + 1,
         }
 
         calculateSizes.call(pair)
 
-        if (!isIE8) {
-            adjust.call(pair, isLast ? pair.size : 0)
+        let offset
+        if (p.isLast) {
+            offset = pair.size - (gutterSize / 2)
+        } else {
+            offset = gutterSize / (p.isFirst ? 2 : 1)
         }
+
+        if (!isIE8) adjust.call(pair, offset)
     }
 
     if (isIE8) {
