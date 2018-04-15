@@ -11,6 +11,7 @@ const add = 'addEventListener'
 const remove = 'removeEventListener'
 const getBoundingClientRect = 'getBoundingClientRect'
 
+const eDragTrigger = ['mousedown', 'touchstart']
 const eDragStart = ['selectstart', 'dragstart']
 const eDragMove = ['mousemove', 'touchmove']
 const eDragStop = ['mouseup', 'touchend', 'touchcancel']
@@ -138,14 +139,16 @@ const Split = (ids, options = {}) => {
     let dimension
     let clientAxis
     let position
-    let panes
+
+    const panes = []
     const gutters = []
 
     // All DOM elements in the split should have a common parent. We can grab
     // the first elements parent and hope users read the docs because the
     // behavior will be whacky otherwise.
     const parent = elementOrSelector(ids[0]).parentNode
-    // const parentFlexDirection = global.getComputedStyle(parent).flexDirection
+    const parentFlexDirection = global.getComputedStyle(parent).flexDirection
+    const isReverse = parentFlexDirection === 'row-reverse' || parentFlexDirection === 'column-reverse'
 
     // Set default options.sizes to equal percentages of the parent pane.
     const sizes = getOption(options, 'sizes') || ids.map(() => 100 / ids.length)
@@ -189,9 +192,9 @@ const Split = (ids, options = {}) => {
     // The Gutter object saves metadata like dragging state, position and
     // event listener references.
 
-    function applyPaneSize (pane) {
-        const { el, size, isFirst, isLast } = pane
-        const gutSize = isFirst || isLast ? gutterSize / 2 : gutterSize
+    function applyPaneSize ({ el, size, isFirst, isLast }) {
+        const gutSize = (isFirst || isLast) ? gutterSize / 2 : gutterSize
+
         // Split.js allows setting sizes via numbers (ideally), or if you must,
         // by string, like '300px'. This is less than ideal, because it breaks
         // the fluid layout that `calc(% - px)` provides. You're on your own if you do that,
@@ -204,8 +207,8 @@ const Split = (ids, options = {}) => {
         })
     }
 
-    function applyGutterSize (el, gutSize) {
-        const style = gutterStyle(dimension, gutSize)
+    function applyGutterSize ({ el, size }) {
+        const style = gutterStyle(dimension, size)
 
         // eslint-disable-next-line no-param-reassign
         Object.keys(style).forEach(prop => {
@@ -213,8 +216,8 @@ const Split = (ids, options = {}) => {
         })
     }
 
-    function widthBetween (start, end) {
-        return gutters.slice(start, end).reduce(S => S + gutterSize, 0)
+    function getSizeBetween (start, end) {
+        return panes.slice(start, end).reduce(S => S + gutterSize, 0)
     }
 
     // Actually adjust the size of elements `a` and `b` to `offset` while dragging.
@@ -224,7 +227,6 @@ const Split = (ids, options = {}) => {
     // Both sizes are calculated from the initial parent percentage,
     // then the gutter size is subtracted.
     function adjust (offset) {
-        console.log('adjust', this, offset)
         const a = panes[this.a]
         const b = panes[this.b]
         const percentage = a.size + b.size
@@ -239,7 +241,7 @@ const Split = (ids, options = {}) => {
     // Cache some important sizes when drag starts, so we don't have to do that
     // continously:
     //
-    // `size`: The total size of the pair. First + second + first gutter + second gutter.
+    // `size`: The total size of the pair. First pane + second pane + all gutters between.
     // `start`: The leading side of the first pane.
     //
     // ------------------------------------------------
@@ -252,9 +254,10 @@ const Split = (ids, options = {}) => {
     function calculateSizes () {
         const aBounds = panes[this.a].el[getBoundingClientRect]()
         const bBounds = panes[this.b].el[getBoundingClientRect]()
+        const allGuttersSize = getSizeBetween(this.a, this.b)
 
         // Figure out the parent size minus padding.
-        this.size = aBounds[dimension] + widthBetween(this.a, this.b) + bBounds[dimension]
+        this.size = aBounds[dimension] + allGuttersSize + bBounds[dimension]
         this.start = aBounds[position]
     }
 
@@ -320,8 +323,8 @@ const Split = (ids, options = {}) => {
     // stopDragging is very similar to startDragging in reverse.
     function stopDragging () {
         const g = gutters[this.g]
-        const a = panes[this.g]
-        const b = panes[this.g + 1]
+        const a = panes[isReverse ? this.g + 1 : this.g]
+        const b = panes[isReverse ? this.g : this.g + 1]
 
         if (g.isDragging) {
             getOption(options, 'onDragEnd', NOOP)()
@@ -354,13 +357,13 @@ const Split = (ids, options = {}) => {
         // Don't actually drag the pane. We emulate that in the drag function.
         e.preventDefault()
 
-        this.a = this.g
-        this.b = this.g + 1
+        this.a = isReverse ? this.g + 1 : this.g
+        this.b = isReverse ? this.g : this.g + 1
         calculateSizes.call(this)
 
         // Alias frequently used variables to save space. 200 bytes.
-        const a = panes[this.a]
-        const b = panes[this.b]
+        const a = panes[isReverse ? this.b : this.a]
+        const b = panes[isReverse ? this.a : this.b]
         const g = gutters[this.g]
 
         // Call the onDragStart callback.
@@ -390,7 +393,7 @@ const Split = (ids, options = {}) => {
         document.body.style.cursor = cursor
     }
 
-    // 5. Create Pane objects. Each pair has an index reference to
+    // 5. Create Pane and Gutter objects. Each pair has an index reference to
     // panes `a` and `b` of the pair (first and second panes).
     // Loop through the panes while pairing them off. Every pair gets a
     // `pair` object, a gutter, and isFirst/isLast properties.
@@ -410,13 +413,13 @@ const Split = (ids, options = {}) => {
     // |           pair 0                pair 1             pair 2           |
     // |             |                     |                  |              |
     // -----------------------------------------------------------------------
-    panes = ids.map((id, i) => {
-        // Create the element object.
-
+    ids.forEach((id, i) => {
         const isFirstPane = (i === 0)
         const isLastPane = (i === ids.length - 1)
 
         const pane = {
+            // Create the element object.
+            i,
             el: elementOrSelector(id),
             minSize: minSizes[i],
             size: sizes[i],
@@ -426,28 +429,27 @@ const Split = (ids, options = {}) => {
             isCollapsed: false,
         }
 
-        // Determine the size of the current pane. IE8 is supported by
-        // staticly assigning sizes without draggable gutters. Assigns a string
-        // to `size`.
-        //
         // Create gutter elements for each pair, if IE9 and above
-        if (i > 0 && !isIE8) {
+        if (!isFirstPane && !isIE8) {
             const gutterIndex = gutters.length
             const gutterElement = gutterCreate(gutterIndex, direction)
-            applyGutterSize(gutterElement, gutterSize)
+            const gutter = {
+                i,
+                el: gutterElement,
+                size: gutterSize,
+            }
+            applyGutterSize(gutter)
 
-            eventListeners(gutterElement, add, [
-                'mousedown',
-                'touchstart',
-            ], startDragging.bind({ g: gutterIndex }))
+            eventListeners(gutterElement, add, eDragTrigger, startDragging.bind({ g: gutterIndex }))
 
             parent.insertBefore(gutterElement, pane.el)
 
-            gutters.push({
-                el: gutterElement,
-            })
+            gutters.push(gutter)
         }
 
+        // Determine the size of the current pane. IE8 is supported by
+        // staticly assigning sizes without draggable gutters. Assigns a string
+        // to `size`.
         applyPaneSize(pane)
 
         const computedSize = pane.el[getBoundingClientRect]()[dimension]
@@ -456,7 +458,9 @@ const Split = (ids, options = {}) => {
             pane.minSize = computedSize
         }
 
-        return pane
+        applyPaneSize(pane)
+
+        panes.push(pane)
     })
 
     // function selectPair(a, b) {
@@ -504,15 +508,18 @@ const Split = (ids, options = {}) => {
             return panes.map(pane => pane.size)
         },
         collapse (i) {
+            const isLast = i === panes.length - 1
+
             const pair = {
-                a: i === panes.length ? i - 1 : i,
-                b: i === panes.length ? i : i + 1,
+                g: i,
+                a: isLast ? i - 1 : i,
+                b: isLast ? i : i + 1,
             }
 
             calculateSizes.call(pair)
 
             if (!isIE8) {
-                adjust.call(pair, i === panes.length ? 100 : 0)
+                adjust.call(pair, isLast ? pair.size : 0)
             }
         },
         destroy,

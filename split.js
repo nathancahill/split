@@ -19,6 +19,7 @@ var add = 'addEventListener';
 var remove = 'removeEventListener';
 var getBoundingClientRect = 'getBoundingClientRect';
 
+var eDragTrigger = ['mousedown', 'touchstart'];
 var eDragStart = ['selectstart', 'dragstart'];
 var eDragMove = ['mousemove', 'touchmove'];
 var eDragStop = ['mouseup', 'touchend', 'touchcancel'];
@@ -149,14 +150,16 @@ var Split = function (ids, options) {
     var dimension;
     var clientAxis;
     var position;
-    var panes;
+
+    var panes = [];
     var gutters = [];
 
     // All DOM elements in the split should have a common parent. We can grab
     // the first elements parent and hope users read the docs because the
     // behavior will be whacky otherwise.
     var parent = elementOrSelector(ids[0]).parentNode;
-    // const parentFlexDirection = global.getComputedStyle(parent).flexDirection
+    var parentFlexDirection = global.getComputedStyle(parent).flexDirection;
+    var isReverse = parentFlexDirection === 'row-reverse' || parentFlexDirection === 'column-reverse';
 
     // Set default options.sizes to equal percentages of the parent pane.
     var sizes = getOption(options, 'sizes') || ids.map(function () { return 100 / ids.length; });
@@ -200,12 +203,14 @@ var Split = function (ids, options) {
     // The Gutter object saves metadata like dragging state, position and
     // event listener references.
 
-    function applyPaneSize (pane) {
-        var el = pane.el;
-        var size = pane.size;
-        var isFirst = pane.isFirst;
-        var isLast = pane.isLast;
-        var gutSize = isFirst || isLast ? gutterSize / 2 : gutterSize;
+    function applyPaneSize (ref) {
+        var el = ref.el;
+        var size = ref.size;
+        var isFirst = ref.isFirst;
+        var isLast = ref.isLast;
+
+        var gutSize = (isFirst || isLast) ? gutterSize / 2 : gutterSize;
+
         // Split.js allows setting sizes via numbers (ideally), or if you must,
         // by string, like '300px'. This is less than ideal, because it breaks
         // the fluid layout that `calc(% - px)` provides. You're on your own if you do that,
@@ -218,8 +223,11 @@ var Split = function (ids, options) {
         });
     }
 
-    function applyGutterSize (el, gutSize) {
-        var style = gutterStyle(dimension, gutSize);
+    function applyGutterSize (ref) {
+        var el = ref.el;
+        var size = ref.size;
+
+        var style = gutterStyle(dimension, size);
 
         // eslint-disable-next-line no-param-reassign
         Object.keys(style).forEach(function (prop) {
@@ -227,8 +235,8 @@ var Split = function (ids, options) {
         });
     }
 
-    function widthBetween (start, end) {
-        return gutters.slice(start, end).reduce(function (S) { return S + gutterSize; }, 0)
+    function getSizeBetween (start, end) {
+        return panes.slice(start, end).reduce(function (S) { return S + gutterSize; }, 0)
     }
 
     // Actually adjust the size of elements `a` and `b` to `offset` while dragging.
@@ -238,7 +246,6 @@ var Split = function (ids, options) {
     // Both sizes are calculated from the initial parent percentage,
     // then the gutter size is subtracted.
     function adjust (offset) {
-        console.log('adjust', this, offset);
         var a = panes[this.a];
         var b = panes[this.b];
         var percentage = a.size + b.size;
@@ -253,7 +260,7 @@ var Split = function (ids, options) {
     // Cache some important sizes when drag starts, so we don't have to do that
     // continously:
     //
-    // `size`: The total size of the pair. First + second + first gutter + second gutter.
+    // `size`: The total size of the pair. First pane + second pane + all gutters between.
     // `start`: The leading side of the first pane.
     //
     // ------------------------------------------------
@@ -266,9 +273,10 @@ var Split = function (ids, options) {
     function calculateSizes () {
         var aBounds = panes[this.a].el[getBoundingClientRect]();
         var bBounds = panes[this.b].el[getBoundingClientRect]();
+        var allGuttersSize = getSizeBetween(this.a, this.b);
 
         // Figure out the parent size minus padding.
-        this.size = aBounds[dimension] + widthBetween(this.a, this.b) + bBounds[dimension];
+        this.size = aBounds[dimension] + allGuttersSize + bBounds[dimension];
         this.start = aBounds[position];
     }
 
@@ -336,8 +344,8 @@ var Split = function (ids, options) {
     // stopDragging is very similar to startDragging in reverse.
     function stopDragging () {
         var g = gutters[this.g];
-        var a = panes[this.g];
-        var b = panes[this.g + 1];
+        var a = panes[isReverse ? this.g + 1 : this.g];
+        var b = panes[isReverse ? this.g : this.g + 1];
 
         if (g.isDragging) {
             getOption(options, 'onDragEnd', NOOP)();
@@ -370,13 +378,13 @@ var Split = function (ids, options) {
         // Don't actually drag the pane. We emulate that in the drag function.
         e.preventDefault();
 
-        this.a = this.g;
-        this.b = this.g + 1;
+        this.a = isReverse ? this.g + 1 : this.g;
+        this.b = isReverse ? this.g : this.g + 1;
         calculateSizes.call(this);
 
         // Alias frequently used variables to save space. 200 bytes.
-        var a = panes[this.a];
-        var b = panes[this.b];
+        var a = panes[isReverse ? this.b : this.a];
+        var b = panes[isReverse ? this.a : this.b];
         var g = gutters[this.g];
 
         // Call the onDragStart callback.
@@ -406,7 +414,7 @@ var Split = function (ids, options) {
         document.body.style.cursor = cursor;
     }
 
-    // 5. Create Pane objects. Each pair has an index reference to
+    // 5. Create Pane and Gutter objects. Each pair has an index reference to
     // panes `a` and `b` of the pair (first and second panes).
     // Loop through the panes while pairing them off. Every pair gets a
     // `pair` object, a gutter, and isFirst/isLast properties.
@@ -426,13 +434,13 @@ var Split = function (ids, options) {
     // |           pair 0                pair 1             pair 2           |
     // |             |                     |                  |              |
     // -----------------------------------------------------------------------
-    panes = ids.map(function (id, i) {
-        // Create the element object.
-
+    ids.forEach(function (id, i) {
         var isFirstPane = (i === 0);
         var isLastPane = (i === ids.length - 1);
 
         var pane = {
+            // Create the element object.
+            i: i,
             el: elementOrSelector(id),
             minSize: minSizes[i],
             size: sizes[i],
@@ -442,27 +450,27 @@ var Split = function (ids, options) {
             isCollapsed: false,
         };
 
-        // Determine the size of the current pane. IE8 is supported by
-        // staticly assigning sizes without draggable gutters. Assigns a string
-        // to `size`.
-        //
         // Create gutter elements for each pair, if IE9 and above
-        if (i > 0 && !isIE8) {
+        if (!isFirstPane && !isIE8) {
             var gutterIndex = gutters.length;
             var gutterElement = gutterCreate(gutterIndex, direction);
-            applyGutterSize(gutterElement, gutterSize);
+            var gutter = {
+                i: i,
+                el: gutterElement,
+                size: gutterSize,
+            };
+            applyGutterSize(gutter);
 
-            eventListeners(gutterElement, add, [
-                'mousedown',
-                'touchstart' ], startDragging.bind({ g: gutterIndex }));
+            eventListeners(gutterElement, add, eDragTrigger, startDragging.bind({ g: gutterIndex }));
 
             parent.insertBefore(gutterElement, pane.el);
 
-            gutters.push({
-                el: gutterElement,
-            });
+            gutters.push(gutter);
         }
 
+        // Determine the size of the current pane. IE8 is supported by
+        // staticly assigning sizes without draggable gutters. Assigns a string
+        // to `size`.
         applyPaneSize(pane);
 
         var computedSize = pane.el[getBoundingClientRect]()[dimension];
@@ -471,7 +479,9 @@ var Split = function (ids, options) {
             pane.minSize = computedSize;
         }
 
-        return pane
+        applyPaneSize(pane);
+
+        panes.push(pane);
     });
 
     // function selectPair(a, b) {
@@ -519,15 +529,18 @@ var Split = function (ids, options) {
             return panes.map(function (pane) { return pane.size; })
         },
         collapse: function collapse (i) {
+            var isLast = i === panes.length - 1;
+
             var pair = {
-                a: i === panes.length ? i - 1 : i,
-                b: i === panes.length ? i : i + 1,
+                g: i,
+                a: isLast ? i - 1 : i,
+                b: isLast ? i : i + 1,
             };
 
             calculateSizes.call(pair);
 
             if (!isIE8) {
-                adjust.call(pair, i === panes.length ? 100 : 0);
+                adjust.call(pair, isLast ? pair.size : 0);
             }
         },
         destroy: destroy,
