@@ -169,8 +169,7 @@ const Split = (ids, options = {}) => {
     const minSizes = isArray(minSize) ? minSize : ids.map(() => minSize)
     const gutterSize = getOption(options, 'gutterSize', 10)
     const snapOffset = getOption(options, 'snapOffset', 30)
-    // const pushablePanes = getOption(options, 'pushablePanes', false)
-    const pushablePanes = false
+    const pushablePanes = getOption(options, 'pushablePanes', false)
     const direction = getOption(options, 'direction', HORIZONTAL)
     const cursor = getOption(options, 'cursor', direction === HORIZONTAL ? 'ew-resize' : 'ns-resize')
     const paneStyle = getOption(options, 'elementStyle', defaultPaneStyleFn)
@@ -190,6 +189,11 @@ const Split = (ids, options = {}) => {
         startBound = 'top'
     }
 
+
+    function getGutterSizeOfPane (p) {
+        return gutterSize / (p.isFirst || p.isLast ? 2 : 1)
+    }
+
     // 3. Define the dragging helper functions, and a few helpers to go with them.
     // Each helper is bound to a Gutter object that contains its metadata. This
     // also makes it easy to store references to listeners that that will be
@@ -200,17 +204,15 @@ const Split = (ids, options = {}) => {
     //
     // The Gutter object saves metadata like dragging state, startBound and
     // event listener references.
-    function applyPaneSize ({ el, size, isFirst, isLast }) {
-        const gutSize = (isFirst || isLast) ? gutterSize / 2 : gutterSize
-
+    function applyPaneSize (p) {
         // Split.js allows setting sizes via numbers (ideally), or if you must,
         // by string, like '300px'. This is less than ideal, because it breaks
         // the fluid layout that `calc(% - px)` provides. You're on your own if you do that,
         // make sure you calculate the gutter size by hand.
-        const style = paneStyle(dimension, size, gutSize)
+        const style = paneStyle(dimension, p.size, getGutterSizeOfPane(p))
 
         Object.keys(style).forEach(prop => {
-            el.style[prop] = style[prop]
+            p.el.style[prop] = style[prop]
         })
     }
 
@@ -299,18 +301,21 @@ const Split = (ids, options = {}) => {
         // finger `touches[0]` is counted.
         const eventOffset = getEventOffset(e)
         g.draggingDir = Math.sign(eventOffset - eventStartOffset)
+        if (g.draggingDir === 0) return
 
         let pairOffset = eventOffset - this.start
 
         // If within snapOffset of min or max, set offset to min or max.
         // snapOffset buffers a.minSize and b.minSize, so logic is opposite for both.
         // Include the appropriate gutter sizes to prevent overflows.
-        if (g.draggingDir < 1) {
-            let pairGutterSize = gutterSize / (a.isFirst ? 2 : 1)
+        if (g.draggingDir === -1) {
+            if (b.isCollapsed && (this.size - pairOffset) <= snapOffset) return
+
+            let pairGutterSize = getGutterSizeOfPane(a)
 
             if (pushablePanes) {
                 while (!a.isFirst && eventOffset < (this.start + a.minSize)) {
-                    pairGutterSize = gutterSize / (a.isFirst ? 2 : 1)
+                    pairGutterSize = getGutterSizeOfPane(a)
                     adjust.call(this, pairGutterSize)
 
                     a = panes[this.a -= 1]
@@ -324,12 +329,14 @@ const Split = (ids, options = {}) => {
             }
         }
 
-        if (g.draggingDir > -1) {
-            let pairGutterSize = this.size - (gutterSize / (b.isLast ? 2 : 1))
+        if (g.draggingDir === 1) {
+            if (a.isCollapsed && pairOffset <= snapOffset) return
+
+            let pairGutterSize = this.size - getGutterSizeOfPane(b)
 
             if (pushablePanes) {
                 while (!b.isLast && pairOffset > (this.size - b.minSize)) {
-                    pairGutterSize = this.size - (gutterSize / (b.isLast ? 2 : 1))
+                    pairGutterSize = this.size - getGutterSizeOfPane(b)
                     adjust.call(this, pairGutterSize)
 
                     b = panes[this.b += 1]
@@ -524,13 +531,10 @@ const Split = (ids, options = {}) => {
         }
 
         calculateSizes.call(pair)
+        if (panes[pair.a].isCollapsed && panes[pair.b].isCollapsed) return
 
-        let offset
-        if (p.isLast) {
-            offset = pair.size - (gutterSize / 2)
-        } else {
-            offset = gutterSize / (p.isFirst ? 2 : 1)
-        }
+        let offset = getGutterSizeOfPane(p)
+        if (p.isLast) offset = pair.size - offset
 
         if (!isIE8) adjust.call(pair, offset)
     }
