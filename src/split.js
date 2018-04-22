@@ -22,6 +22,10 @@ const NOOP = () => false
 // but will be static instead of draggable.
 const isIE8 = global.attachEvent && !global[add]
 
+// Polyfill for Math.sign
+// https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Math/sign#Polyfill
+Math.sign = Math.sign || (x => ((x > 0) - (x < 0)) || +x)
+
 // Helpers function determines which prefixes CSS props and CSS values needs.
 // We only need to do this once on startup, when this anonymous function is called.
 //
@@ -36,12 +40,12 @@ const calc = `${['', '-webkit-', '-moz-', '-o-'].filter(prefix => {
 
 const userSelect = `${['', '-webkit-', '-moz-', '-o-'].filter(prefix => {
     const el = document.createElement('div')
-    el.style.cssText = `${prefix}user-select: none`
+    el.style.cssText = `${prefix}user-select:none`
 
     return (!!el.style.length)
 }).shift()}userSelect`
 
-// Helper function checks if its argument is a string-like type
+// Helper functions checks argument's type
 const isString = v => (typeof v === 'string' || v instanceof String)
 const isArray = Array.isArray || (arg => Object.prototype.toString.call(arg) === '[object Array]')
 const isNode = n => n instanceof Element
@@ -65,11 +69,11 @@ const getOption = (options, propName, def) => {
 }
 
 const eventListeners = (els, operation, events, callback) => {
-    const elArr = !isArray(els) ? [els] : els
-    const eArr = !isArray(events) ? [events] : events
+    const elementsList = !isArray(els) ? [els] : els
+    const eventsList = !isArray(events) ? [events] : events
 
-    elArr.forEach(el => {
-        eArr.forEach(eName => el[operation](eName, callback))
+    elementsList.forEach(el => {
+        eventsList.forEach(ev => el[operation](ev, callback))
     })
 }
 
@@ -80,7 +84,7 @@ const defaultGutterFn = (i, gutterDirection) => {
     return gut
 }
 
-const defaultElementStyleFn = (dim, size, gutSize) => {
+const defaultPaneStyleFn = (dim, size, gutSize) => {
     const style = {}
 
     if (!isString(size)) {
@@ -126,7 +130,7 @@ const defaultGutterStyleFn = (dim, gutSize) => ({ [dim]: `${gutSize}px` })
 //
 // {
 //     el: DOM element
-//     isDragging: Boolean,
+//     draggingDir: number | null,
 // }
 //
 // The basic sequence:
@@ -142,10 +146,12 @@ const defaultGutterStyleFn = (dim, gutSize) => ({ [dim]: `${gutSize}px` })
 const Split = (ids, options = {}) => {
     let dimension
     let clientAxis
-    let position
+    let startBound
 
     const panes = []
     const gutters = []
+    let eventStartOffset
+
 
     // All DOM elements in the split should have a common parent. We can grab
     // the first elements parent and hope users read the docs because the
@@ -163,11 +169,11 @@ const Split = (ids, options = {}) => {
     const minSizes = isArray(minSize) ? minSize : ids.map(() => minSize)
     const gutterSize = getOption(options, 'gutterSize', 10)
     const snapOffset = getOption(options, 'snapOffset', 30)
-    const pushablePanes = getOption(options, 'pushablePanes', false)
+    const pushablePanes = getOption(options, 'pushablePanes', true)
     const direction = getOption(options, 'direction', HORIZONTAL)
     const cursor = getOption(options, 'cursor', direction === HORIZONTAL ? 'ew-resize' : 'ns-resize')
+    const paneStyle = getOption(options, 'elementStyle', defaultPaneStyleFn)
     const gutterCreate = getOption(options, 'gutter', defaultGutterFn)
-    const elementStyle = getOption(options, 'elementStyle', defaultElementStyleFn)
     const gutterStyle = getOption(options, 'gutterStyle', defaultGutterStyleFn)
 
     // 2. Initialize a bunch of strings based on the direction we're splitting.
@@ -176,11 +182,11 @@ const Split = (ids, options = {}) => {
     if (direction === HORIZONTAL) {
         dimension = 'width'
         clientAxis = 'clientX'
-        position = 'left'
+        startBound = 'left'
     } else if (direction === 'vertical') {
         dimension = 'height'
         clientAxis = 'clientY'
-        position = 'top'
+        startBound = 'top'
     }
 
     // 3. Define the dragging helper functions, and a few helpers to go with them.
@@ -191,9 +197,8 @@ const Split = (ids, options = {}) => {
     // Even though there are no other functions contained in them, aliasing
     // this to self saves 50 bytes or so since it's used so frequently.
     //
-    // The Gutter object saves metadata like dragging state, position and
+    // The Gutter object saves metadata like dragging state, startBound and
     // event listener references.
-
     function applyPaneSize ({ el, size, isFirst, isLast }) {
         const gutSize = (isFirst || isLast) ? gutterSize / 2 : gutterSize
 
@@ -201,7 +206,7 @@ const Split = (ids, options = {}) => {
         // by string, like '300px'. This is less than ideal, because it breaks
         // the fluid layout that `calc(% - px)` provides. You're on your own if you do that,
         // make sure you calculate the gutter size by hand.
-        const style = elementStyle(dimension, size, gutSize)
+        const style = paneStyle(dimension, size, gutSize)
 
         // eslint-disable-next-line no-param-reassign
         Object.keys(style).forEach(prop => {
@@ -217,6 +222,11 @@ const Split = (ids, options = {}) => {
             el.style[prop] = style[prop]
         })
     }
+
+    function getEventOffset (e) {
+        return ('touches' in e ? e.touches[0] : e)[clientAxis]
+    }
+
 
     // Actually adjust the size of elements `a` and `b` to `offset` while dragging.
     // calc is used to allow calc(percentage + gutterpx) on the whole split instance,
@@ -258,7 +268,7 @@ const Split = (ids, options = {}) => {
 
         // Figure out the parent size minus padding.
         this.size = aBounds[dimension] + gutterSize + bBounds[dimension]
-        this.start = aBounds[position]
+        this.start = aBounds[startBound]
     }
 
     // drag, where all the magic happens. The logic is really quite simple:
@@ -280,37 +290,57 @@ const Split = (ids, options = {}) => {
         let a = panes[this.a]
         let b = panes[this.b]
 
-        if (!g.isDragging) return
+        if (g.draggingDir === null) return
 
         // Get the offset of the event from the first side of the
         // pair `this.start`. Supports touch events, but not multitouch, so only the first
         // finger `touches[0]` is counted.
-        const eventOffset = ('touches' in e ? e.touches[0] : e)[clientAxis]
+        const eventOffset = getEventOffset(e)
+        g.draggingDir = Math.sign(eventOffset - eventStartOffset)
+
         let pairOffset = eventOffset - this.start
 
-        if (pushablePanes) {
-            while (!a.isFirst && eventOffset < (this.start + a.minSize)) {
-                this.a -= 1
-                calculateSizes.call(this)
-                pairOffset = eventOffset - this.start
-                a = panes[this.a]
-            }
+        if (g.draggingDir === -1) {
+            const gutSize = gutterSize / (a.isFirst || a.isLast ? 2 : 1)
 
-            while (!b.isLast && pairOffset > (this.size - b.minSize)) {
-                this.b += 1
-                calculateSizes.call(this)
-                b = panes[this.b]
-            }
+            // Don't go to far on left/top :
+            if (pairOffset <= gutSize) pairOffset = gutSize
+        } else if (g.draggingDir === 1) {
+            const gutSize = gutterSize / (b.isFirst || b.isLast ? 2 : 1)
+
+            // Don't go to far on right/down :
+            if (pairOffset >= this.size - gutSize) pairOffset = this.size - gutSize
         }
 
-        // If within snapOffset of min or max, set offset to min or max.
-        // snapOffset buffers a.minSize and b.minSize, so logic is opposite for both.
-        // Include the appropriate gutter sizes to prevent overflows.
-        if (pairOffset <= a.minSize + snapOffset + gutterSize) {
-            pairOffset = a.minSize + gutterSize
-        } else if (pairOffset >= this.size - (b.minSize + snapOffset + gutterSize)) {
-            pairOffset = this.size - (b.minSize + gutterSize)
-        }
+        // if (pairOffset <= a.minSize + snapOffset + gutterSize) {
+        //     pairOffset = a.minSize + gutterSize
+        // } else if (pairOffset >= this.size - (b.minSize + snapOffset + gutterSize)) {
+        //     pairOffset = this.size - (b.minSize + gutterSize)
+        // }
+
+        // if (pushablePanes) {
+        //     while (!a.isFirst && eventOffset < (this.start + a.minSize)) {
+        //         this.a -= 1
+        //         calculateSizes.call(this)
+        //         pairOffset = eventOffset - this.start
+        //         a = panes[this.a]
+        //     }
+        //
+        //     while (!b.isLast && pairOffset > (this.size - b.minSize)) {
+        //         this.b += 1
+        //         calculateSizes.call(this)
+        //         b = panes[this.b]
+        //     }
+        // }
+        //
+        // // If within snapOffset of min or max, set offset to min or max.
+        // // snapOffset buffers a.minSize and b.minSize, so logic is opposite for both.
+        // // Include the appropriate gutter sizes to prevent overflows.
+        // if (pairOffset <= a.minSize + snapOffset + gutterSize) {
+        //     pairOffset = a.minSize + gutterSize
+        // } else if (pairOffset >= this.size - (b.minSize + snapOffset + gutterSize)) {
+        //     pairOffset = this.size - (b.minSize + gutterSize)
+        // }
 
         // Actually adjust the dragged pair size.
         adjust.call(this, pairOffset)
@@ -326,11 +356,12 @@ const Split = (ids, options = {}) => {
         const a = panes[isReverse ? this.g + 1 : this.g]
         const b = panes[isReverse ? this.g : this.g + 1]
 
-        if (g.isDragging) {
+        if (g.draggingDir !== null) {
             getOption(options, 'onDragEnd', NOOP)()
         }
 
-        g.isDragging = false
+        g.draggingDir = null
+        eventStartOffset = null
 
         // Remove the stored event listeners. This is why we store them.
         eventListeners(global, remove, eDragStop, g.stop)
@@ -367,11 +398,13 @@ const Split = (ids, options = {}) => {
         const g = gutters[this.g]
 
         // Call the onDragStart callback.
-        if (!g.isDragging) {
+        if (g.draggingDir === null) {
             getOption(options, 'onDragStart', NOOP)()
         }
+
         // Set the dragging property of the pair object.
-        g.isDragging = true
+        g.draggingDir = 0
+        eventStartOffset = getEventOffset(e)
 
         // Create two event listeners bound to the same gutter object and store
         // them in the gutter object.
@@ -435,6 +468,7 @@ const Split = (ids, options = {}) => {
                 i,
                 el: gutterElement,
                 size: gutterSize,
+                draggingDir: null,
             }
             applyGutterSize(gutter)
 
@@ -483,6 +517,8 @@ const Split = (ids, options = {}) => {
     function collapse (i) {
         const p = panes[i]
         p.isCollapsed = true
+
+        getOption(options, 'onCollapse', NOOP)()
 
         const pair = {
             g: i,
