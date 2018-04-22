@@ -23,7 +23,6 @@ var eDragTrigger = ['mousedown', 'touchstart'];
 var eDragStart = ['selectstart', 'dragstart'];
 var eDragMove = ['mousemove', 'touchmove'];
 var eDragStop = ['mouseup', 'touchend', 'touchcancel'];
-
 var HORIZONTAL = 'horizontal';
 var NOOP = function () { return false; };
 
@@ -53,11 +52,16 @@ var userSelect = (['', '-webkit-', '-moz-', '-o-'].filter(function (prefix) {
 // Helper function checks if its argument is a string-like type
 var isString = function (v) { return (typeof v === 'string' || v instanceof String); };
 var isArray = Array.isArray || (function (arg) { return Object.prototype.toString.call(arg) === '[object Array]'; });
+var isNode = function (n) { return n instanceof Element; };
 
 // Helper function allows elements and string selectors to be used
 // interchangeably. In either case an element is returned. This allows us to
 // do `Split([elem1, elem2])` as well as `Split(['#id1', '#id2'])`.
-var elementOrSelector = function (el) { return (isString(el) ? document.querySelector(el) : el); };
+var elementOrSelector = function (el) {
+    var node = isString(el) ? document.querySelector(el) : el;
+    if (!isNode(node)) { throw new Error(("No element found matching selector " + el)) }
+    return node
+};
 
 // Helper function gets a property from the properties object, with a default fallback
 var getOption = function (options, propName, def) {
@@ -257,13 +261,14 @@ var Split = function (ids, options) {
     // `size`: The total size of the pair. First pane + second pane + all gutters between.
     // `start`: The leading side of the first pane.
     //
+    // | <--                size                  --> |
     // ------------------------------------------------
     // |     a.gutterSize -> |||                      |
     // |                     |||                      |
     // |                     |||                      |
     // |                     ||| <- b.gutterSize      |
     // ------------------------------------------------
-    // | <- start                             size -> |
+    // | <- start                                     |
     function calculateSizes () {
         var a = panes[this.a];
         var b = panes[this.b];
@@ -410,23 +415,21 @@ var Split = function (ids, options) {
     }
 
     // 5. Create Pane and Gutter objects. Each pair has an index reference to
-    // panes `a` and `b` of the pair (first and second panes).
-    // Loop through the panes while pairing them off. Every pair gets a
-    // `pair` object, a gutter, and isFirst/isLast properties.
+    // gutter `g`, panes `a` and `b` of the pair (left and right panes).
+    // Loop through the ids while creating panes & gutters.
+    // Every pane gets isFirst/isLast properties, as well as isCollapsed.
     //
     // Basic logic:
     //
-    // - Starting with the second pane `i > 0`, create `pair` objects with
-    //   `a = i - 1` and `b = i`
     // - Set gutter sizes based on the _pair_ being first/last. The first and last
     //   pair have gutterSize / 2, since they only have one half gutter, and not two.
     // - Create gutter elements and add event listeners.
     // - Set the size of the panes, minus the gutter sizes.
     //
     // -----------------------------------------------------------------------
-    // |     i=0     |         i=1         |        i=2       |      i=3     |
-    // |             |       isFirst       |                  |     isLast   |
-    // |           pair 0                pair 1             pair 2           |
+    // | Pane 0      | Pane 1              | Pane 2           | Pane 3       |
+    // |  .isFirst   |                     |                  |  .isLast     |
+    // |          Gutter 0              Gutter 1           Gutter 2          |
     // |             |                     |                  |              |
     // -----------------------------------------------------------------------
     ids.forEach(function (id, i) {
@@ -472,34 +475,21 @@ var Split = function (ids, options) {
 
         if (computedSize < pane.minSize) {
             pane.minSize = computedSize;
+            applyPaneSize(pane);
         }
-
-        applyPaneSize(pane);
 
         panes.push(pane);
     });
-
-    // function selectPair(a, b) {
-    //     // if the parent has a reverse flex-direction, switch the pair elements.
-    //     const isReverse = (
-    //         parentFlexDirection === 'row-reverse'
-    //      || parentFlexDirection === 'column-reverse'
-    //     )
-    //
-    //     const pair = {
-    //         a: isReverse ? b : a,
-    //         b: isReverse ? a : b,
-    //         dragging: false,
-    //     }
-    //
-    //     return pair
-    // }
 
     function setSizes (newSizes) {
         newSizes.forEach(function (newSize, i) {
             panes[i].size = newSize;
             applyPaneSize(panes[i]);
         });
+    }
+
+    function getSizes () {
+        return panes.map(function (pane) { return pane.size; })
     }
 
     function destroy () {
@@ -513,6 +503,7 @@ var Split = function (ids, options) {
 
     function collapse (i) {
         var p = panes[i];
+        p.isCollapsed = true;
 
         var pair = {
             g: i,
@@ -532,18 +523,12 @@ var Split = function (ids, options) {
         if (!isIE8) { adjust.call(pair, offset); }
     }
 
-    if (isIE8) {
-        return {
-            setSizes: setSizes,
-            destroy: destroy,
-        }
-    }
-
-    return {
+    return (isIE8) ? {
         setSizes: setSizes,
-        getSizes: function getSizes () {
-            return panes.map(function (pane) { return pane.size; })
-        },
+        destroy: destroy,
+    } : {
+        setSizes: setSizes,
+        getSizes: getSizes,
         collapse: collapse,
         destroy: destroy,
         parent: parent,

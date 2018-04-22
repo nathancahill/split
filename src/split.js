@@ -15,7 +15,6 @@ const eDragTrigger = ['mousedown', 'touchstart']
 const eDragStart = ['selectstart', 'dragstart']
 const eDragMove = ['mousemove', 'touchmove']
 const eDragStop = ['mouseup', 'touchend', 'touchcancel']
-
 const HORIZONTAL = 'horizontal'
 const NOOP = () => false
 
@@ -45,11 +44,16 @@ const userSelect = `${['', '-webkit-', '-moz-', '-o-'].filter(prefix => {
 // Helper function checks if its argument is a string-like type
 const isString = v => (typeof v === 'string' || v instanceof String)
 const isArray = Array.isArray || (arg => Object.prototype.toString.call(arg) === '[object Array]')
+const isNode = n => n instanceof Element
 
 // Helper function allows elements and string selectors to be used
 // interchangeably. In either case an element is returned. This allows us to
 // do `Split([elem1, elem2])` as well as `Split(['#id1', '#id2'])`.
-const elementOrSelector = el => (isString(el) ? document.querySelector(el) : el)
+const elementOrSelector = el => {
+    const node = isString(el) ? document.querySelector(el) : el
+    if (!isNode(node)) throw new Error(`No element found matching selector ${el}`)
+    return node
+}
 
 // Helper function gets a property from the properties object, with a default fallback
 const getOption = (options, propName, def) => {
@@ -238,13 +242,14 @@ const Split = (ids, options = {}) => {
     // `size`: The total size of the pair. First pane + second pane + all gutters between.
     // `start`: The leading side of the first pane.
     //
+    // | <--                size                  --> |
     // ------------------------------------------------
     // |     a.gutterSize -> |||                      |
     // |                     |||                      |
     // |                     |||                      |
     // |                     ||| <- b.gutterSize      |
     // ------------------------------------------------
-    // | <- start                             size -> |
+    // | <- start                                     |
     function calculateSizes () {
         const a = panes[this.a]
         const b = panes[this.b]
@@ -389,23 +394,21 @@ const Split = (ids, options = {}) => {
     }
 
     // 5. Create Pane and Gutter objects. Each pair has an index reference to
-    // panes `a` and `b` of the pair (first and second panes).
-    // Loop through the panes while pairing them off. Every pair gets a
-    // `pair` object, a gutter, and isFirst/isLast properties.
+    // gutter `g`, panes `a` and `b` of the pair (left and right panes).
+    // Loop through the ids while creating panes & gutters.
+    // Every pane gets isFirst/isLast properties, as well as isCollapsed.
     //
     // Basic logic:
     //
-    // - Starting with the second pane `i > 0`, create `pair` objects with
-    //   `a = i - 1` and `b = i`
     // - Set gutter sizes based on the _pair_ being first/last. The first and last
     //   pair have gutterSize / 2, since they only have one half gutter, and not two.
     // - Create gutter elements and add event listeners.
     // - Set the size of the panes, minus the gutter sizes.
     //
     // -----------------------------------------------------------------------
-    // |     i=0     |         i=1         |        i=2       |      i=3     |
-    // |             |       isFirst       |                  |     isLast   |
-    // |           pair 0                pair 1             pair 2           |
+    // | Pane 0      | Pane 1              | Pane 2           | Pane 3       |
+    // |  .isFirst   |                     |                  |  .isLast     |
+    // |          Gutter 0              Gutter 1           Gutter 2          |
     // |             |                     |                  |              |
     // -----------------------------------------------------------------------
     ids.forEach((id, i) => {
@@ -451,34 +454,21 @@ const Split = (ids, options = {}) => {
 
         if (computedSize < pane.minSize) {
             pane.minSize = computedSize
+            applyPaneSize(pane)
         }
-
-        applyPaneSize(pane)
 
         panes.push(pane)
     })
-
-    // function selectPair(a, b) {
-    //     // if the parent has a reverse flex-direction, switch the pair elements.
-    //     const isReverse = (
-    //         parentFlexDirection === 'row-reverse'
-    //      || parentFlexDirection === 'column-reverse'
-    //     )
-    //
-    //     const pair = {
-    //         a: isReverse ? b : a,
-    //         b: isReverse ? a : b,
-    //         dragging: false,
-    //     }
-    //
-    //     return pair
-    // }
 
     function setSizes (newSizes) {
         newSizes.forEach((newSize, i) => {
             panes[i].size = newSize
             applyPaneSize(panes[i])
         })
+    }
+
+    function getSizes () {
+        return panes.map(pane => pane.size)
     }
 
     function destroy () {
@@ -492,6 +482,7 @@ const Split = (ids, options = {}) => {
 
     function collapse (i) {
         const p = panes[i]
+        p.isCollapsed = true
 
         const pair = {
             g: i,
@@ -511,18 +502,12 @@ const Split = (ids, options = {}) => {
         if (!isIE8) adjust.call(pair, offset)
     }
 
-    if (isIE8) {
-        return {
-            setSizes,
-            destroy,
-        }
-    }
-
-    return {
+    return (isIE8) ? {
         setSizes,
-        getSizes () {
-            return panes.map(pane => pane.size)
-        },
+        destroy,
+    } : {
+        setSizes,
+        getSizes,
         collapse,
         destroy,
         parent,
