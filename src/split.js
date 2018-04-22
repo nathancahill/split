@@ -208,7 +208,6 @@ const Split = (ids, options = {}) => {
         // make sure you calculate the gutter size by hand.
         const style = paneStyle(dimension, size, gutSize)
 
-        // eslint-disable-next-line no-param-reassign
         Object.keys(style).forEach(prop => {
             el.style[prop] = style[prop]
         })
@@ -217,7 +216,6 @@ const Split = (ids, options = {}) => {
     function applyGutterSize ({ el, size }) {
         const style = gutterStyle(dimension, size)
 
-        // eslint-disable-next-line no-param-reassign
         Object.keys(style).forEach(prop => {
             el.style[prop] = style[prop]
         })
@@ -238,6 +236,9 @@ const Split = (ids, options = {}) => {
         const a = panes[this.a]
         const b = panes[this.b]
         const percentage = a.size + b.size
+
+        a.isCollapsed = offset <= gutterSize
+        b.isCollapsed = offset >= this.size - gutterSize
 
         a.size = (offset / this.size) * percentage
         b.size = (percentage - ((offset / this.size) * percentage))
@@ -301,12 +302,14 @@ const Split = (ids, options = {}) => {
         let pairOffset = eventOffset - this.start
 
         if (g.draggingDir === -1) {
-            const gutSize = gutterSize / (a.isFirst || a.isLast ? 2 : 1)
+            while (panes[this.a].isCollapsed && !panes[this.a].isFirst) this.a -= 1
+            const gutSize = gutterSize / (panes[this.a].isFirst || panes[this.a].isLast ? 2 : 1)
 
             // Don't go to far on left/top :
             if (pairOffset <= gutSize) pairOffset = gutSize
         } else if (g.draggingDir === 1) {
-            const gutSize = gutterSize / (b.isFirst || b.isLast ? 2 : 1)
+            while (panes[this.b].isCollapsed && !panes[this.b].isLast) this.b -= 1
+            const gutSize = gutterSize / (panes[this.b].isFirst || panes[this.b].isLast ? 2 : 1)
 
             // Don't go to far on right/down :
             if (pairOffset >= this.size - gutSize) pairOffset = this.size - gutSize
@@ -516,9 +519,6 @@ const Split = (ids, options = {}) => {
 
     function collapse (i) {
         const p = panes[i]
-        p.isCollapsed = true
-
-        getOption(options, 'onCollapse', NOOP)()
 
         const pair = {
             g: i,

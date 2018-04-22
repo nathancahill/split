@@ -210,12 +210,11 @@ var Split = function (ids, options) {
     //
     // The Gutter object saves metadata like dragging state, startBound and
     // event listener references.
-    function applyPaneSize (ref) {
-        var el = ref.el;
-        var size = ref.size;
-        var isFirst = ref.isFirst;
-        var isLast = ref.isLast;
-
+    function applyPaneSize (pane) {
+        var el = pane.el;
+        var size = pane.size;
+        var isFirst = pane.isFirst;
+        var isLast = pane.isLast;
         var gutSize = (isFirst || isLast) ? gutterSize / 2 : gutterSize;
 
         // Split.js allows setting sizes via numbers (ideally), or if you must,
@@ -224,7 +223,6 @@ var Split = function (ids, options) {
         // make sure you calculate the gutter size by hand.
         var style = paneStyle(dimension, size, gutSize);
 
-        // eslint-disable-next-line no-param-reassign
         Object.keys(style).forEach(function (prop) {
             el.style[prop] = style[prop];
         });
@@ -236,7 +234,6 @@ var Split = function (ids, options) {
 
         var style = gutterStyle(dimension, size);
 
-        // eslint-disable-next-line no-param-reassign
         Object.keys(style).forEach(function (prop) {
             el.style[prop] = style[prop];
         });
@@ -257,6 +254,9 @@ var Split = function (ids, options) {
         var a = panes[this.a];
         var b = panes[this.b];
         var percentage = a.size + b.size;
+
+        a.isCollapsed = offset <= gutterSize;
+        b.isCollapsed = offset >= this.size - gutterSize;
 
         a.size = (offset / this.size) * percentage;
         b.size = (percentage - ((offset / this.size) * percentage));
@@ -305,9 +305,9 @@ var Split = function (ids, options) {
     // ---------------------------------------------------------------------
     // | <- this.start                                        this.size -> |
     function drag (e) {
+        var this$1 = this;
+
         var g = gutters[this.g];
-        var a = panes[this.a];
-        var b = panes[this.b];
 
         if (g.draggingDir === null) { return }
 
@@ -320,12 +320,14 @@ var Split = function (ids, options) {
         var pairOffset = eventOffset - this.start;
 
         if (g.draggingDir === -1) {
-            var gutSize = gutterSize / (a.isFirst || a.isLast ? 2 : 1);
+            while (panes[this.a].isCollapsed && !panes[this.a].isFirst) { this$1.a -= 1; }
+            var gutSize = gutterSize / (panes[this.a].isFirst || panes[this.a].isLast ? 2 : 1);
 
             // Don't go to far on left/top :
             if (pairOffset <= gutSize) { pairOffset = gutSize; }
         } else if (g.draggingDir === 1) {
-            var gutSize$1 = gutterSize / (b.isFirst || b.isLast ? 2 : 1);
+            while (panes[this.b].isCollapsed && !panes[this.b].isLast) { this$1.b -= 1; }
+            var gutSize$1 = gutterSize / (panes[this.b].isFirst || panes[this.b].isLast ? 2 : 1);
 
             // Don't go to far on right/down :
             if (pairOffset >= this.size - gutSize$1) { pairOffset = this.size - gutSize$1; }
