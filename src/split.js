@@ -190,11 +190,36 @@ const Split = (ids, options = {}) => {
         const b = elements[this.b]
         const percentage = a.size + b.size
 
-        a.size = (offset / this.size) * percentage
-        b.size = (percentage - ((offset / this.size) * percentage))
+        // When it is 0, we want to hide the gutter. This is a hiding collapse
+        // We'll also record the old size of a, so we can expand it again later
+        if (offset === 0) {
+            a.sizeBeforeCollapse = a.size
+            b.sizeBeforeCollapse = b.size
 
-        setElementSize(a.element, a.size, this.aGutterSize)
-        setElementSize(b.element, b.size, this.bGutterSize)
+            a.size = 0
+            b.size = a.sizeBeforeCollapse + b.size
+
+            setElementSize(a.element, a.size, 0)
+            setElementSize(b.element, b.size, this.bGutterSize / 2)
+            this.gutter.style.display = 'none'
+        } else if (offset === this.size) {
+            a.sizeBeforeCollapse = a.size
+            b.sizeBeforeCollapse = b.size
+
+            a.size = b.sizeBeforeCollapse + a.size
+            b.size = 0
+
+            setElementSize(a.element, a.size, this.aGutterSize / 2)
+            setElementSize(b.element, b.size, 0)
+            this.gutter.style.display = 'none'
+        } else {
+            a.size = (offset / this.size) * percentage
+            b.size = (percentage - ((offset / this.size) * percentage))
+
+            setElementSize(a.element, a.size, this.aGutterSize)
+            setElementSize(b.element, b.size, this.bGutterSize)
+            this.gutter.style.display = ''
+        }
     }
 
     // drag, where all the magic happens. The logic is really quite simple:
@@ -511,28 +536,74 @@ const Split = (ids, options = {}) => {
         getSizes () {
             return elements.map(element => element.size)
         },
-        collapse (i) {
+        collapse (i, hide) {
             if (i === pairs.length) {
                 const pair = pairs[i - 1]
 
                 calculateSizes.call(pair)
 
                 if (!isIE8) {
-                    adjust.call(pair, pair.size - pair.bGutterSize)
+                    adjust.call(pair, hide ? pair.size : pair.size - pair.bGutterSize)
                 }
+                pair.bHidden = hide || false
             } else {
                 const pair = pairs[i]
 
                 calculateSizes.call(pair)
 
                 if (!isIE8) {
-                    adjust.call(pair, pair.aGutterSize)
+                    adjust.call(pair, hide ? 0 : pair.aGutterSize)
                 }
+                pair.aHidden = hide || false
+            }
+        },
+        expand (i) {
+            if (i === pairs.length) {
+                console.log('Expanding last element of last pair')
+                const pair = pairs[i - 1]
+                const a = elements[pair.a]
+                const b = elements[pair.b]
+
+                calculateSizes.call(pair)
+
+                if (!isIE8) {
+                    // const offset = (a.sizeBeforeCollapse / (a.size + b.size)) * pair.size
+                    const offset = (a.sizeBeforeCollapse / (a.sizeBeforeCollapse + b.sizeBeforeCollapse)) * pair.size
+                    adjust.call(pair, offset)
+                }
+                pair.bHidden = false
+                a.sizeBeforeCollapse = undefined
+                b.sizeBeforeCollapse = undefined
+            } else {
+                const pair = pairs[i]
+                const a = elements[pair.a]
+                const b = elements[pair.b]
+
+                calculateSizes.call(pair)
+
+                if (!isIE8) {
+                    const offset = (a.sizeBeforeCollapse / (a.sizeBeforeCollapse + b.sizeBeforeCollapse)) * pair.size
+                    adjust.call(pair, offset)
+                }
+                pair.aHidden = false
+                a.sizeBeforeCollapse = undefined
+                b.sizeBeforeCollapse = undefined
+            }
+        },
+        toggle (i) {
+            if (i === pairs.length) {
+                const pair = pairs[i - 1]
+                if (pair.bHidden) this.expand(i)
+                else this.collapse(i, true)
+            } else {
+                const pair = pairs[i]
+                if (pair.aHidden) this.expand(i)
+                else this.collapse(i, true)
             }
         },
         destroy,
-        parent: parent,
-        pairs: pairs
+        parent,
+        pairs,
     }
 }
 
