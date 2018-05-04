@@ -567,6 +567,7 @@ const Split = (ids, options = {}) => {
                 }
                 pair.aHidden = hide || false
             }
+            getOption(options, 'onDragEnd', NOOP)()
         },
         expand (i) {
             if (i === pairs.length) {
@@ -598,6 +599,7 @@ const Split = (ids, options = {}) => {
                 }
                 pair.aHidden = false
             }
+            getOption(options, 'onDragEnd', NOOP)()
         },
         toggle (i) {
             if (i === pairs.length) {

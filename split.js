@@ -578,6 +578,7 @@ var Split = function (ids, options) {
                 }
                 pair$1.aHidden = hide || false;
             }
+            getOption(options, 'onDragEnd', NOOP)();
         },
         expand: function expand (i) {
             if (i === pairs.length) {
@@ -609,6 +610,7 @@ var Split = function (ids, options) {
                 }
                 pair$1.aHidden = false;
             }
+            getOption(options, 'onDragEnd', NOOP)();
         },
         toggle: function toggle (i) {
             if (i === pairs.length) {
