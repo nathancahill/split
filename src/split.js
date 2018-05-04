@@ -111,6 +111,7 @@ const Split = (ids, options = {}) => {
     let clientAxis
     let position
     let elements
+    const pairs = []
 
     // All DOM elements in the split should have a common parent. We can grab
     // the first elements parent and hope users read the docs because the
@@ -179,6 +180,9 @@ const Split = (ids, options = {}) => {
         })
     }
 
+    function allOthersHidden (pair) {
+        return pairs.reduce((h, p) => ((p === pair) ? h : h && p.aHidden !== false), true)
+    }
     // Actually adjust the size of elements `a` and `b` to `offset` while dragging.
     // calc is used to allow calc(percentage + gutterpx) on the whole split instance,
     // which allows the viewport to be resized without additional logic.
@@ -190,9 +194,11 @@ const Split = (ids, options = {}) => {
         const b = elements[this.b]
         const percentage = a.size + b.size
 
-        // When it is 0, we want to hide the gutter. This is a hiding collapse
-        // We'll also record the old size of a, so we can expand it again later
+        // When offset is 0, it means we are closing the 'a' panel.
+        // This happens for all but the last element
         if (offset === 0) {
+            const bGutterSize = allOthersHidden(this) ? 0 : gutterSize / 2
+
             a.sizeBeforeCollapse = a.size
             b.sizeBeforeCollapse = b.size
 
@@ -200,16 +206,20 @@ const Split = (ids, options = {}) => {
             b.size = a.sizeBeforeCollapse + b.size
 
             setElementSize(a.element, a.size, 0)
-            setElementSize(b.element, b.size, this.bGutterSize / 2)
+            setElementSize(b.element, b.size, bGutterSize)
             this.gutter.style.display = 'none'
+        // When offset is the pair's size, it means we are closing the 'b' panel.
+        // This happens only for the last element
         } else if (offset === this.size) {
+            const aGutterSize = allOthersHidden(this) ? 0 : gutterSize / 2
+
             a.sizeBeforeCollapse = a.size
             b.sizeBeforeCollapse = b.size
 
             a.size = b.sizeBeforeCollapse + a.size
             b.size = 0
 
-            setElementSize(a.element, a.size, this.aGutterSize / 2)
+            setElementSize(a.element, a.size, aGutterSize)
             setElementSize(b.element, b.size, 0)
             this.gutter.style.display = 'none'
         } else {
@@ -414,7 +424,6 @@ const Split = (ids, options = {}) => {
     // |           pair 0                pair 1             pair 2           |
     // |             |                     |                  |              |
     // -----------------------------------------------------------------------
-    const pairs = []
     elements = ids.map((id, i) => {
         // Create the element object.
         const element = {
@@ -539,6 +548,7 @@ const Split = (ids, options = {}) => {
         collapse (i, hide) {
             if (i === pairs.length) {
                 const pair = pairs[i - 1]
+                if (pair.bHidden) return
 
                 calculateSizes.call(pair)
 
@@ -548,6 +558,7 @@ const Split = (ids, options = {}) => {
                 pair.bHidden = hide || false
             } else {
                 const pair = pairs[i]
+                if (pair.aHidden) return
 
                 calculateSizes.call(pair)
 
@@ -559,35 +570,33 @@ const Split = (ids, options = {}) => {
         },
         expand (i) {
             if (i === pairs.length) {
-                console.log('Expanding last element of last pair')
                 const pair = pairs[i - 1]
+                if (!pair.bHidden) return
                 const a = elements[pair.a]
                 const b = elements[pair.b]
 
                 calculateSizes.call(pair)
 
                 if (!isIE8) {
-                    // const offset = (a.sizeBeforeCollapse / (a.size + b.size)) * pair.size
-                    const offset = (a.sizeBeforeCollapse / (a.sizeBeforeCollapse + b.sizeBeforeCollapse)) * pair.size
+                    const totalSize = a.sizeBeforeCollapse + b.sizeBeforeCollapse
+                    const offset = (a.sizeBeforeCollapse / totalSize) * pair.size
                     adjust.call(pair, offset)
                 }
                 pair.bHidden = false
-                a.sizeBeforeCollapse = undefined
-                b.sizeBeforeCollapse = undefined
             } else {
                 const pair = pairs[i]
+                if (!pair.aHidden) return
                 const a = elements[pair.a]
                 const b = elements[pair.b]
 
                 calculateSizes.call(pair)
 
                 if (!isIE8) {
-                    const offset = (a.sizeBeforeCollapse / (a.sizeBeforeCollapse + b.sizeBeforeCollapse)) * pair.size
+                    const totalSize = a.sizeBeforeCollapse + b.sizeBeforeCollapse
+                    const offset = (a.sizeBeforeCollapse / totalSize) * pair.size
                     adjust.call(pair, offset)
                 }
                 pair.aHidden = false
-                a.sizeBeforeCollapse = undefined
-                b.sizeBeforeCollapse = undefined
             }
         },
         toggle (i) {

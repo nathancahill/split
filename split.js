@@ -122,6 +122,7 @@ var Split = function (ids, options) {
     var clientAxis;
     var position;
     var elements;
+    var pairs = [];
 
     // All DOM elements in the split should have a common parent. We can grab
     // the first elements parent and hope users read the docs because the
@@ -190,6 +191,9 @@ var Split = function (ids, options) {
         });
     }
 
+    function allOthersHidden (pair) {
+        return pairs.reduce(function (h, p) { return ((p === pair) ? h : h && p.aHidden !== false); }, true)
+    }
     // Actually adjust the size of elements `a` and `b` to `offset` while dragging.
     // calc is used to allow calc(percentage + gutterpx) on the whole split instance,
     // which allows the viewport to be resized without additional logic.
@@ -201,9 +205,11 @@ var Split = function (ids, options) {
         var b = elements[this.b];
         var percentage = a.size + b.size;
 
-        // When it is 0, we want to hide the gutter. This is a hiding collapse
-        // We'll also record the old size of a, so we can expand it again later
+        // When offset is 0, it means we are closing the 'a' panel.
+        // This happens for all but the last element
         if (offset === 0) {
+            var bGutterSize = allOthersHidden(this) ? 0 : gutterSize / 2;
+
             a.sizeBeforeCollapse = a.size;
             b.sizeBeforeCollapse = b.size;
 
@@ -211,16 +217,20 @@ var Split = function (ids, options) {
             b.size = a.sizeBeforeCollapse + b.size;
 
             setElementSize(a.element, a.size, 0);
-            setElementSize(b.element, b.size, this.bGutterSize / 2);
+            setElementSize(b.element, b.size, bGutterSize);
             this.gutter.style.display = 'none';
+        // When offset is the pair's size, it means we are closing the 'b' panel.
+        // This happens only for the last element
         } else if (offset === this.size) {
+            var aGutterSize = allOthersHidden(this) ? 0 : gutterSize / 2;
+
             a.sizeBeforeCollapse = a.size;
             b.sizeBeforeCollapse = b.size;
 
             a.size = b.sizeBeforeCollapse + a.size;
             b.size = 0;
 
-            setElementSize(a.element, a.size, this.aGutterSize / 2);
+            setElementSize(a.element, a.size, aGutterSize);
             setElementSize(b.element, b.size, 0);
             this.gutter.style.display = 'none';
         } else {
@@ -425,7 +435,6 @@ var Split = function (ids, options) {
     // |           pair 0                pair 1             pair 2           |
     // |             |                     |                  |              |
     // -----------------------------------------------------------------------
-    var pairs = [];
     elements = ids.map(function (id, i) {
         // Create the element object.
         var element = {
@@ -550,6 +559,7 @@ var Split = function (ids, options) {
         collapse: function collapse (i, hide) {
             if (i === pairs.length) {
                 var pair = pairs[i - 1];
+                if (pair.bHidden) { return }
 
                 calculateSizes.call(pair);
 
@@ -559,6 +569,7 @@ var Split = function (ids, options) {
                 pair.bHidden = hide || false;
             } else {
                 var pair$1 = pairs[i];
+                if (pair$1.aHidden) { return }
 
                 calculateSizes.call(pair$1);
 
@@ -570,35 +581,33 @@ var Split = function (ids, options) {
         },
         expand: function expand (i) {
             if (i === pairs.length) {
-                console.log('Expanding last element of last pair');
                 var pair = pairs[i - 1];
+                if (!pair.bHidden) { return }
                 var a = elements[pair.a];
                 var b = elements[pair.b];
 
                 calculateSizes.call(pair);
 
                 if (!isIE8) {
-                    // const offset = (a.sizeBeforeCollapse / (a.size + b.size)) * pair.size
-                    var offset = (a.sizeBeforeCollapse / (a.sizeBeforeCollapse + b.sizeBeforeCollapse)) * pair.size;
+                    var totalSize = a.sizeBeforeCollapse + b.sizeBeforeCollapse;
+                    var offset = (a.sizeBeforeCollapse / totalSize) * pair.size;
                     adjust.call(pair, offset);
                 }
                 pair.bHidden = false;
-                a.sizeBeforeCollapse = undefined;
-                b.sizeBeforeCollapse = undefined;
             } else {
                 var pair$1 = pairs[i];
+                if (!pair$1.aHidden) { return }
                 var a$1 = elements[pair$1.a];
                 var b$1 = elements[pair$1.b];
 
                 calculateSizes.call(pair$1);
 
                 if (!isIE8) {
-                    var offset$1 = (a$1.sizeBeforeCollapse / (a$1.sizeBeforeCollapse + b$1.sizeBeforeCollapse)) * pair$1.size;
+                    var totalSize$1 = a$1.sizeBeforeCollapse + b$1.sizeBeforeCollapse;
+                    var offset$1 = (a$1.sizeBeforeCollapse / totalSize$1) * pair$1.size;
                     adjust.call(pair$1, offset$1);
                 }
                 pair$1.aHidden = false;
-                a$1.sizeBeforeCollapse = undefined;
-                b$1.sizeBeforeCollapse = undefined;
             }
         },
         toggle: function toggle (i) {
