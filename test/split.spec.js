@@ -160,12 +160,20 @@ describe('Split', function() {
         expect(this.a.getBoundingClientRect().width).toBeCloseTo(800 - 10, 0)
         expect(this.b.getBoundingClientRect().width).toBe(0)
     })
+    it('hide splits', function() {
+        var split = Split(['#a', '#b'])
+
+        split.collapse(0, true)
+
+        expect(this.a.getBoundingClientRect().width).toBe(0)
+        expect(this.b.getBoundingClientRect().width).toBeCloseTo(800, 0)
+    })
     it('expand splits', function() {
         var split = Split(['#a', '#b', '#c'])
         split.collapse(0, true)
 
         expect(this.a.getBoundingClientRect().width).toBe(0)
-        expect(this.b.getBoundingClientRect().width).toBeCloseTo(2*800/3, 0)
+        expect(this.b.getBoundingClientRect().width).toBeCloseTo(2*800/3 - 5, 0)
         expect(this.c.getBoundingClientRect().width).toBeCloseTo(800/3 - 5, 0)
 
         split.expand(0)
@@ -175,17 +183,19 @@ describe('Split', function() {
         expect(this.c.getBoundingClientRect().width).toBeCloseTo(800/3 - 5, 0)
     })
     it('expand splits (last)', function() {
-        var split = Split(['#a', '#b'])
+        var split = Split(['#a', '#b', '#c'])
 
-        split.collapse(1, true)
+        split.collapse(2, true)
 
-        expect(this.a.getBoundingClientRect().width).toBeCloseTo(800, 0)
-        expect(this.b.getBoundingClientRect().width).toBe(0)
+        expect(this.a.getBoundingClientRect().width).toBeCloseTo(800/3 - 5, 0)
+        expect(this.b.getBoundingClientRect().width).toBeCloseTo(2*800/3 - 5, 0)
+        expect(this.c.getBoundingClientRect().width).toBe(0)
 
-        split.expand(1)
+        split.expand(2)
 
-        expect(this.a.getBoundingClientRect().width).toBeCloseTo(800/2 - 5, 0)
-        expect(this.b.getBoundingClientRect().width).toBeCloseTo(800/2 - 5, 0)
+        expect(this.a.getBoundingClientRect().width).toBeCloseTo(800/3 - 5, 0)
+        expect(this.b.getBoundingClientRect().width).toBeCloseTo(800/3 - 10, 0)
+        expect(this.c.getBoundingClientRect().width).toBeCloseTo(800/3 - 5, 0)
     })
     it('toggle splits', function() {
         var split = Split(['#a', '#b'])

@@ -192,7 +192,11 @@ var Split = function (ids, options) {
     }
 
     function allOthersHidden (pair) {
-        return pairs.reduce(function (h, p) { return ((p === pair) ? h : h && p.aHidden !== false); }, true)
+        for (var i = 0; i < pairs.length; i += 1) {
+            var p = pairs[i];
+            if (pair !== p && p.aHidden !== true) { return false }
+        }
+        return true
     }
     // Actually adjust the size of elements `a` and `b` to `offset` while dragging.
     // calc is used to allow calc(percentage + gutterpx) on the whole split instance,
