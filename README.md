@@ -18,6 +18,22 @@
  - __Unopinionated:__ Plays nicely with `calc`, `flex` and `grid`.
  - __Compatible:__ Works great in IE9, and _even loads in IE8_ with polyfills. Early Firefox/Chrome/Safari/Opera supported too.
 
+## Table of Contents
+
+- [Installation](#installation)
+- [Documentation](#documentation)
+- [Important Note](#important-note)
+- [Options](#options)
+- [Examples](#usage-examples)
+- [Saving State](#saving-state)
+- [Flexbox](#flexbox)
+- [API](#api)
+- [CSS](#css)
+- [Browser Support](#browser-support)
+- [Credits](#credits)
+- [License](#license)
+
+
 ## Installation
 
 Yarn:
