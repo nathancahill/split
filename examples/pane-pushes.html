@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <title>Split.js</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/normalize/3.0.3/normalize.css">
+  <style>
+  html, body {
+    height: 100%;
+  }
+
+  body {
+    padding: 8px;
+    background-color: #F6F6F6;
+    box-sizing: border-box;
+  }
+
+  .split, .gutter {
+    -webkit-box-sizing: border-box;
+       -moz-box-sizing: border-box;
+            box-sizing: border-box;
+
+    overflow-y: auto;
+    overflow-x: hidden;
+  }
+
+  .content {
+    border: 1px solid #C0C0C0;
+    box-shadow: inset 0 1px 2px #e4e4e4;
+    background-color: #fff;
+  }
+
+  .gutter {
+    background-color: transparent;
+
+    background-repeat: no-repeat;
+    background-position: 50%;
+  }
+
+  .gutter.gutter-horizontal {
+    cursor: col-resize;
+    background-image: url('../grips/vertical.png');
+  }
+
+  .gutter.gutter-vertical {
+    cursor: row-resize;
+    background-image: url('../grips/horizontal.png');
+  }
+
+  .split.split-horizontal, .gutter.gutter-horizontal {
+    height: 100%;
+    float: left;
+  }
+  </style>
+</head>
+<body>
+    <div id="a" class="split">
+      <div id="d" class="split split-horizontal content">HTML</div>
+      <div id="e" class="split split-horizontal content">CSS</div>
+      <div id="f" class="split split-horizontal content">JS</div>
+    </div>
+    <div id="b" class="split content">
+      Result
+    </div>
+    <div id="c" class="split">
+      <div id="g" class="split split-horizontal content">m</div>
+      <div id="h" class="split split-horizontal content">u</div>
+      <div id="i" class="split split-horizontal content">l</div>
+      <div id="j" class="split split-horizontal content">t</div>
+      <div id="k" class="split split-horizontal content">i</div>
+      <div id="l" class="split split-horizontal content">p</div>
+      <div id="m" class="split split-horizontal content">l</div>
+      <div id="n" class="split split-horizontal content">e</div>
+    </div>
+</body>
+<script src="../split.js"></script>
+<script>
+    Split(['#a', '#b', '#c'], {
+      sizes: [40, 20, 40],
+      direction: 'vertical',
+      gutterSize: 8,
+      cursor: 'row-resize'
+    })
+
+    Split(['#d', '#e', '#f'], {
+      pushablePanes: true,
+      gutterSize: 8,
+      minSize: 100,
+      cursor: 'col-resize'
+    })
+
+    Split(['#g', '#h', '#i', '#j', '#k', '#l', '#m', '#n'], {
+      pushablePanes: true,
+      gutterSize: 8,
+      minSize: 50,
+      cursor: 'col-resize'
+    })
+
+</script>
+</html>

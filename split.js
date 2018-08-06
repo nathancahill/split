@@ -15,18 +15,26 @@ var document = global.document;
 
 // Save a couple long function names that are used frequently.
 // This optimization saves around 400 bytes.
-var addEventListener = 'addEventListener';
-var removeEventListener = 'removeEventListener';
+var add = 'addEventListener';
+var remove = 'removeEventListener';
 var getBoundingClientRect = 'getBoundingClientRect';
+
+var eDragTrigger = ['mousedown', 'touchstart'];
+var eDragStart = ['selectstart', 'dragstart'];
+var eDragMove = ['mousemove', 'touchmove'];
+var eDragStop = ['mouseup', 'touchend', 'touchcancel'];
+var HORIZONTAL = 'horizontal';
 var NOOP = function () { return false; };
 
 // Figure out if we're in IE8 or not. IE8 will still render correctly,
 // but will be static instead of draggable.
-var isIE8 = global.attachEvent && !global[addEventListener];
+var isIE8 = global.attachEvent && !global[add];
 
-// This library only needs two helper functions:
-//
-// The first determines which prefixes of CSS calc we need.
+// Polyfill for Math.sign
+// https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Math/sign#Polyfill
+Math.sign = Math.sign || (function (x) { return ((x > 0) - (x < 0)) || +x; });
+
+// Helpers function determines which prefixes CSS props and CSS values needs.
 // We only need to do this once on startup, when this anonymous function is called.
 //
 // Tests -webkit, -moz and -o prefixes. Modified from StackOverflow:
@@ -38,34 +46,100 @@ var calc = (['', '-webkit-', '-moz-', '-o-'].filter(function (prefix) {
     return (!!el.style.length)
 }).shift()) + "calc";
 
-// The second helper function allows elements and string selectors to be used
+var userSelect = (['', '-webkit-', '-moz-', '-o-'].filter(function (prefix) {
+    var el = document.createElement('div');
+    el.style.cssText = prefix + "user-select:none";
+
+    return (!!el.style.length)
+}).shift()) + "userSelect";
+
+// Helper functions checks argument's type
+var isString = function (v) { return (typeof v === 'string' || v instanceof String); };
+var isArray = Array.isArray || (function (arg) { return Object.prototype.toString.call(arg) === '[object Array]'; });
+var isNode = function (n) { return n instanceof Element; };
+
+// Helper function allows elements and string selectors to be used
 // interchangeably. In either case an element is returned. This allows us to
 // do `Split([elem1, elem2])` as well as `Split(['#id1', '#id2'])`.
 var elementOrSelector = function (el) {
-    if (typeof el === 'string' || el instanceof String) {
-        return document.querySelector(el)
-    }
-
-    return el
+    var node = isString(el) ? document.querySelector(el) : el;
+    if (!isNode(node)) { throw new Error(("No element found matching selector " + el)) }
+    return node
 };
 
+// Helper function gets a property from the properties object, with a default fallback
+var getOption = function (options, propName, def) {
+    var value = options[propName];
+    if (value !== undefined) {
+        return value
+    }
+    return def
+};
+
+var eventListeners = function (els, operation, events, callback) {
+    var elementsList = !isArray(els) ? [els] : els;
+    var eventsList = !isArray(events) ? [events] : events;
+
+    elementsList.forEach(function (el) {
+        eventsList.forEach(function (ev) { return el[operation](ev, callback); });
+    });
+};
+
+// Default options
+var defaultGutterFn = function (i, gutterDirection) {
+    var gut = document.createElement('div');
+    gut.className = "gutter gutter-" + gutterDirection;
+    return gut
+};
+
+var defaultPaneStyleFn = function (dim, size, gutSize) {
+    var style = {};
+
+    if (!isString(size)) {
+        if (!isIE8) {
+            style[dim] = calc + "(" + size + "% - " + gutSize + "px)";
+        } else {
+            style[dim] = size + "%";
+        }
+    } else {
+        style[dim] = size;
+    }
+
+    return style
+};
+
+var defaultGutterStyleFn = function (dim, gutSize) { return (( obj = {}, obj[dim] = (gutSize + "px"), obj ))
+    var obj; };
+
 // The main function to initialize a split. Split.js thinks about each pair
-// of elements as an independant pair. Dragging the gutter between two elements
+// of two panes as an independant pair. Dragging the gutter between two panes
 // only changes the dimensions of elements in that pair. This is key to understanding
 // how the following functions operate, since each function is bound to a pair.
 //
-// A pair object is shaped like this:
+// Pair object is shaped like this:
 //
 // {
-//     a: DOM element,
-//     b: DOM element,
-//     aMin: Number,
-//     bMin: Number,
-//     dragging: Boolean,
-//     parent: DOM element,
-//     isFirst: Boolean,
-//     isLast: Boolean,
-//     direction: 'horizontal' | 'vertical'
+//     a: Number (Pane index)
+//     b: Number (Pane index)
+//     g: Number ( dragging Gutter index)
+// }
+//
+// Pane object is shaped like this:
+//
+// {
+//     el: DOM element
+//     minSize: Number
+//     size: Number
+//     isFirst: Boolean
+//     isLast: Boolean
+//     isCollapsed: Boolean
+// }
+//
+// Gutter object is shaped like this:
+//
+// {
+//     el: DOM element
+//     draggingDir: number | null,
 // }
 //
 // The basic sequence:
@@ -82,100 +156,92 @@ var Split = function (ids, options) {
     if ( options === void 0 ) options = {};
 
     var dimension;
-    var clientDimension;
     var clientAxis;
-    var position;
-    var paddingA;
-    var paddingB;
-    var elements;
+    var startBound;
+
+    var panes = [];
+    var gutters = [];
+    var eventStartOffset;
+
 
     // All DOM elements in the split should have a common parent. We can grab
     // the first elements parent and hope users read the docs because the
     // behavior will be whacky otherwise.
     var parent = elementOrSelector(ids[0]).parentNode;
     var parentFlexDirection = global.getComputedStyle(parent).flexDirection;
+    var isReverse = parentFlexDirection === 'row-reverse' || parentFlexDirection === 'column-reverse';
 
-    // Set default options.sizes to equal percentages of the parent element.
-    var sizes = options.sizes || ids.map(function () { return 100 / ids.length; });
+    // Set default options.sizes to equal percentages of the parent pane.
+    var sizes = getOption(options, 'sizes') || ids.map(function () { return 100 / ids.length; });
 
     // Standardize minSize to an array if it isn't already. This allows minSize
     // to be passed as a number.
-    var minSize = options.minSize !== undefined ? options.minSize : 100;
-    var minSizes = Array.isArray(minSize) ? minSize : ids.map(function () { return minSize; });
-    var gutterSize = options.gutterSize !== undefined ? options.gutterSize : 10;
-    var snapOffset = options.snapOffset !== undefined ? options.snapOffset : 30;
-    var direction = options.direction || 'horizontal';
-    var cursor = options.cursor || (direction === 'horizontal' ? 'ew-resize' : 'ns-resize');
-    var gutter = options.gutter || (function (i, gutterDirection) {
-        var gut = document.createElement('div');
-        gut.className = "gutter gutter-" + gutterDirection;
-        return gut
-    });
-    var elementStyle = options.elementStyle || (function (dim, size, gutSize) {
-        var style = {};
-
-        if (typeof size !== 'string' && !(size instanceof String)) {
-            if (!isIE8) {
-                style[dim] = calc + "(" + size + "% - " + gutSize + "px)";
-            } else {
-                style[dim] = size + "%";
-            }
-        } else {
-            style[dim] = size;
-        }
-
-        return style
-    });
-    var gutterStyle = options.gutterStyle || (function (dim, gutSize) { return (( obj = {}, obj[dim] = (gutSize + "px"), obj ))
-        var obj; });
+    var minSize = getOption(options, 'minSize', 100);
+    var minSizes = isArray(minSize) ? minSize : ids.map(function () { return minSize; });
+    var gutterSize = getOption(options, 'gutterSize', 10);
+    var snapOffset = getOption(options, 'snapOffset', 30);
+    var pushablePanes = getOption(options, 'pushablePanes', false);
+    var direction = getOption(options, 'direction', HORIZONTAL);
+    var cursor = getOption(options, 'cursor', direction === HORIZONTAL ? 'ew-resize' : 'ns-resize');
+    var paneStyle = getOption(options, 'elementStyle', defaultPaneStyleFn);
+    var gutterCreate = getOption(options, 'gutter', defaultGutterFn);
+    var gutterStyle = getOption(options, 'gutterStyle', defaultGutterStyleFn);
 
     // 2. Initialize a bunch of strings based on the direction we're splitting.
     // A lot of the behavior in the rest of the library is paramatized down to
     // rely on CSS strings and classes.
-    if (direction === 'horizontal') {
+    if (direction === HORIZONTAL) {
         dimension = 'width';
-        clientDimension = 'clientWidth';
         clientAxis = 'clientX';
-        position = 'left';
-        paddingA = 'paddingLeft';
-        paddingB = 'paddingRight';
+        startBound = 'left';
     } else if (direction === 'vertical') {
         dimension = 'height';
-        clientDimension = 'clientHeight';
         clientAxis = 'clientY';
-        position = 'top';
-        paddingA = 'paddingTop';
-        paddingB = 'paddingBottom';
+        startBound = 'top';
+    }
+
+
+    function getGutterSizeOfPane (p) {
+        return gutterSize / (p.isFirst || p.isLast ? 2 : 1)
     }
 
     // 3. Define the dragging helper functions, and a few helpers to go with them.
-    // Each helper is bound to a pair object that contains it's metadata. This
+    // Each helper is bound to a Gutter object that contains its metadata. This
     // also makes it easy to store references to listeners that that will be
     // added and removed.
     //
     // Even though there are no other functions contained in them, aliasing
     // this to self saves 50 bytes or so since it's used so frequently.
     //
-    // The pair object saves metadata like dragging state, position and
+    // The Gutter object saves metadata like dragging state, startBound and
     // event listener references.
-
-    function setElementSize (el, size, gutSize) {
+    function applyPaneSize (p) {
         // Split.js allows setting sizes via numbers (ideally), or if you must,
         // by string, like '300px'. This is less than ideal, because it breaks
         // the fluid layout that `calc(% - px)` provides. You're on your own if you do that,
         // make sure you calculate the gutter size by hand.
-        var style = elementStyle(dimension, size, gutSize);
+        var style = paneStyle(dimension, p.size, getGutterSizeOfPane(p));
 
-        // eslint-disable-next-line no-param-reassign
-        Object.keys(style).forEach(function (prop) { return (el.style[prop] = style[prop]); });
+        Object.keys(style).forEach(function (prop) {
+            p.el.style[prop] = style[prop];
+        });
     }
 
-    function setGutterSize (gutterElement, gutSize) {
-        var style = gutterStyle(dimension, gutSize);
+    function applyGutterSize (ref) {
+        var el = ref.el;
+        var size = ref.size;
 
-        // eslint-disable-next-line no-param-reassign
-        Object.keys(style).forEach(function (prop) { return (gutterElement.style[prop] = style[prop]); });
+        var style = gutterStyle(dimension, size);
+
+        Object.keys(style).forEach(function (prop) {
+            el.style[prop] = style[prop];
+        });
     }
+
+    function getEventOffset (e) {
+        return ('touches' in e ? e.touches[0] : e)[clientAxis]
+    }
+
 
     // Actually adjust the size of elements `a` and `b` to `offset` while dragging.
     // calc is used to allow calc(percentage + gutterpx) on the whole split instance,
@@ -184,23 +250,51 @@ var Split = function (ids, options) {
     // Both sizes are calculated from the initial parent percentage,
     // then the gutter size is subtracted.
     function adjust (offset) {
-        var a = elements[this.a];
-        var b = elements[this.b];
+        var a = panes[this.a];
+        var b = panes[this.b];
         var percentage = a.size + b.size;
 
         a.size = (offset / this.size) * percentage;
         b.size = (percentage - ((offset / this.size) * percentage));
 
-        setElementSize(a.element, a.size, this.aGutterSize);
-        setElementSize(b.element, b.size, this.bGutterSize);
+        applyPaneSize(a);
+        applyPaneSize(b);
+    }
+
+    // Cache some important sizes when drag starts, so we don't have to do that
+    // continously:
+    //
+    // `size`: The total size of the pair. First pane + second pane + all gutters between.
+    // `start`: The leading side of the first pane.
+    //
+    // | <--                size                  --> |
+    // ------------------------------------------------
+    // |     a.gutterSize -> |||                      |
+    // |                     |||                      |
+    // |                     |||                      |
+    // |                     ||| <- b.gutterSize      |
+    // ------------------------------------------------
+    // | <- start                                     |
+    function calculateSizes () {
+        var a = panes[this.a];
+        var b = panes[this.b];
+        var aBounds = a.el[getBoundingClientRect]();
+        var bBounds = b.el[getBoundingClientRect]();
+
+        // Figure out the parent size minus padding.
+        this.size = aBounds[dimension] + gutterSize + bBounds[dimension];
+        this.start = aBounds[startBound];
+
+        a.isCollapsed = aBounds[dimension] <= gutterSize;
+        b.isCollapsed = bBounds[dimension] <= gutterSize;
     }
 
     // drag, where all the magic happens. The logic is really quite simple:
     //
-    // 1. Ignore if the pair is not dragging.
+    // 1. Ignore if the gutter is not dragging.
     // 2. Get the offset of the event.
     // 3. Snap offset to min if within snappable range (within min + snapOffset).
-    // 4. Actually adjust each element in the pair to offset.
+    // 4. Actually adjust each pane in the pair to offset.
     //
     // ---------------------------------------------------------------------
     // |    | <- a.minSize               ||              b.minSize -> |    |
@@ -210,327 +304,270 @@ var Split = function (ids, options) {
     // ---------------------------------------------------------------------
     // | <- this.start                                        this.size -> |
     function drag (e) {
-        var offset;
+        var this$1 = this;
 
-        if (!this.dragging) { return }
+        var g = gutters[this.g];
+        var a = panes[this.a];
+        var b = panes[this.b];
+
+        if (g.draggingDir === null) { return }
 
         // Get the offset of the event from the first side of the
         // pair `this.start`. Supports touch events, but not multitouch, so only the first
         // finger `touches[0]` is counted.
-        if ('touches' in e) {
-            offset = e.touches[0][clientAxis] - this.start;
-        } else {
-            offset = e[clientAxis] - this.start;
-        }
+        var eventOffset = getEventOffset(e);
+        g.draggingDir = Math.sign(eventOffset - eventStartOffset);
+        if (g.draggingDir === 0) { return }
+
+        var pairOffset = eventOffset - this.start;
 
         // If within snapOffset of min or max, set offset to min or max.
         // snapOffset buffers a.minSize and b.minSize, so logic is opposite for both.
         // Include the appropriate gutter sizes to prevent overflows.
-        if (offset <= elements[this.a].minSize + snapOffset + this.aGutterSize) {
-            offset = elements[this.a].minSize + this.aGutterSize;
-        } else if (offset >= this.size - (elements[this.b].minSize + snapOffset + this.bGutterSize)) {
-            offset = this.size - (elements[this.b].minSize + this.bGutterSize);
+        if (g.draggingDir === -1) {
+            if (b.isCollapsed && (this.size - pairOffset) <= snapOffset) { return }
+
+            var pairGutterSize = getGutterSizeOfPane(a);
+
+            if (pushablePanes) {
+                while (!a.isFirst && eventOffset < (this.start + a.minSize)) {
+                    pairGutterSize = getGutterSizeOfPane(a);
+                    adjust.call(this$1, pairGutterSize);
+
+                    a = panes[this$1.a -= 1];
+                    calculateSizes.call(this$1);
+                    pairOffset = eventOffset - this$1.start;
+                }
+            }
+
+            if (pairOffset <= a.minSize + snapOffset + pairGutterSize) {
+                pairOffset = a.isCollapsed ? pairGutterSize : a.minSize + pairGutterSize;
+            }
         }
 
-        // Actually adjust the size.
-        adjust.call(this, offset);
+        if (g.draggingDir === 1) {
+            if (a.isCollapsed && pairOffset <= snapOffset) { return }
+
+            var pairGutterSize$1 = this.size - getGutterSizeOfPane(b);
+
+            if (pushablePanes) {
+                while (!b.isLast && pairOffset > (this.size - b.minSize)) {
+                    pairGutterSize$1 = this$1.size - getGutterSizeOfPane(b);
+                    adjust.call(this$1, pairGutterSize$1);
+
+                    b = panes[this$1.b += 1];
+                    calculateSizes.call(this$1);
+                }
+            }
+
+            if (pairOffset >= this.size - (b.minSize + snapOffset + gutterSize)) {
+                pairOffset = this.size - (b.isCollapsed ? gutterSize : b.minSize + gutterSize);
+            }
+        }
+
+        // Actually adjust the dragged pair size.
+        adjust.call(this, pairOffset);
 
         // Call the drag callback continously. Don't do anything too intensive
         // in this callback.
-        if (options.onDrag) {
-            options.onDrag();
-        }
-    }
-
-    // Cache some important sizes when drag starts, so we don't have to do that
-    // continously:
-    //
-    // `size`: The total size of the pair. First + second + first gutter + second gutter.
-    // `start`: The leading side of the first element.
-    //
-    // ------------------------------------------------
-    // |      aGutterSize -> |||                      |
-    // |                     |||                      |
-    // |                     |||                      |
-    // |                     ||| <- bGutterSize       |
-    // ------------------------------------------------
-    // | <- start                             size -> |
-    function calculateSizes () {
-        // Figure out the parent size minus padding.
-        var a = elements[this.a].element;
-        var b = elements[this.b].element;
-
-        this.size = a[getBoundingClientRect]()[dimension] + b[getBoundingClientRect]()[dimension] + this.aGutterSize + this.bGutterSize;
-        this.start = a[getBoundingClientRect]()[position];
+        getOption(options, 'onDrag', NOOP)();
     }
 
     // stopDragging is very similar to startDragging in reverse.
     function stopDragging () {
-        var self = this;
-        var a = elements[self.a].element;
-        var b = elements[self.b].element;
+        var g = gutters[this.g];
+        var a = panes[isReverse ? this.g + 1 : this.g];
+        var b = panes[isReverse ? this.g : this.g + 1];
 
-        if (self.dragging && options.onDragEnd) {
-            options.onDragEnd();
+        if (g.draggingDir !== null) {
+            getOption(options, 'onDragEnd', NOOP)();
         }
 
-        self.dragging = false;
+        g.draggingDir = null;
+        eventStartOffset = null;
 
         // Remove the stored event listeners. This is why we store them.
-        global[removeEventListener]('mouseup', self.stop);
-        global[removeEventListener]('touchend', self.stop);
-        global[removeEventListener]('touchcancel', self.stop);
+        eventListeners(global, remove, eDragStop, g.stop);
+        eventListeners(global, remove, eDragMove, g.move);
 
-        self.parent[removeEventListener]('mousemove', self.move);
-        self.parent[removeEventListener]('touchmove', self.move);
+        // Clear bound function references
+        g.stop = null;
+        g.move = null;
+        g.el.style.cursor = '';
 
-        // Delete them once they are removed. I think this makes a difference
-        // in memory usage with a lot of splits on one page. But I don't know for sure.
-        delete self.stop;
-        delete self.move;
+        eventListeners([a.el, b.el], remove, eDragStart, NOOP);
 
-        a[removeEventListener]('selectstart', NOOP);
-        a[removeEventListener]('dragstart', NOOP);
-        b[removeEventListener]('selectstart', NOOP);
-        b[removeEventListener]('dragstart', NOOP);
+        a.el.style[userSelect] = '';
+        b.el.style[userSelect] = '';
 
-        a.style.userSelect = '';
-        a.style.webkitUserSelect = '';
-        a.style.MozUserSelect = '';
-        a.style.pointerEvents = '';
-
-        b.style.userSelect = '';
-        b.style.webkitUserSelect = '';
-        b.style.MozUserSelect = '';
-        b.style.pointerEvents = '';
-
-        self.gutter.style.cursor = '';
-        self.parent.style.cursor = '';
+        parent.style.cursor = '';
+        document.body.style.cursor = '';
     }
 
     // startDragging calls `calculateSizes` to store the inital size in the pair object.
     // It also adds event listeners for mouse/touch events,
     // and prevents selection while dragging so avoid the selecting text.
     function startDragging (e) {
-        // Alias frequently used variables to save space. 200 bytes.
-        var self = this;
-        var a = elements[self.a].element;
-        var b = elements[self.b].element;
-
-        // Call the onDragStart callback.
-        if (!self.dragging && options.onDragStart) {
-            options.onDragStart();
-        }
-
-        // Don't actually drag the element. We emulate that in the drag function.
+        // Don't actually drag the pane. We emulate that in the drag function.
         e.preventDefault();
 
-        // Set the dragging property of the pair object.
-        self.dragging = true;
+        this.a = isReverse ? this.g + 1 : this.g;
+        this.b = isReverse ? this.g : this.g + 1;
+        calculateSizes.call(this);
 
-        // Create two event listeners bound to the same pair object and store
-        // them in the pair object.
-        self.move = drag.bind(self);
-        self.stop = stopDragging.bind(self);
+        // Alias frequently used variables to save space. 200 bytes.
+        var a = panes[isReverse ? this.b : this.a];
+        var b = panes[isReverse ? this.a : this.b];
+        var g = gutters[this.g];
+
+        // Call the onDragStart callback.
+        if (g.draggingDir === null) {
+            getOption(options, 'onDragStart', NOOP)();
+        }
+
+        // Set the dragging property of the pair object.
+        g.draggingDir = 0;
+        eventStartOffset = getEventOffset(e);
+
+        // Create two event listeners bound to the same gutter object and store
+        // them in the gutter object.
+        g.move = drag.bind(this);
+        g.stop = stopDragging.bind(this);
+        g.el.style.cursor = cursor;
 
         // All the binding. `window` gets the stop events in case we drag out of the elements.
-        global[addEventListener]('mouseup', self.stop);
-        global[addEventListener]('touchend', self.stop);
-        global[addEventListener]('touchcancel', self.stop);
+        eventListeners(global, add, eDragStop, g.stop);
+        eventListeners(global, add, eDragMove, g.move);
 
-        self.parent[addEventListener]('mousemove', self.move);
-        self.parent[addEventListener]('touchmove', self.move);
+        eventListeners([a.el, b.el], add, eDragStart, NOOP);
 
-        // Disable selection. Disable!
-        a[addEventListener]('selectstart', NOOP);
-        a[addEventListener]('dragstart', NOOP);
-        b[addEventListener]('selectstart', NOOP);
-        b[addEventListener]('dragstart', NOOP);
+        a.el.style[userSelect] = 'none';
+        b.el.style[userSelect] = 'none';
 
-        a.style.userSelect = 'none';
-        a.style.webkitUserSelect = 'none';
-        a.style.MozUserSelect = 'none';
-        a.style.pointerEvents = 'none';
-
-        b.style.userSelect = 'none';
-        b.style.webkitUserSelect = 'none';
-        b.style.MozUserSelect = 'none';
-        b.style.pointerEvents = 'none';
-
-        // Set the cursor, both on the gutter and the parent element.
-        // Doing only a, b and gutter causes flickering.
-        self.gutter.style.cursor = cursor;
-        self.parent.style.cursor = cursor;
-
-        // Cache the initial sizes of the pair.
-        calculateSizes.call(self);
+        // Set the cursor at multiple levels
+        parent.style.cursor = cursor;
+        document.body.style.cursor = cursor;
     }
 
-    // 5. Create pair and element objects. Each pair has an index reference to
-    // elements `a` and `b` of the pair (first and second elements).
-    // Loop through the elements while pairing them off. Every pair gets a
-    // `pair` object, a gutter, and isFirst/isLast properties.
+    // 5. Create Pane and Gutter objects. Each pair has an index reference to
+    // gutter `g`, panes `a` and `b` of the pair (left and right panes).
+    // Loop through the ids while creating panes & gutters.
+    // Every pane gets isFirst/isLast properties, as well as isCollapsed.
     //
     // Basic logic:
     //
-    // - Starting with the second element `i > 0`, create `pair` objects with
-    //   `a = i - 1` and `b = i`
     // - Set gutter sizes based on the _pair_ being first/last. The first and last
     //   pair have gutterSize / 2, since they only have one half gutter, and not two.
     // - Create gutter elements and add event listeners.
-    // - Set the size of the elements, minus the gutter sizes.
+    // - Set the size of the panes, minus the gutter sizes.
     //
     // -----------------------------------------------------------------------
-    // |     i=0     |         i=1         |        i=2       |      i=3     |
-    // |             |       isFirst       |                  |     isLast   |
-    // |           pair 0                pair 1             pair 2           |
+    // | Pane 0      | Pane 1              | Pane 2           | Pane 3       |
+    // |  .isFirst   |                     |                  |  .isLast     |
+    // |          Gutter 0              Gutter 1           Gutter 2          |
     // |             |                     |                  |              |
     // -----------------------------------------------------------------------
-    var pairs = [];
-    elements = ids.map(function (id, i) {
-        // Create the element object.
-        var element = {
-            element: elementOrSelector(id),
-            size: sizes[i],
+    ids.forEach(function (id, i) {
+        var isFirstPane = (i === 0);
+        var isLastPane = (i === ids.length - 1);
+
+        var pane = {
+            // Create the element object.
+            i: i,
+            el: elementOrSelector(id),
             minSize: minSizes[i],
+            size: sizes[i],
+
+            isFirst: isFirstPane,
+            isLast: isLastPane,
+            isCollapsed: false,
         };
 
-        var pair;
-
-        if (i > 0) {
-            // Create the pair object with it's metadata.
-            pair = {
-                a: i - 1,
-                b: i,
-                dragging: false,
-                isFirst: (i === 1),
-                isLast: (i === ids.length - 1),
-                direction: direction,
-                parent: parent,
+        // Create gutter elements for each pair, if IE9 and above
+        if (!isFirstPane && !isIE8) {
+            var gutterIndex = gutters.length;
+            var gutterElement = gutterCreate(gutterIndex, direction);
+            var gutter = {
+                i: i,
+                el: gutterElement,
+                size: gutterSize,
+                draggingDir: null,
             };
+            applyGutterSize(gutter);
 
-            // For first and last pairs, first and last gutter width is half.
-            pair.aGutterSize = gutterSize;
-            pair.bGutterSize = gutterSize;
+            eventListeners(gutterElement, add, eDragTrigger, startDragging.bind({ g: gutterIndex }));
 
-            if (pair.isFirst) {
-                pair.aGutterSize = gutterSize / 2;
-            }
+            parent.insertBefore(gutterElement, pane.el);
 
-            if (pair.isLast) {
-                pair.bGutterSize = gutterSize / 2;
-            }
-
-            // if the parent has a reverse flex-direction, switch the pair elements.
-            if (parentFlexDirection === 'row-reverse' || parentFlexDirection === 'column-reverse') {
-                var temp = pair.a;
-                pair.a = pair.b;
-                pair.b = temp;
-            }
+            gutters.push(gutter);
         }
 
-        // Determine the size of the current element. IE8 is supported by
+        // Determine the size of the current pane. IE8 is supported by
         // staticly assigning sizes without draggable gutters. Assigns a string
         // to `size`.
-        //
-        // IE9 and above
-        if (!isIE8) {
-            // Create gutter elements for each pair.
-            if (i > 0) {
-                var gutterElement = gutter(i, direction);
-                setGutterSize(gutterElement, gutterSize);
+        applyPaneSize(pane);
 
-                gutterElement[addEventListener]('mousedown', startDragging.bind(pair));
-                gutterElement[addEventListener]('touchstart', startDragging.bind(pair));
+        var computedSize = pane.el[getBoundingClientRect]()[dimension];
 
-                parent.insertBefore(gutterElement, element.element);
-
-                pair.gutter = gutterElement;
-            }
+        if (computedSize < pane.minSize) {
+            pane.minSize = computedSize;
+            applyPaneSize(pane);
         }
 
-        // Set the element size to our determined size.
-        // Half-size gutters for first and last elements.
-        if (i === 0 || i === ids.length - 1) {
-            setElementSize(element.element, element.size, gutterSize / 2);
-        } else {
-            setElementSize(element.element, element.size, gutterSize);
-        }
-
-        var computedSize = element.element[getBoundingClientRect]()[dimension];
-
-        if (computedSize < element.minSize) {
-            element.minSize = computedSize;
-        }
-
-        // After the first iteration, and we have a pair object, append it to the
-        // list of pairs.
-        if (i > 0) {
-            pairs.push(pair);
-        }
-
-        return element
+        panes.push(pane);
     });
 
     function setSizes (newSizes) {
         newSizes.forEach(function (newSize, i) {
-            if (i > 0) {
-                var pair = pairs[i - 1];
-                var a = elements[pair.a];
-                var b = elements[pair.b];
-
-                a.size = newSizes[i - 1];
-                b.size = newSize;
-
-                setElementSize(a.element, a.size, pair.aGutterSize);
-                setElementSize(b.element, b.size, pair.bGutterSize);
-            }
+            panes[i].size = newSize;
+            applyPaneSize(panes[i]);
         });
+    }
+
+    function getSizes () {
+        return panes.map(function (pane) { return pane.size; })
     }
 
     function destroy () {
-        pairs.forEach(function (pair) {
-            pair.parent.removeChild(pair.gutter);
-            elements[pair.a].element.style[dimension] = '';
-            elements[pair.b].element.style[dimension] = '';
+        gutters.forEach(function (g) {
+            parent.removeChild(g);
+        });
+        panes.forEach(function (p) {
+            p.el.style[dimension] = '';
         });
     }
 
-    if (isIE8) {
-        return {
-            setSizes: setSizes,
-            destroy: destroy,
-        }
+    function collapse (i) {
+        var p = panes[i];
+
+        var pair = {
+            g: i,
+            a: p.isLast ? i - 1 : i,
+            b: p.isLast ? i : i + 1,
+        };
+
+        calculateSizes.call(pair);
+        if (panes[pair.a].isCollapsed && panes[pair.b].isCollapsed) { return }
+
+        var offset = getGutterSizeOfPane(p);
+        if (p.isLast) { offset = pair.size - offset; }
+
+        if (!isIE8) { adjust.call(pair, offset); }
     }
 
-    return {
+    return (isIE8) ? {
         setSizes: setSizes,
-        getSizes: function getSizes () {
-            return elements.map(function (element) { return element.size; })
-        },
-        collapse: function collapse (i) {
-            if (i === pairs.length) {
-                var pair = pairs[i - 1];
-
-                calculateSizes.call(pair);
-
-                if (!isIE8) {
-                    adjust.call(pair, pair.size - pair.bGutterSize);
-                }
-            } else {
-                var pair$1 = pairs[i];
-
-                calculateSizes.call(pair$1);
-
-                if (!isIE8) {
-                    adjust.call(pair$1, pair$1.aGutterSize);
-                }
-            }
-        },
         destroy: destroy,
+    } : {
+        setSizes: setSizes,
+        getSizes: getSizes,
+        collapse: collapse,
+        destroy: destroy,
+        parent: parent,
     }
 };
 
 return Split;
 
 })));
+//# sourceMappingURL=split.js.map
