@@ -316,6 +316,11 @@ const Split = (ids, options = {}) => {
     // It also adds event listeners for mouse/touch events,
     // and prevents selection while dragging so avoid the selecting text.
     function startDragging (e) {
+        //Right-clicking can't start dragging.
+        if (e.button !== 0) {
+            return;
+        }
+
         // Alias frequently used variables to save space. 200 bytes.
         const self = this
         const a = elements[self.a].element
