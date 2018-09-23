@@ -111,6 +111,7 @@ const Split = (ids, options = {}) => {
     let clientAxis
     let position
     let elements
+    const pairs = []
 
     // All DOM elements in the split should have a common parent. We can grab
     // the first elements parent and hope users read the docs because the
@@ -183,6 +184,13 @@ const Split = (ids, options = {}) => {
         })
     }
 
+    function allOthersHidden (pair) {
+        for (let i = 0; i < pairs.length; i += 1) {
+            const p = pairs[i]
+            if (pair !== p && p.aHidden !== true) return false
+        }
+        return true
+    }
     // Actually adjust the size of elements `a` and `b` to `offset` while dragging.
     // calc is used to allow calc(percentage + gutterpx) on the whole split instance,
     // which allows the viewport to be resized without additional logic.
@@ -194,11 +202,42 @@ const Split = (ids, options = {}) => {
         const b = elements[this.b]
         const percentage = a.size + b.size
 
-        a.size = (offset / this.size) * percentage
-        b.size = (percentage - ((offset / this.size) * percentage))
+        // When offset is 0, it means we are closing the 'a' panel.
+        // This happens for all but the last element
+        if (offset === 0) {
+            const bGutterSize = allOthersHidden(this) ? 0 : gutterSize / 2
 
-        setElementSize(a.element, a.size, this.aGutterSize)
-        setElementSize(b.element, b.size, this.bGutterSize)
+            a.sizeBeforeCollapse = a.size
+            b.sizeBeforeCollapse = b.size
+
+            a.size = 0
+            b.size = a.sizeBeforeCollapse + b.size
+
+            setElementSize(a.element, a.size, 0)
+            setElementSize(b.element, b.size, bGutterSize)
+            this.gutter.style.display = 'none'
+        // When offset is the pair's size, it means we are closing the 'b' panel.
+        // This happens only for the last element
+        } else if (offset === this.size) {
+            const aGutterSize = allOthersHidden(this) ? 0 : gutterSize / 2
+
+            a.sizeBeforeCollapse = a.size
+            b.sizeBeforeCollapse = b.size
+
+            a.size = b.sizeBeforeCollapse + a.size
+            b.size = 0
+
+            setElementSize(a.element, a.size, aGutterSize)
+            setElementSize(b.element, b.size, 0)
+            this.gutter.style.display = 'none'
+        } else {
+            a.size = (offset / this.size) * percentage
+            b.size = (percentage - ((offset / this.size) * percentage))
+
+            setElementSize(a.element, a.size, this.aGutterSize)
+            setElementSize(b.element, b.size, this.bGutterSize)
+            this.gutter.style.display = ''
+        }
     }
 
     // drag, where all the magic happens. The logic is really quite simple:
@@ -393,7 +432,6 @@ const Split = (ids, options = {}) => {
     // |           pair 0                pair 1             pair 2           |
     // |             |                     |                  |              |
     // -----------------------------------------------------------------------
-    const pairs = []
     elements = ids.map((id, i) => {
         // Create the element object.
         const element = {
@@ -519,28 +557,76 @@ const Split = (ids, options = {}) => {
         getSizes () {
             return elements.map(element => element.size)
         },
-        collapse (i) {
+        collapse (i, hide) {
             if (i === pairs.length) {
                 const pair = pairs[i - 1]
+                if (pair.bHidden) return
 
                 calculateSizes.call(pair)
 
                 if (!isIE8) {
-                    adjust.call(pair, pair.size - pair.bGutterSize)
+                    adjust.call(pair, hide ? pair.size : pair.size - pair.bGutterSize)
                 }
+                pair.bHidden = hide || false
             } else {
                 const pair = pairs[i]
+                if (pair.aHidden) return
 
                 calculateSizes.call(pair)
 
                 if (!isIE8) {
-                    adjust.call(pair, pair.aGutterSize)
+                    adjust.call(pair, hide ? 0 : pair.aGutterSize)
                 }
+                pair.aHidden = hide || false
+            }
+            getOption(options, 'onDragEnd', NOOP)()
+        },
+        expand (i) {
+            if (i === pairs.length) {
+                const pair = pairs[i - 1]
+                if (!pair.bHidden) return
+                const a = elements[pair.a]
+                const b = elements[pair.b]
+
+                calculateSizes.call(pair)
+
+                if (!isIE8) {
+                    const totalSize = a.sizeBeforeCollapse + b.sizeBeforeCollapse
+                    const offset = (a.sizeBeforeCollapse / totalSize) * pair.size
+                    adjust.call(pair, offset)
+                }
+                pair.bHidden = false
+            } else {
+                const pair = pairs[i]
+                if (!pair.aHidden) return
+                const a = elements[pair.a]
+                const b = elements[pair.b]
+
+                calculateSizes.call(pair)
+
+                if (!isIE8) {
+                    const totalSize = a.sizeBeforeCollapse + b.sizeBeforeCollapse
+                    const offset = (a.sizeBeforeCollapse / totalSize) * pair.size
+                    adjust.call(pair, offset)
+                }
+                pair.aHidden = false
+            }
+            getOption(options, 'onDragEnd', NOOP)()
+        },
+        toggle (i) {
+            if (i === pairs.length) {
+                const pair = pairs[i - 1]
+                if (pair.bHidden) this.expand(i)
+                else this.collapse(i, true)
+            } else {
+                const pair = pairs[i]
+                if (pair.aHidden) this.expand(i)
+                else this.collapse(i, true)
             }
         },
         destroy,
-        parent: parent,
-        pairs: pairs
+        parent,
+        pairs,
     }
 }
 
