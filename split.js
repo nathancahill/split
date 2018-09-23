@@ -79,6 +79,12 @@ var elementOrSelector = function (el) {
 //    `pair` object, a gutter, and special isFirst/isLast properties.
 // 5. Actually size the pair elements, insert gutters and attach event listeners.
 var Split = function (ids, options) {
+    
+    // first make sure elements exist
+    if (elementOrSelector(ids[0]) === null) {
+        return false;
+    }
+
     if ( options === void 0 ) options = {};
 
     var dimension;
@@ -128,6 +134,16 @@ var Split = function (ids, options) {
     });
     var gutterStyle = options.gutterStyle || (function (dim, gutSize) { return (( obj = {}, obj[dim] = (gutSize + "px"), obj ))
         var obj; });
+    
+    // sizeOffsets is used for any extra offsets besides the gutter that
+    // may be needed in calculating size (width or height).
+    //
+    // It is an array of ints that corresponds to the elements array
+    // (one offset size for each element).
+    //
+    // Each value represents offset in pixels;
+    // By default there is no offset (array of zeros)
+    var sizeOffsets = options.sizeOffsets || ids.map(function () { return 0; });
 
     // 2. Initialize a bunch of strings based on the direction we're splitting.
     // A lot of the behavior in the rest of the library is paramatized down to
@@ -159,12 +175,13 @@ var Split = function (ids, options) {
     // The pair object saves metadata like dragging state, position and
     // event listener references.
 
-    function setElementSize (el, size, gutSize) {
+    function setElementSize (el, size, gutSize, sizeOffsetIndex) {
         // Split.js allows setting sizes via numbers (ideally), or if you must,
         // by string, like '300px'. This is less than ideal, because it breaks
         // the fluid layout that `calc(% - px)` provides. You're on your own if you do that,
         // make sure you calculate the gutter size by hand.
-        var style = elementStyle(dimension, size, gutSize);
+        var sizeOffset = sizeOffsets[sizeOffsetIndex];
+        var style = elementStyle(dimension, size, gutSize, sizeOffset);
 
         // eslint-disable-next-line no-param-reassign
         Object.keys(style).forEach(function (prop) { return (el.style[prop] = style[prop]); });
@@ -191,8 +208,8 @@ var Split = function (ids, options) {
         a.size = (offset / this.size) * percentage;
         b.size = (percentage - ((offset / this.size) * percentage));
 
-        setElementSize(a.element, a.size, this.aGutterSize);
-        setElementSize(b.element, b.size, this.bGutterSize);
+        setElementSize(a.element, a.size, this.aGutterSize, this.a);
+        setElementSize(b.element, b.size, this.bGutterSize, this.b);
     }
 
     // drag, where all the magic happens. The logic is really quite simple:
@@ -452,9 +469,9 @@ var Split = function (ids, options) {
         // Set the element size to our determined size.
         // Half-size gutters for first and last elements.
         if (i === 0 || i === ids.length - 1) {
-            setElementSize(element.element, element.size, gutterSize / 2);
+            setElementSize(element.element, element.size, gutterSize / 2, i);
         } else {
-            setElementSize(element.element, element.size, gutterSize);
+            setElementSize(element.element, element.size, gutterSize, i);
         }
 
         var computedSize = element.element[getBoundingClientRect]()[dimension];
@@ -482,8 +499,8 @@ var Split = function (ids, options) {
                 a.size = newSizes[i - 1];
                 b.size = newSize;
 
-                setElementSize(a.element, a.size, pair.aGutterSize);
-                setElementSize(b.element, b.size, pair.bGutterSize);
+                setElementSize(a.element, a.size, pair.aGutterSize, pair.a);
+                setElementSize(b.element, b.size, pair.bGutterSize, pair.b);
             }
         });
     }
