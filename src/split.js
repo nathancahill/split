@@ -37,7 +37,11 @@ const isString = v => (typeof v === 'string' || v instanceof String)
 // do `Split([elem1, elem2])` as well as `Split(['#id1', '#id2'])`.
 const elementOrSelector = el => {
     if (isString(el)) {
-        return document.querySelector(el)
+        const ele = document.querySelector(el)
+        if (!ele) {
+            throw new Error(`Selector ${el} did match a DOM element`)
+        }
+        return ele
     }
 
     return el
@@ -116,11 +120,7 @@ const Split = (ids, options = {}) => {
     // the first elements parent and hope users read the docs because the
     // behavior will be whacky otherwise.
     const firstElement = elementOrSelector(ids[0])
-    if (firstElement === null) {
-        throw new Error(`no element found matching selector ${ids[0]}`)
-    }
-    const parent = elementOrSelector(ids[0]).parentNode
-    const parentFlexDirection = global.getComputedStyle(parent).flexDirection
+    const parentFlexDirection = global.getComputedStyle(firstElement.parentNode).flexDirection
 
     // Set default options.sizes to equal percentages of the parent element.
     const sizes = getOption(options, 'sizes') || ids.map(() => 100 / ids.length)
@@ -400,10 +400,6 @@ const Split = (ids, options = {}) => {
             element: elementOrSelector(id),
             size: sizes[i],
             minSize: minSizes[i],
-        }
-
-        if (element.element === null) {
-            throw new Error(`no element found matching selector ${id}`)
         }
 
         let pair
