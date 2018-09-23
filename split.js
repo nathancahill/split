@@ -148,6 +148,14 @@ var Split = function (ids, options) {
         paddingB = 'paddingBottom';
     }
 
+    function  addMaximizedStyles(el, size) {
+   	if(size > 98) {
+          el.classList.add("maximized-" + dimension);
+        }else{
+           el.classList.remove("maximized-" + dimension);
+        }
+    }
+	
     // 3. Define the dragging helper functions, and a few helpers to go with them.
     // Each helper is bound to a pair object that contains it's metadata. This
     // also makes it easy to store references to listeners that that will be
@@ -165,7 +173,7 @@ var Split = function (ids, options) {
         // the fluid layout that `calc(% - px)` provides. You're on your own if you do that,
         // make sure you calculate the gutter size by hand.
         var style = elementStyle(dimension, size, gutSize);
-
+ 	addMaximizedStyles(el, size);
         // eslint-disable-next-line no-param-reassign
         Object.keys(style).forEach(function (prop) { return (el.style[prop] = style[prop]); });
     }
@@ -191,7 +199,8 @@ var Split = function (ids, options) {
         a.size = (offset / this.size) * percentage;
         b.size = (percentage - ((offset / this.size) * percentage));
 
-        setElementSize(a.element, a.size, this.aGutterSize);
+        
+	    (a.element, a.size, this.aGutterSize);
         setElementSize(b.element, b.size, this.bGutterSize);
     }
 
@@ -211,7 +220,9 @@ var Split = function (ids, options) {
     // | <- this.start                                        this.size -> |
     function drag (e) {
         var offset;
-
+        var a = elements[this.a].element;
+        var b = elements[this.b].element;
+    
         if (!this.dragging) { return }
 
         // Get the offset of the event from the first side of the
@@ -238,7 +249,7 @@ var Split = function (ids, options) {
         // Call the drag callback continously. Don't do anything too intensive
         // in this callback.
         if (options.onDrag) {
-            options.onDrag();
+            options.onDrag(direction, a, b);
         }
     }
 
@@ -265,13 +276,13 @@ var Split = function (ids, options) {
     }
 
     // stopDragging is very similar to startDragging in reverse.
-    function stopDragging () {
+    function stopDragging (e) {
         var self = this;
         var a = elements[self.a].element;
         var b = elements[self.b].element;
-
+    
         if (self.dragging && options.onDragEnd) {
-            options.onDragEnd();
+            options.onDragEnd(direction, a, b);
         }
 
         self.dragging = false;
@@ -316,10 +327,11 @@ var Split = function (ids, options) {
         var self = this;
         var a = elements[self.a].element;
         var b = elements[self.b].element;
+         
 
         // Call the onDragStart callback.
         if (!self.dragging && options.onDragStart) {
-            options.onDragStart();
+            options.onDragStart(direction, a, b);
         }
 
         // Don't actually drag the element. We emulate that in the drag function.
