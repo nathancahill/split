@@ -389,9 +389,10 @@ collapse changes the size of element at `index` to 0. Every element except the l
 instance.collapse(0)
 ```
 
-#### .destroy()
+#### .destroy(preserve? = false)
 
 Destroy the instance. It removes the gutter elements, and the size CSS styles Split.js set. Added in v1.1.1.
+Passing `preserve = true` does not remove the CSS styles. Option added in v1.4.0.
 
 ```
 instance.destroy()

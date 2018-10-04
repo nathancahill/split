@@ -495,11 +495,14 @@ const Split = (ids, options = {}) => {
         })
     }
 
-    function destroy () {
+    function destroy (preserve) {
         pairs.forEach(pair => {
             pair.parent.removeChild(pair.gutter)
-            elements[pair.a].element.style[dimension] = ''
-            elements[pair.b].element.style[dimension] = ''
+
+            if (preserve !== true) {
+                elements[pair.a].element.style[dimension] = ''
+                elements[pair.b].element.style[dimension] = ''
+            }
         })
     }
 
@@ -535,8 +538,8 @@ const Split = (ids, options = {}) => {
             }
         },
         destroy,
-        parent: parent,
-        pairs: pairs
+        parent,
+        pairs,
     }
 }
 
