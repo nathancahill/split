@@ -1,4 +1,4 @@
-/*! Split.js - v1.4.0 */
+/*! Split.js - v1.4.1 */
 
 (function (global, factory) {
 	typeof exports === 'object' && typeof module !== 'undefined' ? module.exports = factory() :
@@ -119,13 +119,19 @@ var defaultGutterStyleFn = function (dim, gutSize) { return (( obj = {}, obj[dim
 // 4. Loop through the elements while pairing them off. Every pair gets an
 //    `pair` object, a gutter, and special isFirst/isLast properties.
 // 5. Actually size the pair elements, insert gutters and attach event listeners.
-var Split = function (ids, options) {
+var Split = function (idsOption, options) {
     if ( options === void 0 ) options = {};
 
+    var ids = idsOption;
     var dimension;
     var clientAxis;
     var position;
     var elements;
+
+    // Allow HTMLCollection to be used as an argument when supported
+    if (Array.from) {
+        ids = Array.from(ids);
+    }
 
     // All DOM elements in the split should have a common parent. We can grab
     // the first elements parent and hope users read the docs because the
