@@ -120,7 +120,8 @@ const Split = (ids, options = {}) => {
     // the first elements parent and hope users read the docs because the
     // behavior will be whacky otherwise.
     const firstElement = elementOrSelector(ids[0])
-    const parentFlexDirection = global.getComputedStyle(firstElement.parentNode).flexDirection
+    const parent = firstElement.parentNode
+    const parentFlexDirection = global.getComputedStyle(parent).flexDirection
 
     // Set default options.sizes to equal percentages of the parent element.
     const sizes = getOption(options, 'sizes') || ids.map(() => 100 / ids.length)
