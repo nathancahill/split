@@ -110,11 +110,17 @@ const defaultGutterStyleFn = (dim, gutSize) => ({ [dim]: `${gutSize}px` })
 // 4. Loop through the elements while pairing them off. Every pair gets an
 //    `pair` object, a gutter, and special isFirst/isLast properties.
 // 5. Actually size the pair elements, insert gutters and attach event listeners.
-const Split = (ids, options = {}) => {
+const Split = (idsOption, options = {}) => {
+    let ids = idsOption
     let dimension
     let clientAxis
     let position
     let elements
+
+    // Allow HTMLCollection to be used as an argument when supported
+    if (Array.from) {
+        ids = Array.from(ids)
+    }
 
     // All DOM elements in the split should have a common parent. We can grab
     // the first elements parent and hope users read the docs because the
