@@ -1,4 +1,4 @@
-/*! Split.js - v1.5.0 */
+/*! Split.js - v1.5.1 */
 
 (function (global, factory) {
     typeof exports === 'object' && typeof module !== 'undefined' ? module.exports = factory() :
@@ -351,6 +351,11 @@
         // It also adds event listeners for mouse/touch events,
         // and prevents selection while dragging so avoid the selecting text.
         function startDragging (e) {
+            //Right-clicking can't start dragging.
+            if (e.button !== 0) {
+                return;
+            }
+
             // Alias frequently used variables to save space. 200 bytes.
             var self = this;
             var a = elements[self.a].element;
