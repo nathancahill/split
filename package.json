@@ -18,7 +18,7 @@
   },
   "homepage": "https://github.com/nathancahill/Split.js#readme",
   "devDependencies": {
-    "buble": "^0.15.2",
+    "buble": "^0.19",
     "eslint": "^3.19.0",
     "eslint-config-airbnb": "^14.0.0",
     "eslint-plugin-compat": "^1.0.2",
@@ -28,21 +28,18 @@
     "grunt": "1.0.1",
     "grunt-cli": "1.2.0",
     "grunt-contrib-jasmine": "1.1.0",
-    "gzip-size-cli": "^2.0.0",
+    "gzip-size-cli": "^3.0.0",
     "jasmine": "2.6.0",
-    "rollup": "^0.41.6",
-    "rollup-multiple": "^0.41.6",
-    "rollup-plugin-buble": "^0.15.0",
-    "rollup-plugin-uglify": "^2.0.0",
-    "rollup-watch": "^3.2.2",
-    "opencollective": "^1.0.3",
-    "purgecss": "^1.1.0"
+    "rollup": "^0.66",
+    "rollup-plugin-buble": "^0.19",
+    "rollup-plugin-uglify": "^6.0.0",
+    "opencollective": "^1.0.3"
   },
   "scripts": {
     "lint": "eslint src",
     "test": "npm run lint && npm run build && grunt jasmine",
-    "build": "rollup-multiple -c && npm run size",
-    "watch": "rollup-multiple -cw",
+    "build": "rollup -c && npm run size",
+    "watch": "rollup -cw",
     "size": "echo \"gzip size: $(gzip-size --raw $npm_package_minified_main) bytes\"",
     "postinstall": "opencollective postinstall"
   },
