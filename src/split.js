@@ -10,6 +10,9 @@ const document = global.document
 const addEventListener = 'addEventListener'
 const removeEventListener = 'removeEventListener'
 const getBoundingClientRect = 'getBoundingClientRect'
+const gutterStartDragging = '_a'
+const aGutterSize = '_b'
+const bGutterSize = '_c'
 const HORIZONTAL = 'horizontal'
 const NOOP = () => false
 
@@ -204,8 +207,8 @@ const Split = (idsOption, options = {}) => {
         a.size = (offset / this.size) * percentage
         b.size = (percentage - ((offset / this.size) * percentage))
 
-        setElementSize(a.element, a.size, this.aGutterSize)
-        setElementSize(b.element, b.size, this.bGutterSize)
+        setElementSize(a.element, a.size, this[aGutterSize])
+        setElementSize(b.element, b.size, this[bGutterSize])
     }
 
     // drag, where all the magic happens. The logic is really quite simple:
@@ -241,10 +244,10 @@ const Split = (idsOption, options = {}) => {
         // If within snapOffset of min or max, set offset to min or max.
         // snapOffset buffers a.minSize and b.minSize, so logic is opposite for both.
         // Include the appropriate gutter sizes to prevent overflows.
-        if (offset <= a.minSize + snapOffset + this.aGutterSize) {
-            offset = a.minSize + this.aGutterSize
-        } else if (offset >= this.size - (b.minSize + snapOffset + this.bGutterSize)) {
-            offset = this.size - (b.minSize + this.bGutterSize)
+        if (offset <= a.minSize + snapOffset + this[aGutterSize]) {
+            offset = a.minSize + this[aGutterSize]
+        } else if (offset >= this.size - (b.minSize + snapOffset + this[bGutterSize])) {
+            offset = this.size - (b.minSize + this[bGutterSize])
         }
 
         // Actually adjust the size.
@@ -276,7 +279,7 @@ const Split = (idsOption, options = {}) => {
         const aBounds = a[getBoundingClientRect]()
         const bBounds = b[getBoundingClientRect]()
 
-        this.size = aBounds[dimension] + bBounds[dimension] + this.aGutterSize + this.bGutterSize
+        this.size = aBounds[dimension] + bBounds[dimension] + this[aGutterSize] + this[bGutterSize]
         this.start = aBounds[position]
     }
 
@@ -424,15 +427,15 @@ const Split = (idsOption, options = {}) => {
             }
 
             // For first and last pairs, first and last gutter width is half.
-            pair.aGutterSize = gutterSize
-            pair.bGutterSize = gutterSize
+            pair[aGutterSize] = gutterSize
+            pair[bGutterSize] = gutterSize
 
             if (pair.isFirst) {
-                pair.aGutterSize = gutterSize / 2
+                pair[aGutterSize] = gutterSize / 2
             }
 
             if (pair.isLast) {
-                pair.bGutterSize = gutterSize / 2
+                pair[bGutterSize] = gutterSize / 2
             }
 
             // if the parent has a reverse flex-direction, switch the pair elements.
@@ -454,8 +457,12 @@ const Split = (idsOption, options = {}) => {
                 const gutterElement = gutter(i, direction)
                 setGutterSize(gutterElement, gutterSize)
 
-                gutterElement[addEventListener]('mousedown', startDragging.bind(pair))
-                gutterElement[addEventListener]('touchstart', startDragging.bind(pair))
+                // Save bound event listener for removal later
+                pair[gutterStartDragging] = startDragging.bind(pair)
+
+                // Attach bound event listener
+                gutterElement[addEventListener]('mousedown', pair[gutterStartDragging])
+                gutterElement[addEventListener]('touchstart', pair[gutterStartDragging])
 
                 parent.insertBefore(gutterElement, element.element)
 
