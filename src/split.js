@@ -139,6 +139,9 @@ const Split = (idsOption, options = {}) => {
     // to be passed as a number.
     const minSize = getOption(options, 'minSize', 100)
     const minSizes = Array.isArray(minSize) ? minSize : ids.map(() => minSize)
+
+    // Get other options
+    const expandToMin = getOption(options, 'expandToMin', false)
     const gutterSize = getOption(options, 'gutterSize', 10)
     const snapOffset = getOption(options, 'snapOffset', 30)
     const direction = getOption(options, 'direction', HORIZONTAL)
@@ -414,6 +417,7 @@ const Split = (idsOption, options = {}) => {
             element: elementOrSelector(id),
             size: sizes[i],
             minSize: minSizes[i],
+            i,
         }
 
         let pair
@@ -476,17 +480,8 @@ const Split = (idsOption, options = {}) => {
 
         // Set the element size to our determined size.
         // Half-size gutters for first and last elements.
-        if (i === 0 || i === ids.length - 1) {
-            setElementSize(element.element, element.size, gutterSize / 2)
-        } else {
-            setElementSize(element.element, element.size, gutterSize)
-        }
-
-        const computedSize = element.element[getBoundingClientRect]()[dimension]
-
-        if (computedSize < element.minSize) {
-            element.minSize = computedSize
-        }
+        const elementGutterSize = (i === 0 || i === ids.length - 1) ? gutterSize / 2 : gutterSize
+        setElementSize(element.element, element.size, elementGutterSize)
 
         // After the first iteration, and we have a pair object, append it to the
         // list of pairs.
@@ -495,6 +490,29 @@ const Split = (idsOption, options = {}) => {
         }
 
         return element
+    })
+
+    function adjustToMin (element) {
+        const isLast = (element.i === pairs.length)
+        const pair = isLast ? pairs[element.i - 1] : pairs[element.i]
+
+        calculateSizes.call(pair)
+
+        const size = isLast ? (pair.size - element.minSize - pair[bGutterSize]) : element.minSize + pair[aGutterSize]
+
+        adjust.call(pair, size)
+    }
+
+    elements.forEach(element => {
+        const computedSize = element.element[getBoundingClientRect]()[dimension]
+
+        if (computedSize < element.minSize) {
+            if (expandToMin) {
+                adjustToMin(element)
+            } else {
+                element.minSize = computedSize
+            }
+        }
     })
 
     function setSizes (newSizes) {
@@ -544,23 +562,7 @@ const Split = (idsOption, options = {}) => {
         setSizes,
         getSizes,
         collapse (i) {
-            if (i === pairs.length) {
-                const pair = pairs[i - 1]
-
-                calculateSizes.call(pair)
-
-                if (!isIE8) {
-                    adjust.call(pair, pair.size - pair.bGutterSize)
-                }
-            } else {
-                const pair = pairs[i]
-
-                calculateSizes.call(pair)
-
-                if (!isIE8) {
-                    adjust.call(pair, pair.aGutterSize)
-                }
-            }
+            adjustToMin(elements[i])
         },
         destroy,
         parent,
