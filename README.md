@@ -81,11 +81,12 @@ var split = Split(<HTMLElement|selector[]> elements, <options> options?)
 | Options | Type | Default | Description |
 |---|---|---|---|
 | `sizes` | Array | | Initial sizes of each element in percents or CSS values. |
-| `minSize` | Number or Array | 100 | Minimum size of each element. |
-| `gutterSize` | Number | 10 | Gutter size in pixels. |
-| `snapOffset` | Number | 30 | Snap to minimum size offset in pixels. |
-| `direction` | String | 'horizontal' | Direction to split: horizontal or vertical. |
-| `cursor` | String | 'col-resize' | Cursor to display while dragging. |
+| `minSize` | Number or Array | `100` | Minimum size of each element. |
+| `expandToMin` | Boolean | `false` | Grow initial sizes to `minSize` |
+| `gutterSize` | Number | `10` | Gutter size in pixels. |
+| `snapOffset` | Number | `30` | Snap to minimum size offset in pixels. |
+| `direction` | String | `'horizontal'` | Direction to split: horizontal or vertical. |
+| `cursor` | String | `'col-resize'` | Cursor to display while dragging. |
 | `gutter` | Function | | Called to create each gutter element |
 | `elementStyle` | Function | | Called to set the style of each element. |
 | `gutterStyle` | Function | | Called to set the style of the gutter. |
@@ -106,7 +107,7 @@ __THIS IS THE #1 QUESTION ABOUT THE LIBRARY__.
 
 #### sizes
 
-An array of initial sizes of the elements, specified as percentage values. Example: Setting the initial sizes to 25% and 75%.
+An array of initial sizes of the elements, specified as percentage values. Example: Setting the initial sizes to `25%` and `75%`.
 
 ```js
 Split(['#one', '#two'], {
@@ -114,9 +115,9 @@ Split(['#one', '#two'], {
 })
 ```
 
-#### minSize. Default: 100
+#### minSize. Default: `100`
 
-An array of minimum sizes of the elements, specified as pixel values. Example: Setting the minimum sizes to 100px and 300px, respectively.
+An array of minimum sizes of the elements, specified as pixel values. Example: Setting the minimum sizes to `100px` and `300px`, respectively.
 
 ```js
 Split(['#one', '#two'], {
@@ -132,9 +133,23 @@ Split(['#one', '#two'], {
 })
 ```
 
-#### gutterSize. Default: 10
+#### expandToMin. Default: `false`
 
-Gutter size in pixels. Example: Setting the gutter size to 20px.
+When the split is created, if `expandToMin` is `true`, the minSize for each element overrides the percentage value from the `sizes` option.
+Example: The first element (`#one`) is set to 25% width of the parent container. However, it's `minSize` is `300px`. Using `expandToMin: true` means that
+the first element will always load at at least `300px`, even if `25%` were smaller.
+
+```js
+Split(['#one', '#two'], {
+    sizes: [25, 75],
+    minSize: [300, 100],
+    expanedToMin: true,
+})
+```
+
+#### gutterSize. Default: `10`
+
+Gutter size in pixels. Example: Setting the gutter size to `20px`.
 
 ```js
 Split(['#one', '#two'], {
@@ -142,9 +157,9 @@ Split(['#one', '#two'], {
 })
 ```
 
-#### snapOffset. Default: 30
+#### snapOffset. Default: `30`
 
-Snap to minimum size at this offset in pixels. Example: Set to 0 to disable to snap effect.
+Snap to minimum size at this offset in pixels. Example: Set to `0` to disable to snap effect.
 
 ```js
 Split(['#one', '#two'], {
@@ -152,9 +167,9 @@ Split(['#one', '#two'], {
 })
 ```
 
-#### direction. Default: 'horizontal'
+#### direction. Default: `'horizontal'`
 
-Direction to split in. Can be 'vertical' or 'horizontal'. Determines which CSS properties are applied (ie. width/height) to each element and gutter. Example: split vertically:
+Direction to split in. Can be `'vertical'` or `'horizontal'`. Determines which CSS properties are applied (ie. width/height) to each element and gutter. Example: split vertically:
 
 ```js
 Split(['#one', '#two'], {
@@ -162,9 +177,9 @@ Split(['#one', '#two'], {
 })
 ```
 
-#### cursor. Default: 'col-resize'
+#### cursor. Default: `'col-resize'`
 
-Cursor to show on the gutter (also applied to the two adjacent elements when dragging to prevent flickering). Defaults to 'col-resize', so should be switched to 'row-resize' when using direction: 'vertical':
+Cursor to show on the gutter (also applied to the two adjacent elements when dragging to prevent flickering). Defaults to `'col-resize'`, so should be switched to `'row-resize'` when using `direction: 'vertical'`:
 
 ```js
 Split(['#one', '#two'], {
@@ -178,7 +193,7 @@ Split(['#one', '#two'], {
 Optional function called to create each gutter element. The signature looks like this:
 
 ```js
-(index, direction) => HTMLElement
+(index, direction, pairElement) => HTMLElement
 ```
 
 Defaults to creating a `div` with `class="gutter gutter-horizontal"` or `class="gutter gutter-vertical"`, depending on the direction. The default gutter function looks like this:
@@ -193,6 +208,15 @@ Defaults to creating a `div` with `class="gutter gutter-horizontal"` or `class="
 
 The returned element is then inserted into the DOM, and it's width or height are set. This option can be used to clone an existing DOM element, or to create a new element with custom styles.
 
+Returning a falsey value like `null` or `false` will not insert a gutter. This behavior was added in v1.4.1.
+An additional argument, `pairElement`, is passed to the gutter function: this is the DOM element after (to the right or below) the gutter. This argument was added in v1.4.1.
+
+This final argument makes it easy to return the gutter that has already been created, for example, if `split.destroy()` was called with the option to preserve the gutters.
+
+```js
+(index, direction, pairElement) => pairElement.previousSibling
+```
+
 #### elementStyle
 
 Optional function called setting the CSS style of the elements. The signature looks like this:
@@ -201,7 +225,7 @@ Optional function called setting the CSS style of the elements. The signature lo
 (dimension, elementSize, gutterSize) => Object
 ```
 
-Dimension will be a string, 'width' or 'height', and can be used in the return style. elementSize is the target percentage value of the element, and gutterSize is the target pixel value of the gutter.
+Dimension will be a string, `'width'` or `'height'`, and can be used in the return style. `elementSize` is the target percentage value of the element, and `gutterSize` is the target pixel value of the gutter.
 
 It should return an object with CSS properties to apply to the element. For horizontal splits, the return object looks like this:
 
@@ -235,7 +259,7 @@ Optional function called when setting the CSS style of the gutters. The signatur
 (dimension, gutterSize) => Object
 ```
 
-Dimension is a string, either 'width' or 'height', and gutterSize is a pixel value representing the width of the gutter.
+Dimension is a string, either `'width'` or `'height'`, and `gutterSize` is a pixel value representing the width of the gutter.
 
 It should return a similar object as `elementStyle`, an object with CSS properties to apply to the gutter. Since gutters have fixed widths, it will generally look like this:
 
@@ -245,11 +269,19 @@ It should return a similar object as `elementStyle`, an object with CSS properti
 }
 ```
 
-Both `elementStyle` and `gutterStyle` are called continously while dragging, so don't do anything besides return the style object in these functions.
+Both `elementStyle` and `gutterStyle` are called continously while dragging, so don't do anything besides return the style object in these functions. Both of these functions should be *pure*, returning the same values for the same inputs and not modifying any external state.
 
 #### onDrag, onDragStart, onDragEnd
 
 Callbacks that can be added on drag (fired continously), drag start and drag end. If doing more than basic operations in `onDrag`, add a debounce function to rate limit the callback.
+
+`onDragStart` and `onDragEnd` are passed the initial and final sizes of the split since it's a common pattern to access the sizes this way.
+
+Their function signature looks like this, where `sizes` is an array of percentage values like returned by `getSizes()`:
+
+```js
+(sizes) => {}
+```
 
 ## Usage Examples
 
@@ -263,7 +295,7 @@ Reference HTML for examples. Gutters are inserted automatically:
 </div>
 ```
 
-A split with two elements, starting at 25% and 75% wide with 200px minimum width.
+A split with two elements, starting at `25%` and `75%` wide, with `200px` minimum width.
 
 ```js
 Split(['#one', '#two'], {
@@ -272,7 +304,7 @@ Split(['#one', '#two'], {
 });
 ```
 
-A split with three elements, starting with even widths with 100px, 100px and 300px minimum widths, respectively.
+A split with three elements, starting with even (default) widths and minimum widths set to `100px`, `100px` and `300px`, respectively.
 
 ```js
 Split(['#one', '#two', '#three'], {
@@ -287,16 +319,6 @@ Split(['#one', '#two'], {
     direction: 'vertical'
 });
 ```
-
-Specifying the initial widths with CSS values. Not recommended, the size/gutter calculations would have to be done before hand and won't scale on viewport resize.
-
-```js
-Split(['#one', '#two'], {
-	sizes: ['200px', '500px']
-});
-```
-
-JSFiddle style is also possible: [Demo](http://nathancahill.github.io/Split.js/examples/jsfiddle.html).
 
 ## Saving State
 
@@ -313,15 +335,16 @@ if (sizes) {
 
 var split = Split(['#one', '#two'], {
     sizes: sizes,
-    onDragEnd: function () {
-        localStorage.setItem('split-sizes', JSON.stringify(split.getSizes()));
+    onDragEnd: function (sizes) {
+        localStorage.setItem('split-sizes', JSON.stringify(sizes));
     }
 })
 ```
 
-## Flexbox
+## Flex Layout
 
-Flexbox layout is supported by customizing the `elementStyle` and `gutterStyle` CSS. Given a layout like this:
+Flex layout is supported easily by adding a `display: flex` to the parent element. The `width` or `height` CSS values
+assigned by default by Split.js work well with flex.
 
 ```html
 <div id="flex">
@@ -339,7 +362,7 @@ And CSS style like this:
 }
 ```
 
-Then the `elementStyle` and `gutterStyle` can be used to set flex-basis:
+For more complicated flex layouts, the `elementStyle` and `gutterStyle` can be used to set flex-basis:
 
 ```js
 Split(['#flex-1', '#flex-2'], {
@@ -383,16 +406,17 @@ instance.getSizes()
 
 #### .collapse(index)
 
-collapse changes the size of element at `index` to 0. Every element except the last is collapsed towards the front (left or top). The last is collapsed towards the back. Not supported in IE8. Added in v1.1.0:
+collapse changes the size of element at `index` to it's `minSize`. Every element except the last is collapsed towards the front (left or top). The last is collapsed towards the back. Not supported in IE8. Added in v1.1.0:
 
 ```
 instance.collapse(0)
 ```
 
-#### .destroy(preserve? = false)
+#### .destroy(preserveStyles? = false, preserveGutters? = false)
 
 Destroy the instance. It removes the gutter elements, and the size CSS styles Split.js set. Added in v1.1.1.
-Passing `preserve = true` does not remove the CSS styles. Option added in v1.4.0.
+Passing `preserveStyles = true` does not remove the CSS styles. Option added in v1.4.0.
+Passing `preserveGutters = true` does not remove the gutter elements. Option added in v1.4.1.
 
 ```
 instance.destroy()
