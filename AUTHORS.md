@@ -28,3 +28,4 @@
  - Jakob Gillich @jgillich
  - Searene @searene
  - Gabriel Pedro @gpedro
+ - Chi Wang @patr0nus
