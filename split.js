@@ -1,4 +1,4 @@
-/*! Split.js - v1.4.1 */
+/*! Split.js - v1.5.0 */
 
 (function (global, factory) {
 	typeof exports === 'object' && typeof module !== 'undefined' ? module.exports = factory() :
@@ -18,6 +18,9 @@ var document = global.document;
 var addEventListener = 'addEventListener';
 var removeEventListener = 'removeEventListener';
 var getBoundingClientRect = 'getBoundingClientRect';
+var gutterStartDragging = '_a';
+var aGutterSize = '_b';
+var bGutterSize = '_c';
 var HORIZONTAL = 'horizontal';
 var NOOP = function () { return false; };
 
@@ -147,6 +150,9 @@ var Split = function (idsOption, options) {
     // to be passed as a number.
     var minSize = getOption(options, 'minSize', 100);
     var minSizes = Array.isArray(minSize) ? minSize : ids.map(function () { return minSize; });
+
+    // Get other options
+    var expandToMin = getOption(options, 'expandToMin', false);
     var gutterSize = getOption(options, 'gutterSize', 10);
     var snapOffset = getOption(options, 'snapOffset', 30);
     var direction = getOption(options, 'direction', HORIZONTAL);
@@ -201,6 +207,10 @@ var Split = function (idsOption, options) {
         });
     }
 
+    function getSizes () {
+        return elements.map(function (element) { return element.size; })
+    }
+
     // Actually adjust the size of elements `a` and `b` to `offset` while dragging.
     // calc is used to allow calc(percentage + gutterpx) on the whole split instance,
     // which allows the viewport to be resized without additional logic.
@@ -215,8 +225,8 @@ var Split = function (idsOption, options) {
         a.size = (offset / this.size) * percentage;
         b.size = (percentage - ((offset / this.size) * percentage));
 
-        setElementSize(a.element, a.size, this.aGutterSize);
-        setElementSize(b.element, b.size, this.bGutterSize);
+        setElementSize(a.element, a.size, this[aGutterSize]);
+        setElementSize(b.element, b.size, this[bGutterSize]);
     }
 
     // drag, where all the magic happens. The logic is really quite simple:
@@ -252,10 +262,10 @@ var Split = function (idsOption, options) {
         // If within snapOffset of min or max, set offset to min or max.
         // snapOffset buffers a.minSize and b.minSize, so logic is opposite for both.
         // Include the appropriate gutter sizes to prevent overflows.
-        if (offset <= a.minSize + snapOffset + this.aGutterSize) {
-            offset = a.minSize + this.aGutterSize;
-        } else if (offset >= this.size - (b.minSize + snapOffset + this.bGutterSize)) {
-            offset = this.size - (b.minSize + this.bGutterSize);
+        if (offset <= a.minSize + snapOffset + this[aGutterSize]) {
+            offset = a.minSize + this[aGutterSize];
+        } else if (offset >= this.size - (b.minSize + snapOffset + this[bGutterSize])) {
+            offset = this.size - (b.minSize + this[bGutterSize]);
         }
 
         // Actually adjust the size.
@@ -287,7 +297,7 @@ var Split = function (idsOption, options) {
         var aBounds = a[getBoundingClientRect]();
         var bBounds = b[getBoundingClientRect]();
 
-        this.size = aBounds[dimension] + bBounds[dimension] + this.aGutterSize + this.bGutterSize;
+        this.size = aBounds[dimension] + bBounds[dimension] + this[aGutterSize] + this[bGutterSize];
         this.start = aBounds[position];
     }
 
@@ -298,7 +308,7 @@ var Split = function (idsOption, options) {
         var b = elements[self.b].element;
 
         if (self.dragging) {
-            getOption(options, 'onDragEnd', NOOP)();
+            getOption(options, 'onDragEnd', NOOP)(getSizes());
         }
 
         self.dragging = false;
@@ -345,7 +355,7 @@ var Split = function (idsOption, options) {
 
         // Call the onDragStart callback.
         if (!self.dragging) {
-            getOption(options, 'onDragStart', NOOP)();
+            getOption(options, 'onDragStart', NOOP)(getSizes());
         }
 
         // Don't actually drag the element. We emulate that in the drag function.
@@ -418,6 +428,7 @@ var Split = function (idsOption, options) {
             element: elementOrSelector(id),
             size: sizes[i],
             minSize: minSizes[i],
+            i: i,
         };
 
         var pair;
@@ -435,15 +446,15 @@ var Split = function (idsOption, options) {
             };
 
             // For first and last pairs, first and last gutter width is half.
-            pair.aGutterSize = gutterSize;
-            pair.bGutterSize = gutterSize;
+            pair[aGutterSize] = gutterSize;
+            pair[bGutterSize] = gutterSize;
 
             if (pair.isFirst) {
-                pair.aGutterSize = gutterSize / 2;
+                pair[aGutterSize] = gutterSize / 2;
             }
 
             if (pair.isLast) {
-                pair.bGutterSize = gutterSize / 2;
+                pair[bGutterSize] = gutterSize / 2;
             }
 
             // if the parent has a reverse flex-direction, switch the pair elements.
@@ -462,11 +473,15 @@ var Split = function (idsOption, options) {
         if (!isIE8) {
             // Create gutter elements for each pair.
             if (i > 0) {
-                var gutterElement = gutter(i, direction);
+                var gutterElement = gutter(i, direction, element.element);
                 setGutterSize(gutterElement, gutterSize);
 
-                gutterElement[addEventListener]('mousedown', startDragging.bind(pair));
-                gutterElement[addEventListener]('touchstart', startDragging.bind(pair));
+                // Save bound event listener for removal later
+                pair[gutterStartDragging] = startDragging.bind(pair);
+
+                // Attach bound event listener
+                gutterElement[addEventListener]('mousedown', pair[gutterStartDragging]);
+                gutterElement[addEventListener]('touchstart', pair[gutterStartDragging]);
 
                 parent.insertBefore(gutterElement, element.element);
 
@@ -476,17 +491,8 @@ var Split = function (idsOption, options) {
 
         // Set the element size to our determined size.
         // Half-size gutters for first and last elements.
-        if (i === 0 || i === ids.length - 1) {
-            setElementSize(element.element, element.size, gutterSize / 2);
-        } else {
-            setElementSize(element.element, element.size, gutterSize);
-        }
-
-        var computedSize = element.element[getBoundingClientRect]()[dimension];
-
-        if (computedSize < element.minSize) {
-            element.minSize = computedSize;
-        }
+        var elementGutterSize = (i === 0 || i === ids.length - 1) ? gutterSize / 2 : gutterSize;
+        setElementSize(element.element, element.size, elementGutterSize);
 
         // After the first iteration, and we have a pair object, append it to the
         // list of pairs.
@@ -495,6 +501,29 @@ var Split = function (idsOption, options) {
         }
 
         return element
+    });
+
+    function adjustToMin (element) {
+        var isLast = (element.i === pairs.length);
+        var pair = isLast ? pairs[element.i - 1] : pairs[element.i];
+
+        calculateSizes.call(pair);
+
+        var size = isLast ? (pair.size - element.minSize - pair[bGutterSize]) : element.minSize + pair[aGutterSize];
+
+        adjust.call(pair, size);
+    }
+
+    elements.forEach(function (element) {
+        var computedSize = element.element[getBoundingClientRect]()[dimension];
+
+        if (computedSize < element.minSize) {
+            if (expandToMin) {
+                adjustToMin(element);
+            } else {
+                element.minSize = computedSize;
+            }
+        }
     });
 
     function setSizes (newSizes) {
@@ -507,19 +536,28 @@ var Split = function (idsOption, options) {
                 a.size = newSizes[i - 1];
                 b.size = newSize;
 
-                setElementSize(a.element, a.size, pair.aGutterSize);
-                setElementSize(b.element, b.size, pair.bGutterSize);
+                setElementSize(a.element, a.size, pair[aGutterSize]);
+                setElementSize(b.element, b.size, pair[bGutterSize]);
             }
         });
     }
 
-    function destroy (preserve) {
+    function destroy (preserveStyles, preserveGutter) {
         pairs.forEach(function (pair) {
-            pair.parent.removeChild(pair.gutter);
+            if (preserveGutter !== true) {
+                pair.parent.removeChild(pair.gutter);
+            } else {
+                pair.gutter[removeEventListener]('mousedown', pair[gutterStartDragging]);
+                pair.gutter[removeEventListener]('touchstart', pair[gutterStartDragging]);
+            }
 
-            if (preserve !== true) {
-                elements[pair.a].element.style[dimension] = '';
-                elements[pair.b].element.style[dimension] = '';
+            if (preserveStyles !== true) {
+                var style = elementStyle(dimension, pair.a.size, pair[aGutterSize]);
+
+                Object.keys(style).forEach(function (prop) {
+                    elements[pair.a].element.style[prop] = '';
+                    elements[pair.b].element.style[prop] = '';
+                });
             }
         });
     }
@@ -533,27 +571,9 @@ var Split = function (idsOption, options) {
 
     return {
         setSizes: setSizes,
-        getSizes: function getSizes () {
-            return elements.map(function (element) { return element.size; })
-        },
+        getSizes: getSizes,
         collapse: function collapse (i) {
-            if (i === pairs.length) {
-                var pair = pairs[i - 1];
-
-                calculateSizes.call(pair);
-
-                if (!isIE8) {
-                    adjust.call(pair, pair.size - pair.bGutterSize);
-                }
-            } else {
-                var pair$1 = pairs[i];
-
-                calculateSizes.call(pair$1);
-
-                if (!isIE8) {
-                    adjust.call(pair$1, pair$1.aGutterSize);
-                }
-            }
+            adjustToMin(elements[i]);
         },
         destroy: destroy,
         parent: parent,
