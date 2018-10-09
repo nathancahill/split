@@ -507,8 +507,8 @@ const Split = (idsOption, options = {}) => {
                 a.size = newSizes[i - 1]
                 b.size = newSize
 
-                setElementSize(a.element, a.size, pair.aGutterSize)
-                setElementSize(b.element, b.size, pair.bGutterSize)
+                setElementSize(a.element, a.size, pair[aGutterSize])
+                setElementSize(b.element, b.size, pair[bGutterSize])
             }
         })
     }
