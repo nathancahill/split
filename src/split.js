@@ -193,6 +193,10 @@ const Split = (idsOption, options = {}) => {
         })
     }
 
+    function getSizes () {
+        return elements.map(element => element.size)
+    }
+
     // Actually adjust the size of elements `a` and `b` to `offset` while dragging.
     // calc is used to allow calc(percentage + gutterpx) on the whole split instance,
     // which allows the viewport to be resized without additional logic.
@@ -290,7 +294,7 @@ const Split = (idsOption, options = {}) => {
         const b = elements[self.b].element
 
         if (self.dragging) {
-            getOption(options, 'onDragEnd', NOOP)()
+            getOption(options, 'onDragEnd', NOOP)(getSizes())
         }
 
         self.dragging = false
@@ -337,7 +341,7 @@ const Split = (idsOption, options = {}) => {
 
         // Call the onDragStart callback.
         if (!self.dragging) {
-            getOption(options, 'onDragStart', NOOP)()
+            getOption(options, 'onDragStart', NOOP)(getSizes())
         }
 
         // Don't actually drag the element. We emulate that in the drag function.
@@ -529,9 +533,7 @@ const Split = (idsOption, options = {}) => {
 
     return {
         setSizes,
-        getSizes () {
-            return elements.map(element => element.size)
-        },
+        getSizes,
         collapse (i) {
             if (i === pairs.length) {
                 const pair = pairs[i - 1]
