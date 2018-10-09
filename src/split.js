@@ -458,7 +458,7 @@ const Split = (idsOption, options = {}) => {
         if (!isIE8) {
             // Create gutter elements for each pair.
             if (i > 0) {
-                const gutterElement = gutter(i, direction)
+                const gutterElement = gutter(i, direction, element.element)
                 setGutterSize(gutterElement, gutterSize)
 
                 // Save bound event listener for removal later
