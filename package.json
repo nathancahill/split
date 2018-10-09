@@ -1,6 +1,6 @@
 {
   "name": "split.js",
-  "version": "1.5.1",
+  "version": "1.5.2",
   "description": "A lightweight utility for creating adjustable split views",
   "main": "split.js",
   "minified:main": "split.min.js",
@@ -32,16 +32,14 @@
     "jasmine": "2.6.0",
     "rollup": "^0.66",
     "rollup-plugin-buble": "^0.19",
-    "rollup-plugin-uglify": "^6.0.0",
-    "opencollective": "^1.0.3"
+    "rollup-plugin-uglify": "^6.0.0"
   },
   "scripts": {
     "lint": "eslint src",
     "test": "npm run lint && npm run build && grunt jasmine",
     "build": "rollup -c && npm run size",
     "watch": "rollup -cw",
-    "size": "echo \"gzip size: $(gzip-size --raw $npm_package_minified_main) bytes\"",
-    "postinstall": "opencollective postinstall"
+    "size": "echo \"gzip size: $(gzip-size --raw $npm_package_minified_main) bytes\""
   },
   "browserslist": [
     "Chrome >= 22",
