@@ -10,10 +10,10 @@
 
 # Split.js
 
-> < 2kb unopinionated utility for resizeable split views. 
+> 2kb unopinionated utility for resizeable split views. 
 
  - __Zero Deps__
- - __Tiny:__ Weights less than 2kb gzipped. 
+ - __Tiny:__ Weights 2kb gzipped.
  - __Fast:__ No overhead or attached window event listeners, uses pure CSS for resizing.
  - __Unopinionated:__ Plays nicely with `calc`, `flex` and `grid`.
  - __Compatible:__ Works great in IE9, and _even loads in IE8_ with polyfills. Early Firefox/Chrome/Safari/Opera supported too.

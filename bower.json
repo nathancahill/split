@@ -6,7 +6,7 @@
   "authors": [
     "Nathan Cahill <nathan@nathancahill.com>"
   ],
-  "description": "< 2kb unopinionated utility for resizeable split views",
+  "description": "2kb unopinionated utility for resizeable split views",
   "keywords": [
     "css",
     "split",
