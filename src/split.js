@@ -270,12 +270,6 @@ const Split = (idsOption, options = {}) => {
             offset = Math.round(offset / dragInterval) * dragInterval
         }
 
-        // if (gutterAlign === 'start') {
-        //     offset -= this[aGutterSize]
-        // } else if (gutterAlign === 'end') {
-        //     offset += this[bGutterSize]
-        // }
-
         // If within snapOffset of min or max, set offset to min or max.
         // snapOffset buffers a.minSize and b.minSize, so logic is opposite for both.
         // Include the appropriate gutter sizes to prevent overflows.
