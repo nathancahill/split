@@ -1,12 +1,12 @@
 {
   "name": "Split.js",
   "main": "split.js",
-  "version": "1.5.2",
+  "version": "1.5.3",
   "homepage": "https://github.com/nathancahill/Split.js",
   "authors": [
     "Nathan Cahill <nathan@nathancahill.com>"
   ],
-  "description": "A lightweight utility for creating adjustable split views",
+  "description": "< 2kb unopinionated utility for resizeable split views",
   "keywords": [
     "css",
     "split",
@@ -25,11 +25,9 @@
     "AUTHORS.md",
     "browserstack.json",
     "docs",
-    "examples",
     "Gruntfile.js",
     "logo.svg",
     "node_modules",
-    "package.json",
     "rollup.config.js",
     "src",
     "test"
