@@ -59,6 +59,24 @@ const getOption = (options, propName, def) => {
     return def
 }
 
+const getGutterSize = (gutterSize, isFirst, isLast, gutterAlign) => {
+    if (isFirst) {
+        if (gutterAlign === 'end') {
+            return 0
+        } else if (gutterAlign === 'center') {
+            return gutterSize / 2
+        }
+    } else if (isLast) {
+        if (gutterAlign === 'start') {
+            return 0
+        } else if (gutterAlign === 'center') {
+            return gutterSize / 2
+        }
+    }
+
+    return gutterSize
+}
+
 // Default options
 const defaultGutterFn = (i, gutterDirection) => {
     const gut = document.createElement('div')
@@ -98,8 +116,6 @@ const defaultGutterStyleFn = (dim, gutSize) => ({ [dim]: `${gutSize}px` })
 //     bMin: Number,
 //     dragging: Boolean,
 //     parent: DOM element,
-//     isFirst: Boolean,
-//     isLast: Boolean,
 //     direction: 'horizontal' | 'vertical'
 // }
 //
@@ -111,7 +127,7 @@ const defaultGutterStyleFn = (dim, gutSize) => ({ [dim]: `${gutSize}px` })
 //    rely on CSS strings and classes.
 // 3. Define the dragging helper functions, and a few helpers to go with them.
 // 4. Loop through the elements while pairing them off. Every pair gets an
-//    `pair` object, a gutter, and special isFirst/isLast properties.
+//    `pair` object and a gutter.
 // 5. Actually size the pair elements, insert gutters and attach event listeners.
 const Split = (idsOption, options = {}) => {
     let ids = idsOption
@@ -143,7 +159,9 @@ const Split = (idsOption, options = {}) => {
     // Get other options
     const expandToMin = getOption(options, 'expandToMin', false)
     const gutterSize = getOption(options, 'gutterSize', 10)
+    const gutterAlign = getOption(options, 'gutterAlign', 'center')
     const snapOffset = getOption(options, 'snapOffset', 30)
+    const dragInterval = getOption(options, 'dragInterval', 0)
     const direction = getOption(options, 'direction', HORIZONTAL)
     const cursor = getOption(options, 'cursor', direction === HORIZONTAL ? 'ew-resize' : 'ns-resize')
     const gutter = getOption(options, 'gutter', defaultGutterFn)
@@ -247,6 +265,16 @@ const Split = (idsOption, options = {}) => {
         } else {
             offset = e[clientAxis] - this.start
         }
+
+        if (dragInterval > 0) {
+            offset = Math.round(offset / dragInterval) * dragInterval
+        }
+
+        // if (gutterAlign === 'start') {
+        //     offset -= this[aGutterSize]
+        // } else if (gutterAlign === 'end') {
+        //     offset += this[bGutterSize]
+        // }
 
         // If within snapOffset of min or max, set offset to min or max.
         // snapOffset buffers a.minSize and b.minSize, so logic is opposite for both.
@@ -398,7 +426,7 @@ const Split = (idsOption, options = {}) => {
     // 5. Create pair and element objects. Each pair has an index reference to
     // elements `a` and `b` of the pair (first and second elements).
     // Loop through the elements while pairing them off. Every pair gets a
-    // `pair` object, a gutter, and isFirst/isLast properties.
+    // `pair` object and a gutter.
     //
     // Basic logic:
     //
@@ -411,7 +439,7 @@ const Split = (idsOption, options = {}) => {
     //
     // -----------------------------------------------------------------------
     // |     i=0     |         i=1         |        i=2       |      i=3     |
-    // |             |       isFirst       |                  |     isLast   |
+    // |             |                     |                  |              |
     // |           pair 0                pair 1             pair 2           |
     // |             |                     |                  |              |
     // -----------------------------------------------------------------------
@@ -433,23 +461,12 @@ const Split = (idsOption, options = {}) => {
                 a: i - 1,
                 b: i,
                 dragging: false,
-                isFirst: (i === 1),
-                isLast: (i === ids.length - 1),
                 direction,
                 parent,
             }
 
-            // For first and last pairs, first and last gutter width is half.
-            pair[aGutterSize] = gutterSize
-            pair[bGutterSize] = gutterSize
-
-            if (pair.isFirst) {
-                pair[aGutterSize] = gutterSize / 2
-            }
-
-            if (pair.isLast) {
-                pair[bGutterSize] = gutterSize / 2
-            }
+            pair[aGutterSize] = getGutterSize(gutterSize, i - 1 === 0, false, gutterAlign)
+            pair[bGutterSize] = getGutterSize(gutterSize, false, i === ids.length - 1, gutterAlign)
 
             // if the parent has a reverse flex-direction, switch the pair elements.
             if (parentFlexDirection === 'row-reverse' || parentFlexDirection === 'column-reverse') {
@@ -483,10 +500,11 @@ const Split = (idsOption, options = {}) => {
             }
         }
 
-        // Set the element size to our determined size.
-        // Half-size gutters for first and last elements.
-        const elementGutterSize = (i === 0 || i === ids.length - 1) ? gutterSize / 2 : gutterSize
-        setElementSize(element.element, element.size, elementGutterSize)
+        setElementSize(
+            element.element,
+            element.size,
+            getGutterSize(gutterSize, i === 0, i === ids.length - 1, gutterAlign),
+        )
 
         // After the first iteration, and we have a pair object, append it to the
         // list of pairs.
