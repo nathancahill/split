@@ -29,6 +29,7 @@
 - [Flexbox](#flexbox)
 - [API](#api)
 - [CSS](#css)
+- [React](#react)
 - [Browser Support](#browser-support)
 - [Credits](#credits)
 - [License](#license)
@@ -518,6 +519,21 @@ Overflow can be handled as well, to get scrolling within the elements:
     overflow-y: auto;
     overflow-x: hidden;
 }
+```
+
+## React
+
+ Split.js is also available as a React component: [react-split](https://github.com/nathancahill/react-split). The component accepts the same options as the Split.js constructor:
+
+ ```js
+ import Split from 'react-split'
+
+ReactDOM.render(
+    <Split sizes={[25, 75]}>
+        <Component />
+        <Component />
+    </Split>
+)
 ```
 
 ## Browser Support
