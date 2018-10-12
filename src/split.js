@@ -134,6 +134,7 @@ const Split = (idsOption, options = {}) => {
     let dimension
     let clientAxis
     let position
+    let positionEnd
     let elements
 
     // Allow HTMLCollection to be used as an argument when supported
@@ -175,10 +176,12 @@ const Split = (idsOption, options = {}) => {
         dimension = 'width'
         clientAxis = 'clientX'
         position = 'left'
+        positionEnd = 'right'
     } else if (direction === 'vertical') {
         dimension = 'height'
         clientAxis = 'clientY'
         position = 'top'
+        positionEnd = 'bottom'
     }
 
     // 3. Define the dragging helper functions, and a few helpers to go with them.
@@ -216,6 +219,13 @@ const Split = (idsOption, options = {}) => {
 
     function getSizes () {
         return elements.map(element => element.size)
+    }
+
+    // Supports touch events, but not multitouch, so only the first
+    // finger `touches[0]` is counted.
+    function getMousePosition (e) {
+        if ('touches' in e) return e.touches[0][clientAxis]
+        return e[clientAxis]
     }
 
     // Actually adjust the size of elements `a` and `b` to `offset` while dragging.
@@ -258,13 +268,9 @@ const Split = (idsOption, options = {}) => {
         if (!this.dragging) return
 
         // Get the offset of the event from the first side of the
-        // pair `this.start`. Supports touch events, but not multitouch, so only the first
-        // finger `touches[0]` is counted.
-        if ('touches' in e) {
-            offset = e.touches[0][clientAxis] - this.start
-        } else {
-            offset = e[clientAxis] - this.start
-        }
+        // pair `this.start`. Then offset by the initial position of the
+        // mouse compared to the gutter size.
+        offset = (getMousePosition(e) - this.start) + (this[aGutterSize] - this.dragOffset)
 
         if (dragInterval > 0) {
             offset = Math.round(offset / dragInterval) * dragInterval
@@ -310,6 +316,7 @@ const Split = (idsOption, options = {}) => {
 
         this.size = aBounds[dimension] + bBounds[dimension] + this[aGutterSize] + this[bGutterSize]
         this.start = aBounds[position]
+        this.end = aBounds[positionEnd]
     }
 
     // stopDragging is very similar to startDragging in reverse.
@@ -415,6 +422,9 @@ const Split = (idsOption, options = {}) => {
 
         // Cache the initial sizes of the pair.
         calculateSizes.call(self)
+
+        // Determine the position of the mouse compared to the gutter
+        self.dragOffset = getMousePosition(e) - self.end
     }
 
     // 5. Create pair and element objects. Each pair has an index reference to
