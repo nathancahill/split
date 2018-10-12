@@ -84,7 +84,9 @@ var split = Split(<HTMLElement|selector[]> elements, <options> options?)
 | `minSize` | Number or Array | `100` | Minimum size of each element. |
 | `expandToMin` | Boolean | `false` | Grow initial sizes to `minSize` |
 | `gutterSize` | Number | `10` | Gutter size in pixels. |
+| `gutterAlign` | String | `'center'` | Gutter alignment between elements. |
 | `snapOffset` | Number | `30` | Snap to minimum size offset in pixels. |
+| `dragInterval` | Number | `0` | Number of pixels to drag. |
 | `direction` | String | `'horizontal'` | Direction to split: horizontal or vertical. |
 | `cursor` | String | `'col-resize'` | Cursor to display while dragging. |
 | `gutter` | Function | | Called to create each gutter element |
@@ -157,6 +159,20 @@ Split(['#one', '#two'], {
 })
 ```
 
+### gutterAlign. Default: `'center'`
+
+Possible options are `'start'`, `'end'` and `'center'`. Determines how the gutter aligns between the two elements.
+`'start'` shrinks the first element to fit the gutter, `'end'` shrinks the second element to fit the gutter and `'center'` shrinks both
+elements by the same amount so the gutter sits between. Added in v1.5.3.
+
+Example: move gutter to the side of the second element:
+
+```js
+Split(['#one', '#two'], {
+    gutterAlign: 'end'
+})
+```
+
 #### snapOffset. Default: `30`
 
 Snap to minimum size at this offset in pixels. Example: Set to `0` to disable to snap effect.
@@ -164,6 +180,18 @@ Snap to minimum size at this offset in pixels. Example: Set to `0` to disable to
 ```js
 Split(['#one', '#two'], {
     snapOffset: 0
+})
+```
+
+#### dragInterval. Default: `0`
+
+Drag this number of pixels at a time. Defaults to `0` for smooth dragging, but can be set to a pixel value to
+give more control over the resulting sizes. Works particularly well when the `gutterSize` is set to the same size.
+Added in v1.5.3. Example: Drag 20px at a time:
+
+```js
+Split(['#one', '#two'], {
+    dragInterval: 20
 })
 ```
 
