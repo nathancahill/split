@@ -159,7 +159,7 @@ Split(['#one', '#two'], {
 })
 ```
 
-### gutterAlign. Default: `'center'`
+#### gutterAlign. Default: `'center'`
 
 Possible options are `'start'`, `'end'` and `'center'`. Determines how the gutter aligns between the two elements.
 `'start'` shrinks the first element to fit the gutter, `'end'` shrinks the second element to fit the gutter and `'center'` shrinks both
