@@ -161,7 +161,7 @@ const Split = (idsOption, options = {}) => {
     const gutterSize = getOption(options, 'gutterSize', 10)
     const gutterAlign = getOption(options, 'gutterAlign', 'center')
     const snapOffset = getOption(options, 'snapOffset', 30)
-    const dragInterval = getOption(options, 'dragInterval', 0)
+    const dragInterval = getOption(options, 'dragInterval', 1)
     const direction = getOption(options, 'direction', HORIZONTAL)
     const cursor = getOption(options, 'cursor', direction === HORIZONTAL ? 'ew-resize' : 'ns-resize')
     const gutter = getOption(options, 'gutter', defaultGutterFn)
@@ -266,7 +266,7 @@ const Split = (idsOption, options = {}) => {
             offset = e[clientAxis] - this.start
         }
 
-        if (dragInterval > 0) {
+        if (dragInterval > 1) {
             offset = Math.round(offset / dragInterval) * dragInterval
         }
 

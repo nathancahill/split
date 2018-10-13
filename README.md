@@ -11,7 +11,7 @@
 
 # Split.js
 
-> 2kb unopinionated utility for resizeable split views. 
+> 2kb unopinionated utility for resizeable split views.
 
  - __Zero Deps__
  - __Tiny:__ Weights 2kb gzipped.
@@ -88,7 +88,7 @@ var split = Split(<HTMLElement|selector[]> elements, <options> options?)
 | `gutterSize` | Number | `10` | Gutter size in pixels. |
 | `gutterAlign` | String | `'center'` | Gutter alignment between elements. |
 | `snapOffset` | Number | `30` | Snap to minimum size offset in pixels. |
-| `dragInterval` | Number | `0` | Number of pixels to drag. |
+| `dragInterval` | Number | `1` | Number of pixels to drag. |
 | `direction` | String | `'horizontal'` | Direction to split: horizontal or vertical. |
 | `cursor` | String | `'col-resize'` | Cursor to display while dragging. |
 | `gutter` | Function | | Called to create each gutter element |
@@ -105,7 +105,7 @@ This is by design. It makes Split.js flexible and useful in many different situa
 If you create a horizontal split, you are responsible for (likely) floating the elements and the gutter,
 and setting their heights. See the [CSS](#css) section below. If your gutters are not showing up, check the applied CSS styles.
 
-__THIS IS THE #1 QUESTION ABOUT THE LIBRARY__. 
+__THIS IS THE #1 QUESTION ABOUT THE LIBRARY__.
 
 ## Options
 
@@ -185,9 +185,9 @@ Split(['#one', '#two'], {
 })
 ```
 
-#### dragInterval. Default: `0`
+#### dragInterval. Default: `1`
 
-Drag this number of pixels at a time. Defaults to `0` for smooth dragging, but can be set to a pixel value to
+Drag this number of pixels at a time. Defaults to `1` for smooth dragging, but can be set to a pixel value to
 give more control over the resulting sizes. Works particularly well when the `gutterSize` is set to the same size.
 Added in v1.5.3. Example: Drag 20px at a time:
 
