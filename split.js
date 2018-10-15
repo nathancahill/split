@@ -1,4 +1,4 @@
-/*! Split.js - v1.5.3 */
+/*! Split.js - v1.5.4 */
 
 (function (global, factory) {
     typeof exports === 'object' && typeof module !== 'undefined' ? module.exports = factory() :
@@ -50,7 +50,7 @@
         if (isString(el)) {
             var ele = document.querySelector(el);
             if (!ele) {
-                throw new Error(("Selector " + el + " did match a DOM element"))
+                throw new Error(("Selector " + el + " did not match a DOM element"))
             }
             return ele
         }
@@ -148,6 +148,7 @@
         var dimension;
         var clientAxis;
         var position;
+        var positionEnd;
         var elements;
 
         // Allow HTMLCollection to be used as an argument when supported
@@ -175,7 +176,7 @@
         var gutterSize = getOption(options, 'gutterSize', 10);
         var gutterAlign = getOption(options, 'gutterAlign', 'center');
         var snapOffset = getOption(options, 'snapOffset', 30);
-        var dragInterval = getOption(options, 'dragInterval', 0);
+        var dragInterval = getOption(options, 'dragInterval', 1);
         var direction = getOption(options, 'direction', HORIZONTAL);
         var cursor = getOption(options, 'cursor', direction === HORIZONTAL ? 'ew-resize' : 'ns-resize');
         var gutter = getOption(options, 'gutter', defaultGutterFn);
@@ -189,10 +190,12 @@
             dimension = 'width';
             clientAxis = 'clientX';
             position = 'left';
+            positionEnd = 'right';
         } else if (direction === 'vertical') {
             dimension = 'height';
             clientAxis = 'clientY';
             position = 'top';
+            positionEnd = 'bottom';
         }
 
         // 3. Define the dragging helper functions, and a few helpers to go with them.
@@ -206,12 +209,12 @@
         // The pair object saves metadata like dragging state, position and
         // event listener references.
 
-        function setElementSize (el, size, gutSize) {
+        function setElementSize (el, size, gutSize, i) {
             // Split.js allows setting sizes via numbers (ideally), or if you must,
             // by string, like '300px'. This is less than ideal, because it breaks
             // the fluid layout that `calc(% - px)` provides. You're on your own if you do that,
             // make sure you calculate the gutter size by hand.
-            var style = elementStyle(dimension, size, gutSize);
+            var style = elementStyle(dimension, size, gutSize, i);
 
             // eslint-disable-next-line no-param-reassign
             Object.keys(style).forEach(function (prop) {
@@ -219,8 +222,8 @@
             });
         }
 
-        function setGutterSize (gutterElement, gutSize) {
-            var style = gutterStyle(dimension, gutSize);
+        function setGutterSize (gutterElement, gutSize, i) {
+            var style = gutterStyle(dimension, gutSize, i);
 
             // eslint-disable-next-line no-param-reassign
             Object.keys(style).forEach(function (prop) {
@@ -230,6 +233,13 @@
 
         function getSizes () {
             return elements.map(function (element) { return element.size; })
+        }
+
+        // Supports touch events, but not multitouch, so only the first
+        // finger `touches[0]` is counted.
+        function getMousePosition (e) {
+            if ('touches' in e) { return e.touches[0][clientAxis] }
+            return e[clientAxis]
         }
 
         // Actually adjust the size of elements `a` and `b` to `offset` while dragging.
@@ -246,8 +256,8 @@
             a.size = (offset / this.size) * percentage;
             b.size = (percentage - ((offset / this.size) * percentage));
 
-            setElementSize(a.element, a.size, this[aGutterSize]);
-            setElementSize(b.element, b.size, this[bGutterSize]);
+            setElementSize(a.element, a.size, this[aGutterSize], a.i);
+            setElementSize(b.element, b.size, this[bGutterSize], b.i);
         }
 
         // drag, where all the magic happens. The logic is really quite simple:
@@ -272,23 +282,13 @@
             if (!this.dragging) { return }
 
             // Get the offset of the event from the first side of the
-            // pair `this.start`. Supports touch events, but not multitouch, so only the first
-            // finger `touches[0]` is counted.
-            if ('touches' in e) {
-                offset = e.touches[0][clientAxis] - this.start;
-            } else {
-                offset = e[clientAxis] - this.start;
-            }
+            // pair `this.start`. Then offset by the initial position of the
+            // mouse compared to the gutter size.
+            offset = (getMousePosition(e) - this.start) + (this[aGutterSize] - this.dragOffset);
 
-            if (dragInterval > 0) {
+            if (dragInterval > 1) {
                 offset = Math.round(offset / dragInterval) * dragInterval;
             }
-
-            // if (gutterAlign === 'start') {
-            //     offset -= this[aGutterSize]
-            // } else if (gutterAlign === 'end') {
-            //     offset += this[bGutterSize]
-            // }
 
             // If within snapOffset of min or max, set offset to min or max.
             // snapOffset buffers a.minSize and b.minSize, so logic is opposite for both.
@@ -330,6 +330,7 @@
 
             this.size = aBounds[dimension] + bBounds[dimension] + this[aGutterSize] + this[bGutterSize];
             this.start = aBounds[position];
+            this.end = aBounds[positionEnd];
         }
 
         // stopDragging is very similar to startDragging in reverse.
@@ -435,6 +436,9 @@
 
             // Cache the initial sizes of the pair.
             calculateSizes.call(self);
+
+            // Determine the position of the mouse compared to the gutter
+            self.dragOffset = getMousePosition(e) - self.end;
         }
 
         // 5. Create pair and element objects. Each pair has an index reference to
@@ -499,7 +503,7 @@
                 // Create gutter elements for each pair.
                 if (i > 0) {
                     var gutterElement = gutter(i, direction, element.element);
-                    setGutterSize(gutterElement, gutterSize);
+                    setGutterSize(gutterElement, gutterSize, i);
 
                     // Save bound event listener for removal later
                     pair[gutterStartDragging] = startDragging.bind(pair);
