@@ -42,7 +42,7 @@ const elementOrSelector = el => {
     if (isString(el)) {
         const ele = document.querySelector(el)
         if (!ele) {
-            throw new Error(`Selector ${el} did match a DOM element`)
+            throw new Error(`Selector ${el} did not match a DOM element`)
         }
         return ele
     }
