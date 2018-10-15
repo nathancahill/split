@@ -208,8 +208,8 @@ const Split = (idsOption, options = {}) => {
         })
     }
 
-    function setGutterSize (gutterElement, gutSize) {
-        const style = gutterStyle(dimension, gutSize)
+    function setGutterSize (gutterElement, gutSize, i) {
+        const style = gutterStyle(dimension, gutSize, i)
 
         // eslint-disable-next-line no-param-reassign
         Object.keys(style).forEach(prop => {
@@ -489,7 +489,7 @@ const Split = (idsOption, options = {}) => {
             // Create gutter elements for each pair.
             if (i > 0) {
                 const gutterElement = gutter(i, direction, element.element)
-                setGutterSize(gutterElement, gutterSize)
+                setGutterSize(gutterElement, gutterSize, i)
 
                 // Save bound event listener for removal later
                 pair[gutterStartDragging] = startDragging.bind(pair)
