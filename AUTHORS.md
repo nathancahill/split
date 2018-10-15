@@ -30,3 +30,4 @@
  - Gabriel Pedro @gpedro
  - Chi Wang @patr0nus
  - Adrian Jones @adrianbj
+ - Bradley Kemp @bradleyjkemp
