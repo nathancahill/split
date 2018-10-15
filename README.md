@@ -252,7 +252,7 @@ This final argument makes it easy to return the gutter that has already been cre
 Optional function called setting the CSS style of the elements. The signature looks like this:
 
 ```js
-(dimension, elementSize, gutterSize) => Object
+(dimension, elementSize, gutterSize, index) => Object
 ```
 
 Dimension will be a string, `'width'` or `'height'`, and can be used in the return style. `elementSize` is the target percentage value of the element, and `gutterSize` is the target pixel value of the gutter.
@@ -286,7 +286,7 @@ Use this function if you're using a different layout like flexbox or grid (see [
 Optional function called when setting the CSS style of the gutters. The signature looks like this:
 
 ```js
-(dimension, gutterSize) => Object
+(dimension, gutterSize, index) => Object
 ```
 
 Dimension is a string, either `'width'` or `'height'`, and `gutterSize` is a pixel value representing the width of the gutter.

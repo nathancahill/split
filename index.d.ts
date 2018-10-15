@@ -26,11 +26,17 @@ declare namespace Split {
     // Minimum size of each element.
     minSize?: number | number[];
 
+    expandToMin?: boolean;
+
     // Gutter size in pixels.
     gutterSize?: number;
 
+    gutterAlign?: string;
+
     // Snap to minimum size offset in pixels.
     snapOffset?: number;
+
+    dragInterval?: number;
 
     // Direction to split: horizontal or vertical.
     direction?: 'horizontal' | 'vertical';
@@ -57,13 +63,15 @@ declare namespace Split {
     elementStyle?(
       dimension: 'width' | 'height',
       elementSize: number,
-      gutterSize: number
+      gutterSize: number,
+      index: number,
     ): CSSStyleDeclarationPartial;
 
     // Called to set the style of the gutter.
     gutterStyle?(
       dimension: 'width' | 'height',
-      gutterSize: number
+      gutterSize: number,
+      index: number,
     ): CSSStyleDeclarationPartial;
   }
 
@@ -83,6 +91,6 @@ declare namespace Split {
     collapse(index: number): void;
 
     // Destroy the instance. It removes the gutter elements, and the size CSS styles Split.js set.
-    destroy(): void;
+    destroy(preserveStyles?: boolean, preserveGutters?: boolean): void;
   }
 }
