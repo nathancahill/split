@@ -367,7 +367,7 @@ const Split = (idsOption, options = {}) => {
     // and prevents selection while dragging so avoid the selecting text.
     function startDragging (e) {
         // Right-clicking can't start dragging.
-        if (e.button !== 0) {
+        if ('button' in e && e.button !== 0) {
             return
         }
 
