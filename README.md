@@ -2,7 +2,7 @@
 <img alt="Split.js" title="Split.js" src="https://cdn.rawgit.com/nathancahill/Split.js/master/logo.svg" width="430">
 <br><br>
 <a href="https://travis-ci.org/nathancahill/Split.js"><img src="https://travis-ci.org/nathancahill/Split.js.svg" alt="Build Status"></a>
-<a href="https://raw.githubusercontent.com/nathancahill/Split.js/master/split.min.js"><img src="https://badge-size.herokuapp.com/nathancahill/Split.js/master/split.min.js.svg?compression=gzip&label=size&v=1.5.4" alt="File Size"></a>
+<a href="https://raw.githubusercontent.com/nathancahill/Split.js/master/split.min.js"><img src="https://badge-size.herokuapp.com/nathancahill/Split.js/master/split.min.js.svg?compression=gzip&label=size&v=1.5.5" alt="File Size"></a>
 <img src="https://badge.fury.io/js/split.js.svg" alt="npm version">
 <img src="https://david-dm.org/nathancahill/Split.js/status.svg" alt="Dependencies">
 <img src = "https://opencollective.com/splitjs/backers/badge.svg" alt="Backers on Open Collective"/>

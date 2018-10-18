@@ -1,4 +1,4 @@
-/*! Split.js - v1.5.4 */
+/*! Split.js - v1.5.5 */
 
 (function (global, factory) {
     typeof exports === 'object' && typeof module !== 'undefined' ? module.exports = factory() :
@@ -381,7 +381,7 @@
         // and prevents selection while dragging so avoid the selecting text.
         function startDragging (e) {
             // Right-clicking can't start dragging.
-            if (e.button !== 0) {
+            if ('button' in e && e.button !== 0) {
                 return
             }
 
