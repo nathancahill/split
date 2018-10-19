@@ -9,14 +9,18 @@
     "url": "git+https://github.com/nathancahill/Split.js.git"
   },
   "keywords": [
-    "css"
+    "css",
+    "split",
+    "flexbox",
+    "tiny",
+    "split-layout"
   ],
   "author": "Nathan Cahill <nathan@nathancahill.com>",
   "license": "MIT",
   "bugs": {
     "url": "https://github.com/nathancahill/Split.js/issues"
   },
-  "homepage": "https://github.com/nathancahill/Split.js#readme",
+  "homepage": "https://split.js.org/",
   "devDependencies": {
     "buble": "^0.19",
     "eslint": "^3.19.0",
