@@ -1,4 +1,4 @@
-/*! Split.js - v1.5.5 */
+/*! Split.js - v1.5.6 */
 
 (function (global, factory) {
     typeof exports === 'object' && typeof module !== 'undefined' ? module.exports = factory() :
@@ -178,7 +178,7 @@
         var snapOffset = getOption(options, 'snapOffset', 30);
         var dragInterval = getOption(options, 'dragInterval', 1);
         var direction = getOption(options, 'direction', HORIZONTAL);
-        var cursor = getOption(options, 'cursor', direction === HORIZONTAL ? 'ew-resize' : 'ns-resize');
+        var cursor = getOption(options, 'cursor', direction === HORIZONTAL ? 'col-resize' : 'row-resize');
         var gutter = getOption(options, 'gutter', defaultGutterFn);
         var elementStyle = getOption(options, 'elementStyle', defaultElementStyleFn);
         var gutterStyle = getOption(options, 'gutterStyle', defaultGutterStyleFn);
