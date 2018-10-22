@@ -40,19 +40,19 @@
 
 Yarn:
 
-```
+```bash
 $ yarn add split.js
 ```
 
 npm:
 
-```
+```bash
 $ npm install --save split.js
 ```
 
 Bower:
 
-```
+```bash
 $ bower install --save Split.js
 ```
 
@@ -413,7 +413,7 @@ Split(['#flex-1', '#flex-2'], {
 
 Split.js returns an instance with a couple of functions. The instance is returned on creation:
 
-```
+```js
 var instance = Split([], ...)
 ```
 
@@ -421,7 +421,7 @@ var instance = Split([], ...)
 
 setSizes behaves the same as the `sizes` configuration option, passing an array of percents or CSS values. It updates the sizes of the elements in the split. Added in v1.1.0:
 
-```
+```js
 instance.setSizes([25, 75])
 ```
 
@@ -429,7 +429,7 @@ instance.setSizes([25, 75])
 
 getSizes returns an array of percents, suitable for using with `setSizes` or creation. Not supported in IE8. Added in v1.1.2:
 
-```
+```js
 instance.getSizes()
 > [25, 75]
 ```
@@ -438,7 +438,7 @@ instance.getSizes()
 
 collapse changes the size of element at `index` to it's `minSize`. Every element except the last is collapsed towards the front (left or top). The last is collapsed towards the back. Not supported in IE8. Added in v1.1.0:
 
-```
+```js
 instance.collapse(0)
 ```
 
@@ -448,7 +448,7 @@ Destroy the instance. It removes the gutter elements, and the size CSS styles Sp
 Passing `preserveStyles = true` does not remove the CSS styles. Option added in v1.4.0.
 Passing `preserveGutters = true` does not remove the gutter elements. Option added in v1.4.1.
 
-```
+```js
 instance.destroy()
 ```
 
@@ -549,7 +549,7 @@ Gracefully falls back in IE 8 and below to only setting the initial widths/heigh
 
 This is __ONLY NEEDED__ if you are supporting __IE8:__
 
-```
+```html
 <script src="///polyfill.io/v2/polyfill.min.js?features=Array.isArray,Array.prototype.forEach,Array.prototype.map,Object.keys,Array.prototype.filter,getComputedStyle"></script>
 ```
 
