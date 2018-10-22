@@ -417,7 +417,7 @@ Split.js returns an instance with a couple of functions. The instance is returne
 var instance = Split([], ...)
 ```
 
-#### .setSizes([])
+#### `.setSizes([])`
 
 setSizes behaves the same as the `sizes` configuration option, passing an array of percents or CSS values. It updates the sizes of the elements in the split. Added in v1.1.0:
 
@@ -425,7 +425,7 @@ setSizes behaves the same as the `sizes` configuration option, passing an array 
 instance.setSizes([25, 75])
 ```
 
-#### .getSizes()
+#### `.getSizes()`
 
 getSizes returns an array of percents, suitable for using with `setSizes` or creation. Not supported in IE8. Added in v1.1.2:
 
@@ -434,7 +434,7 @@ instance.getSizes()
 > [25, 75]
 ```
 
-#### .collapse(index)
+#### `.collapse(index)`
 
 collapse changes the size of element at `index` to it's `minSize`. Every element except the last is collapsed towards the front (left or top). The last is collapsed towards the back. Not supported in IE8. Added in v1.1.0:
 
@@ -442,7 +442,7 @@ collapse changes the size of element at `index` to it's `minSize`. Every element
 instance.collapse(0)
 ```
 
-#### .destroy(preserveStyles? = false, preserveGutters? = false)
+#### `.destroy(preserveStyles? = false, preserveGutters? = false)`
 
 Destroy the instance. It removes the gutter elements, and the size CSS styles Split.js set. Added in v1.1.1.
 Passing `preserveStyles = true` does not remove the CSS styles. Option added in v1.4.0.
