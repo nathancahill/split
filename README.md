@@ -209,7 +209,7 @@ Split(['#one', '#two'], {
 
 #### cursor. Default: `'col-resize'`
 
-Cursor to show on the gutter (also applied to the two adjacent elements when dragging to prevent flickering). Defaults to `'col-resize'`, so should be switched to `'row-resize'` when using `direction: 'vertical'`:
+Cursor to show on the gutter (also applied to the body on dragging to prevent flickering). Defaults to `'col-resize'`for `direction: 'horizontal'` and `'row-resize'` for `direction: 'vertical'`:
 
 ```js
 Split(['#one', '#two'], {

@@ -164,7 +164,7 @@ const Split = (idsOption, options = {}) => {
     const snapOffset = getOption(options, 'snapOffset', 30)
     const dragInterval = getOption(options, 'dragInterval', 1)
     const direction = getOption(options, 'direction', HORIZONTAL)
-    const cursor = getOption(options, 'cursor', direction === HORIZONTAL ? 'ew-resize' : 'ns-resize')
+    const cursor = getOption(options, 'cursor', direction === HORIZONTAL ? 'col-resize' : 'row-resize')
     const gutter = getOption(options, 'gutter', defaultGutterFn)
     const elementStyle = getOption(options, 'elementStyle', defaultElementStyleFn)
     const gutterStyle = getOption(options, 'gutterStyle', defaultGutterStyleFn)
