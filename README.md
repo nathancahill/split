@@ -419,7 +419,7 @@ var instance = Split([], ...)
 
 #### `.setSizes([])`
 
-setSizes behaves the same as the `sizes` configuration option, passing an array of percents or CSS values. It updates the sizes of the elements in the split. Added in v1.1.0:
+setSizes behaves the same as the `sizes` configuration option, passing an array of percentages. It updates the sizes of the elements in the split. Added in v1.1.0:
 
 ```js
 instance.setSizes([25, 75])
