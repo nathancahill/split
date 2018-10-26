@@ -1,4 +1,4 @@
-/*! Split.js - v1.5.6 */
+/*! Split.js - v1.5.7 */
 
 (function (global, factory) {
     typeof exports === 'object' && typeof module !== 'undefined' ? module.exports = factory() :
@@ -149,6 +149,7 @@
         var clientAxis;
         var position;
         var positionEnd;
+        var clientSize;
         var elements;
 
         // Allow HTMLCollection to be used as an argument when supported
@@ -191,11 +192,13 @@
             clientAxis = 'clientX';
             position = 'left';
             positionEnd = 'right';
+            clientSize = 'clientWidth';
         } else if (direction === 'vertical') {
             dimension = 'height';
             clientAxis = 'clientY';
             position = 'top';
             positionEnd = 'bottom';
+            clientSize = 'clientHeight';
         }
 
         // 3. Define the dragging helper functions, and a few helpers to go with them.
@@ -333,6 +336,63 @@
             this.end = aBounds[positionEnd];
         }
 
+        // When specifying percentage sizes that are less than the computed
+        // size of the element minus the gutter, the lesser percentages must be increased
+        // (and decreased from the other elements) to make space for the pixels
+        // subtracted by the gutters.
+        function trimToMin (sizesToTrim) {
+            // Keep track of the excess pixels, the amount of pixels over the desired percentage
+            // Also keep track of the elements with pixels to spare, to decrease after if needed
+            var excessPixels = 0;
+            var toSpare = [];
+
+            var pixelSizes = sizesToTrim.map(function (size, i) {
+                // Convert requested percentages to pixel sizes
+                var pixelSize = (parent[clientSize] * size) / 100;
+                var elementGutterSize = getGutterSize(
+                    gutterSize,
+                    i === 0,
+                    i === sizesToTrim.length - 1,
+                    gutterAlign
+                );
+                var elementMinSize = minSizes[i] + elementGutterSize;
+
+                // If element is too smal, increase excess pixels by the difference
+                // and mark that it has no pixels to spare
+                if (pixelSize < elementMinSize) {
+                    excessPixels += (elementMinSize - pixelSize);
+                    toSpare.push(0);
+                    return elementMinSize
+                }
+
+                // Otherwise, mark the pixels it has to spare and return it's original size
+                toSpare.push(pixelSize - elementMinSize);
+                return pixelSize
+            });
+
+            // If nothing was adjusted, return the original sizes
+            if (excessPixels === 0) {
+                return sizesToTrim
+            }
+
+            return pixelSizes.map(function (pixelSize, i) {
+                var newPixelSize = pixelSize;
+
+                // While there's still pixels to take, and there's enough pixels to spare,
+                // take as many as possible up to the total excess pixels
+                if ((excessPixels > 0) && (toSpare[i] - excessPixels) > 0) {
+                    var takenPixels = Math.min(excessPixels, (toSpare[i] - excessPixels));
+
+                    // Subtract the amount taken for the next iteration
+                    excessPixels -= takenPixels;
+                    newPixelSize = pixelSize - takenPixels;
+                }
+
+                // Return the pixel size adjusted as a percentage
+                return (newPixelSize / parent[clientSize]) * 100
+            })
+        }
+
         // stopDragging is very similar to startDragging in reverse.
         function stopDragging () {
             var self = this;
@@ -440,6 +500,9 @@
             // Determine the position of the mouse compared to the gutter
             self.dragOffset = getMousePosition(e) - self.end;
         }
+
+        // adjust sizes to ensure percentage is within min size and gutter.
+        sizes = trimToMin(sizes);
 
         // 5. Create pair and element objects. Each pair has an index reference to
         // elements `a` and `b` of the pair (first and second elements).
@@ -557,13 +620,15 @@
         });
 
         function setSizes (newSizes) {
-            newSizes.forEach(function (newSize, i) {
+            var trimmed = trimToMin(newSizes);
+            trimmed.forEach(function (newSize, i) {
                 if (i > 0) {
                     var pair = pairs[i - 1];
+
                     var a = elements[pair.a];
                     var b = elements[pair.b];
 
-                    a.size = newSizes[i - 1];
+                    a.size = trimmed[i - 1];
                     b.size = newSize;
 
                     setElementSize(a.element, a.size, pair[aGutterSize]);
