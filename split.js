@@ -162,7 +162,7 @@
         // behavior will be whacky otherwise.
         var firstElement = elementOrSelector(ids[0]);
         var parent = firstElement.parentNode;
-        var parentFlexDirection = global.getComputedStyle(parent).flexDirection;
+        var parentFlexDirection = getComputedStyle ? getComputedStyle(parent).flexDirection : null;
 
         // Set default options.sizes to equal percentages of the parent element.
         var sizes = getOption(options, 'sizes') || ids.map(function () { return 100 / ids.length; });
@@ -336,11 +336,34 @@
             this.end = aBounds[positionEnd];
         }
 
+        function innerSize (element) {
+            // Return nothing if getComputedStyle is not supported (< IE9)
+            if (!getComputedStyle) { return null }
+
+            var computedStyle = getComputedStyle(element);
+            var size = element[clientSize];
+
+            if (direction === HORIZONTAL) {
+                size -= parseFloat(computedStyle.paddingLeft) + parseFloat(computedStyle.paddingRight);
+            } else {
+                size -= parseFloat(computedStyle.paddingTop) + parseFloat(computedStyle.paddingBottom);
+            }
+
+            return size
+        }
+
         // When specifying percentage sizes that are less than the computed
         // size of the element minus the gutter, the lesser percentages must be increased
         // (and decreased from the other elements) to make space for the pixels
         // subtracted by the gutters.
         function trimToMin (sizesToTrim) {
+            // Try to get inner size of parent element.
+            // If it's no supported, return original sizes.
+            var parentSize = innerSize(parent);
+            if (parentSize === null) {
+                return sizesToTrim
+            }
+
             // Keep track of the excess pixels, the amount of pixels over the desired percentage
             // Also keep track of the elements with pixels to spare, to decrease after if needed
             var excessPixels = 0;
@@ -348,7 +371,7 @@
 
             var pixelSizes = sizesToTrim.map(function (size, i) {
                 // Convert requested percentages to pixel sizes
-                var pixelSize = (parent[clientSize] * size) / 100;
+                var pixelSize = (parentSize * size) / 100;
                 var elementGutterSize = getGutterSize(
                     gutterSize,
                     i === 0,
@@ -389,7 +412,7 @@
                 }
 
                 // Return the pixel size adjusted as a percentage
-                return (newPixelSize / parent[clientSize]) * 100
+                return (newPixelSize / parentSize) * 100
             })
         }
 
