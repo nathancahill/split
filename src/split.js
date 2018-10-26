@@ -135,6 +135,7 @@ const Split = (idsOption, options = {}) => {
     let clientAxis
     let position
     let positionEnd
+    let clientSize
     let elements
 
     // Allow HTMLCollection to be used as an argument when supported
@@ -150,7 +151,7 @@ const Split = (idsOption, options = {}) => {
     const parentFlexDirection = global.getComputedStyle(parent).flexDirection
 
     // Set default options.sizes to equal percentages of the parent element.
-    const sizes = getOption(options, 'sizes') || ids.map(() => 100 / ids.length)
+    let sizes = getOption(options, 'sizes') || ids.map(() => 100 / ids.length)
 
     // Standardize minSize to an array if it isn't already. This allows minSize
     // to be passed as a number.
@@ -177,11 +178,13 @@ const Split = (idsOption, options = {}) => {
         clientAxis = 'clientX'
         position = 'left'
         positionEnd = 'right'
+        clientSize = 'clientWidth'
     } else if (direction === 'vertical') {
         dimension = 'height'
         clientAxis = 'clientY'
         position = 'top'
         positionEnd = 'bottom'
+        clientSize = 'clientHeight'
     }
 
     // 3. Define the dragging helper functions, and a few helpers to go with them.
@@ -319,6 +322,63 @@ const Split = (idsOption, options = {}) => {
         this.end = aBounds[positionEnd]
     }
 
+    // When specifying percentage sizes that are less than the computed
+    // size of the element minus the gutter, the lesser percentages must be increased
+    // (and decreased from the other elements) to make space for the pixels
+    // subtracted by the gutters.
+    function trimToMin (sizesToTrim) {
+        // Keep track of the excess pixels, the amount of pixels over the desired percentage
+        // Also keep track of the elements with pixels to spare, to decrease after if needed
+        let excessPixels = 0
+        const toSpare = []
+
+        const pixelSizes = sizesToTrim.map((size, i) => {
+            // Convert requested percentages to pixel sizes
+            const pixelSize = (parent[clientSize] * size) / 100
+            const elementGutterSize = getGutterSize(
+                gutterSize,
+                i === 0,
+                i === sizesToTrim.length - 1,
+                gutterAlign,
+            )
+            const elementMinSize = minSizes[i] + elementGutterSize
+
+            // If element is too smal, increase excess pixels by the difference
+            // and mark that it has no pixels to spare
+            if (pixelSize < elementMinSize) {
+                excessPixels += (elementMinSize - pixelSize)
+                toSpare.push(0)
+                return elementMinSize
+            }
+
+            // Otherwise, mark the pixels it has to spare and return it's original size
+            toSpare.push(pixelSize - elementMinSize)
+            return pixelSize
+        })
+
+        // If nothing was adjusted, return the original sizes
+        if (excessPixels === 0) {
+            return sizesToTrim
+        }
+
+        return pixelSizes.map((pixelSize, i) => {
+            let newPixelSize = pixelSize
+
+            // While there's still pixels to take, and there's enough pixels to spare,
+            // take as many as possible up to the total excess pixels
+            if ((excessPixels > 0) && (toSpare[i] - excessPixels) > 0) {
+                const takenPixels = Math.min(excessPixels, (toSpare[i] - excessPixels))
+
+                // Subtract the amount taken for the next iteration
+                excessPixels -= takenPixels
+                newPixelSize = pixelSize - takenPixels
+            }
+
+            // Return the pixel size adjusted as a percentage
+            return (newPixelSize / parent[clientSize]) * 100
+        })
+    }
+
     // stopDragging is very similar to startDragging in reverse.
     function stopDragging () {
         const self = this
@@ -426,6 +486,9 @@ const Split = (idsOption, options = {}) => {
         // Determine the position of the mouse compared to the gutter
         self.dragOffset = getMousePosition(e) - self.end
     }
+
+    // adjust sizes to ensure percentage is within min size and gutter.
+    sizes = trimToMin(sizes)
 
     // 5. Create pair and element objects. Each pair has an index reference to
     // elements `a` and `b` of the pair (first and second elements).
@@ -543,13 +606,15 @@ const Split = (idsOption, options = {}) => {
     })
 
     function setSizes (newSizes) {
-        newSizes.forEach((newSize, i) => {
+        const trimmed = trimToMin(newSizes)
+        trimmed.forEach((newSize, i) => {
             if (i > 0) {
                 const pair = pairs[i - 1]
+
                 const a = elements[pair.a]
                 const b = elements[pair.b]
 
-                a.size = newSizes[i - 1]
+                a.size = trimmed[i - 1]
                 b.size = newSize
 
                 setElementSize(a.element, a.size, pair[aGutterSize])
