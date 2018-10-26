@@ -148,7 +148,7 @@ const Split = (idsOption, options = {}) => {
     // behavior will be whacky otherwise.
     const firstElement = elementOrSelector(ids[0])
     const parent = firstElement.parentNode
-    const parentFlexDirection = global.getComputedStyle(parent).flexDirection
+    const parentFlexDirection = getComputedStyle ? getComputedStyle(parent).flexDirection : null
 
     // Set default options.sizes to equal percentages of the parent element.
     let sizes = getOption(options, 'sizes') || ids.map(() => 100 / ids.length)
@@ -322,11 +322,34 @@ const Split = (idsOption, options = {}) => {
         this.end = aBounds[positionEnd]
     }
 
+    function innerSize (element) {
+        // Return nothing if getComputedStyle is not supported (< IE9)
+        if (!getComputedStyle) return null
+
+        const computedStyle = getComputedStyle(element)
+        let size = element[clientSize]
+
+        if (direction === HORIZONTAL) {
+            size -= parseFloat(computedStyle.paddingLeft) + parseFloat(computedStyle.paddingRight)
+        } else {
+            size -= parseFloat(computedStyle.paddingTop) + parseFloat(computedStyle.paddingBottom)
+        }
+
+        return size
+    }
+
     // When specifying percentage sizes that are less than the computed
     // size of the element minus the gutter, the lesser percentages must be increased
     // (and decreased from the other elements) to make space for the pixels
     // subtracted by the gutters.
     function trimToMin (sizesToTrim) {
+        // Try to get inner size of parent element.
+        // If it's no supported, return original sizes.
+        const parentSize = innerSize(parent)
+        if (parentSize === null) {
+            return sizesToTrim
+        }
+
         // Keep track of the excess pixels, the amount of pixels over the desired percentage
         // Also keep track of the elements with pixels to spare, to decrease after if needed
         let excessPixels = 0
@@ -334,7 +357,7 @@ const Split = (idsOption, options = {}) => {
 
         const pixelSizes = sizesToTrim.map((size, i) => {
             // Convert requested percentages to pixel sizes
-            const pixelSize = (parent[clientSize] * size) / 100
+            const pixelSize = (parentSize * size) / 100
             const elementGutterSize = getGutterSize(
                 gutterSize,
                 i === 0,
@@ -375,7 +398,7 @@ const Split = (idsOption, options = {}) => {
             }
 
             // Return the pixel size adjusted as a percentage
-            return (newPixelSize / parent[clientSize]) * 100
+            return (newPixelSize / parentSize) * 100
         })
     }
 
