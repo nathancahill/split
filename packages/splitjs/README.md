@@ -49,12 +49,6 @@ npm:
 $ npm install --save split.js
 ```
 
-Bower:
-
-```bash
-$ bower install --save Split.js
-```
-
 Include with a module bundler like [rollup](http://rollupjs.org/) or [webpack](https://webpack.github.io/):
 
 ```js
