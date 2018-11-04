@@ -1,12 +1,11 @@
 {
   "private": true,
-  "workspaces": [
-    "packages/*"
-  ],
+  "workspaces": ["packages/*"],
   "scripts": {
     "build": "lerna run build",
     "test": "lerna run test",
-    "lint": "lerna run lint"
+    "lint": "lerna run lint",
+    "browserstack": "lerna run browserstack-runner"
   },
   "version": "1.0.0",
   "main": "index.js",

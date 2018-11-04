@@ -1,6 +1,6 @@
 {
     "test_framework": "jasmine2",
-    "test_path": "test/SpecRunner.html",
+    "test_path": "SpecRunner.html",
     "browsers": [
         {
             "browser": "chrome",

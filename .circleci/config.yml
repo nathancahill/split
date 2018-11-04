@@ -26,3 +26,7 @@ jobs:
       - run: yarn run lint
       - run: yarn run build
       - run: yarn test
+
+      # run browserstack
+      - run: yarn add browserstack-runner
+      - run: yarn run browserstack

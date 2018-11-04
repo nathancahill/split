@@ -45,6 +45,5 @@ _or_
 $ yarn workspace split.js run test --browsers ChromeHeadless
 ```
 
-On the CI, [BrowserStack](http://browserstack.com/) provides cross-platform testing. Only
-the `master` branch supports BrowserStack testing, so other branches (PRs, etc)
-use headless Firefox and Chrome running in a Docker container.
+On the CI, [BrowserStack](http://browserstack.com/) provides cross-platform testing.
+Headless Firefox and Chrome are also tested via Docker container.

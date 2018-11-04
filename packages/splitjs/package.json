@@ -20,7 +20,8 @@
     "test": "karma start",
     "build": "rollup -c && npm run size",
     "watch": "rollup -cw",
-    "size": "echo \"gzip size: $(gzip-size --raw $npm_package_minified_main) bytes\""
+    "size": "echo \"gzip size: $(gzip-size --raw $npm_package_minified_main) bytes\"",
+    "browserstack": "BROWSERSTACK_JSON=test/browserstack.json browserstack-runner; BROWSERSTACK_JSON=test/ie8/browserstack.json browserstack-runner;"
   },
   "browserslist": [
     "Chrome >= 22",
