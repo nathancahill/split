@@ -5,7 +5,7 @@
     "build": "lerna run build",
     "test": "lerna run test",
     "lint": "lerna run lint",
-    "browserstack": "lerna run browserstack-runner"
+    "browserstack": "lerna run browserstack"
   },
   "version": "1.0.0",
   "main": "index.js",
