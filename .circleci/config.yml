@@ -28,5 +28,5 @@ jobs:
       - run: yarn test
 
       # run browserstack
-      - run: yarn add browserstack-runner
+      - run: yarn add -W browserstack-runner
       - run: yarn run browserstack
