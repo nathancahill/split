@@ -26,7 +26,6 @@ jobs:
       - run: yarn run lint
       - run: yarn run build
       - run: yarn test
-
-      # run browserstack
-      - run: yarn add -W browserstack-runner
-      - run: yarn run browserstack
+      # run browserstack - not working with IE
+      # - run: yarn add -W browserstack-runner
+      # - run: yarn run browserstack
