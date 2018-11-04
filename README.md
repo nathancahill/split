@@ -9,13 +9,13 @@
 
 Two utilities:
 
--   [Split.js](https://github.com/nathancahill/split/tree/master/packages/splitjs) - The original library, works with `float` and `flex` layouts. Supports all browsers.
--   [Split Grid](https://github.com/nathancahill/split/tree/master/packages/split-grid) - Successor to Split.js, for `grid` layouts. Supports modern browsers.
+-   **[Split.js](https://github.com/nathancahill/split/tree/master/packages/splitjs)** - The original library, works with `float` and `flex` layouts. Supports all browsers.
+-   **[Split Grid](https://github.com/nathancahill/split/tree/master/packages/split-grid)** - Successor to Split.js, for `grid` layouts. Supports modern browsers.
 
 Two React wrappers:
 
--   [React Split](https://github.com/nathancahill/split/tree/master/packages/react-split) - Thin wrapper component for Split.js.
--   [React Split Grid](https://github.com/nathancahill/split/tree/master/packages/react-split-grid) - Thin wrapper component for Split Grid.
+-   **[React Split](https://github.com/nathancahill/split/tree/master/packages/react-split)** - Thin wrapper component for Split.js.
+-   **[React Split Grid](https://github.com/nathancahill/split/tree/master/packages/react-split-grid)** - Thin wrapper component for Split Grid.
 
 ## Credits
 
