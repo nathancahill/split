@@ -1,4 +1,5 @@
 {
+    "exit_with_fail": true,
     "test_framework": "jasmine2",
     "test_path": "SpecRunner.html",
     "browsers": [
