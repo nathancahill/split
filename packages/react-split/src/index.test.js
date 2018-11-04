@@ -1,0 +1,3 @@
+/* eslint-env jest */
+
+test('', () => {})

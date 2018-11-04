@@ -1,0 +1,37 @@
+{
+  "name": "split.js",
+  "version": "1.5.7",
+  "description": "2kb unopinionated utility for resizeable split views",
+  "main": "dist/split.js",
+  "minified:main": "dist/split.min.js",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/nathancahill/Split.js.git"
+  },
+  "keywords": ["css", "split", "flexbox", "tiny", "split-layout"],
+  "author": "Nathan Cahill <nathan@nathancahill.com>",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/nathancahill/Split.js/issues"
+  },
+  "homepage": "https://split.js.org/",
+  "scripts": {
+    "lint": "eslint src",
+    "test": "karma start",
+    "build": "rollup -c && npm run size",
+    "watch": "rollup -cw",
+    "size": "echo \"gzip size: $(gzip-size --raw $npm_package_minified_main) bytes\""
+  },
+  "browserslist": [
+    "Chrome >= 22",
+    "Firefox >= 6",
+    "Opera >= 15",
+    "Safari >= 6.2",
+    "IE >= 9",
+    "IE 8"
+  ],
+  "collective": {
+    "type": "opencollective",
+    "url": "https://opencollective.com/splitjs"
+  }
+}

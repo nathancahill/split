@@ -1,0 +1,23 @@
+{
+  "name": "react-split",
+  "version": "2.0.1",
+  "description": "React component for Split.js",
+  "main": "dist/react-split.js",
+  "minified:main": "dist/react-split.min.js",
+  "scripts": {
+    "build": "rollup -c && npm run size",
+    "watch": "rollup -cw",
+    "test": "jest",
+    "lint": "eslint src",
+    "size": "echo \"gzip size: $(gzip-size --raw $npm_package_minified_main) bytes\""
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/nathancahill/react-split.git"
+  },
+  "license": "MIT",
+  "dependencies": {
+    "react": "^15.4.2",
+    "split.js": "^1.5.2"
+  }
+}

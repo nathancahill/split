@@ -1,0 +1,9 @@
+language: node_js
+node_js:
+  - "node"
+before_script:
+  - npm install -g browserstack-runner
+  - npm run build
+script:
+  - 'if [ "$TRAVIS_PULL_REQUEST" = "false" ]; then browserstack-runner; fi'
+  - 'if [ "$TRAVIS_PULL_REQUEST" = "false" ]; then BROWSERSTACK_JSON=test/ie8/browserstack.json; browserstack-runner; fi'
