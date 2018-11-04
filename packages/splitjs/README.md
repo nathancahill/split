@@ -1,5 +1,5 @@
 <p align="center">
-<img alt="Split.js" title="Split.js" src="https://cdn.rawgit.com/nathancahill/split/master/packages/splitjs/logo.svg" width="430">
+<img alt="Split.js" title="Split.js" src="https://unpkg.com/split.js@1.5.7/logo.svg" width="430">
 <br><br>
 <a href="https://travis-ci.org/nathancahill/Split.js"><img src="https://travis-ci.org/nathancahill/Split.js.svg" alt="Build Status"></a>
 <img src="https://img.badgesize.io/https://unpkg.com/split.js/split.min.js?compression=gzip&label=size&v=1.5.7" alt="File Size">
