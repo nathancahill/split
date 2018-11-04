@@ -1,0 +1,23 @@
+{
+  "name": "react-split-grid",
+  "version": "1.0.0",
+  "description": "React component for Split Grid",
+  "main": "dist/react-split-grid.js",
+  "minified:main": "dist/react-split-grid.min.js",
+  "scripts": {
+    "build": "rollup -c && npm run size",
+    "watch": "rollup -cw",
+    "test": "jest",
+    "lint": "eslint src",
+    "size": "echo \"gzip size: $(gzip-size --raw $npm_package_minified_main) bytes\""
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/nathancahill/react-split-grid.git"
+  },
+  "license": "MIT",
+  "dependencies": {
+    "react": "^15.4.2",
+    "split-grid": "^1.0.7"
+  }
+}

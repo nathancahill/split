@@ -1,60 +1,38 @@
 {
-  "name": "split.js",
-  "version": "1.5.7",
-  "description": "2kb unopinionated utility for resizeable split views",
-  "main": "split.js",
-  "minified:main": "split.min.js",
-  "repository": {
-    "type": "git",
-    "url": "git+https://github.com/nathancahill/Split.js.git"
-  },
-  "keywords": [
-    "css",
-    "split",
-    "flexbox",
-    "tiny",
-    "split-layout"
+  "private": true,
+  "workspaces": [
+    "packages/*"
   ],
-  "author": "Nathan Cahill <nathan@nathancahill.com>",
-  "license": "MIT",
-  "bugs": {
-    "url": "https://github.com/nathancahill/Split.js/issues"
-  },
-  "homepage": "https://split.js.org/",
-  "devDependencies": {
-    "buble": "^0.19",
-    "eslint": "^3.19.0",
-    "eslint-config-airbnb": "^14.0.0",
-    "eslint-plugin-compat": "^1.0.2",
-    "eslint-plugin-import": "^2.2.0",
-    "eslint-plugin-jsx-a11y": "^3.0.2",
-    "eslint-plugin-react": "^6.9.0",
-    "grunt": "1.0.1",
-    "grunt-cli": "1.2.0",
-    "grunt-contrib-jasmine": "1.1.0",
-    "gzip-size-cli": "^3.0.0",
-    "jasmine": "2.6.0",
-    "rollup": "^0.66",
-    "rollup-plugin-buble": "^0.19",
-    "rollup-plugin-uglify": "^6.0.0"
-  },
   "scripts": {
-    "lint": "eslint src",
-    "test": "npm run lint && npm run build && grunt jasmine",
-    "build": "rollup -c && npm run size",
-    "watch": "rollup -cw",
-    "size": "echo \"gzip size: $(gzip-size --raw $npm_package_minified_main) bytes\""
+    "build": "lerna run build",
+    "test": "lerna run test",
+    "lint": "lerna run lint"
   },
-  "browserslist": [
-    "Chrome >= 22",
-    "Firefox >= 6",
-    "Opera >= 15",
-    "Safari >= 6.2",
-    "IE >= 9",
-    "IE 8"
-  ],
-  "collective": {
-    "type": "opencollective",
-    "url": "https://opencollective.com/splitjs"
+  "version": "1.0.0",
+  "main": "index.js",
+  "license": "MIT",
+  "devDependencies": {
+    "@babel/core": "^7.1.2",
+    "@babel/preset-env": "^7.1.0",
+    "babel-core": "^7.0.0-bridge.0",
+    "babel-jest": "^23.6.0",
+    "eslint": "^5.8.0",
+    "eslint-config-airbnb": "^17.1.0",
+    "eslint-config-prettier": "^3.1.0",
+    "eslint-plugin-import": "^2.14.0",
+    "eslint-plugin-jsx-a11y": "^6.1.1",
+    "eslint-plugin-react": "^7.11.0",
+    "gzip-size-cli": "^3.0.0",
+    "jasmine-core": "2.6.4",
+    "jest": "^23.6.0",
+    "karma": "^3.1.1",
+    "karma-chrome-launcher": "^2.2.0",
+    "karma-firefox-launcher": "^1.1.0",
+    "karma-jasmine": "^1.1.2",
+    "lerna": "^3.4.3",
+    "prettier": "1.14.3",
+    "rollup": "^0.66.5",
+    "rollup-plugin-buble": "^0.19.4",
+    "rollup-plugin-uglify": "^6.0.0"
   }
 }
