@@ -1,6 +1,6 @@
 {
   "name": "split.js",
-  "version": "1.5.7",
+  "version": "1.5.9",
   "description": "2kb unopinionated utility for resizeable split views",
   "main": "dist/split.js",
   "minified:main": "dist/split.min.js",
@@ -17,6 +17,7 @@
     "size": "echo \"gzip size: $(gzip-size --raw $npm_package_minified_main) bytes\"",
     "saucelabs": "yarn run test --browsers sl_firefox_latest,sl_chrome_latest,sl_safari,sl_firefox,sl_chrome,sl_edge,sl_ie_11,sl_ie_10,sl_ie_9"
   },
+  "files": ["dist"],
   "browserslist": [
     "Chrome >= 22",
     "Firefox >= 6",
