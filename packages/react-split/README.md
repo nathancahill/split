@@ -1,5 +1,5 @@
 
-# React-Split &nbsp; ![](https://img.badgesize.io/https://unpkg.com/react-split/dist/react-split.min.js?compression=gzip&label=size)
+# React-Split &nbsp; [![CI](https://img.shields.io/circleci/project/github/nathancahill/split/master.svg)](https://circleci.com/gh/nathancahill/split) ![Dependencies](https://david-dm.org/nathancahill/split/status.svg) ![](https://img.badgesize.io/https://unpkg.com/react-split/dist/react-split.min.js?compression=gzip&label=size)
 
 React component for [Split.js](https://github.com/nathancahill/Split.js/)
 

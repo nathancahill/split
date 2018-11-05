@@ -1,5 +1,5 @@
 
-# Split Grid [![CI](https://img.shields.io/circleci/project/github/nathancahill/split-grid/master.svg)](https://circleci.com/gh/nathancahill/split-grid) [![File size](https://img.badgesize.io/https://unpkg.com/split-grid/dist/split-grid.min.js?compression=gzip&label=size&v=1.0.7)](https://unpkg.com/split-grid/dist/split-grid.min.js) [![NPM](https://badge.fury.io/js/split-grid.svg)](https://www.npmjs.com/package/split-grid) ![Dependencies](https://david-dm.org/nathancahill/split-grid/status.svg) [![Backers on Open Collective](https://opencollective.com/splitjs/backers/badge.svg)](https://opencollective.com/splitjs/) [![Sponsors on Open Collective](https://opencollective.com/splitjs/sponsors/badge.svg)](https://opencollective.com/splitjs/)
+# Split Grid [![CI](https://img.shields.io/circleci/project/github/nathancahill/split/master.svg)](https://circleci.com/gh/nathancahill/split) ![Dependencies](https://david-dm.org/nathancahill/split/status.svg) [![File size](https://img.badgesize.io/https://unpkg.com/split-grid/dist/split-grid.min.js?compression=gzip&label=size&v=1.0.7)](https://unpkg.com/split-grid/dist/split-grid.min.js)
 
 The spiritual successor of [Split.js](https://github.com/nathancahill/Split.js/), built for CSS Grid.
 
