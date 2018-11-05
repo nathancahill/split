@@ -348,10 +348,13 @@ const Split = (idsOption, options = {}) => {
 
     function innerSize(element) {
         // Return nothing if getComputedStyle is not supported (< IE9)
+        // Or if parent element has no layout yet
         if (!getComputedStyle) return null
 
         const computedStyle = getComputedStyle(element)
         let size = element[clientSize]
+
+        if (size === 0) return null
 
         if (direction === HORIZONTAL) {
             size -=
