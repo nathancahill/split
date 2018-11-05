@@ -16,7 +16,7 @@
 -   **Zero Deps**
 -   **Tiny:** Weights 2kb gzipped.
 -   **Fast:** No overhead or attached window event listeners, uses pure CSS for resizing.
--   **Unopinionated:** Plays nicely with `calc`, `flex` and `grid`.
+-   **Unopinionated:** Plays nicely with `float`, `flex` and other layouts.
 -   **Compatible:** Works great in IE9, and _even loads in IE8_ with polyfills. Early Firefox/Chrome/Safari/Opera supported too.
 
 ## Table of Contents
@@ -266,7 +266,8 @@ A vertical split style would look like this:
 }
 ```
 
-Use this function if you're using a different layout like flexbox or grid (see [Flexbox](#flexbox)). A flexbox style for a horizontal split would look like this:
+You might use this function if you're using a different layout like flex (see [Flex Layout](#flex-layout)).
+Flex styles for a horizontal split could return an object like this:
 
 ```js
 {
