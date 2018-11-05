@@ -1,11 +1,13 @@
 {
   "private": true,
-  "workspaces": ["packages/*"],
+  "workspaces": [
+    "packages/*"
+  ],
   "scripts": {
     "build": "lerna run build",
     "test": "lerna run test",
     "lint": "lerna run lint",
-    "browserstack": "lerna run browserstack"
+    "saucelabs": "lerna run saucelabs"
   },
   "version": "1.0.0",
   "main": "index.js",
@@ -28,6 +30,7 @@
     "karma-chrome-launcher": "^2.2.0",
     "karma-firefox-launcher": "^1.1.0",
     "karma-jasmine": "^1.1.2",
+    "karma-sauce-launcher": "^1.2.0",
     "lerna": "^3.4.3",
     "prettier": "1.14.3",
     "rollup": "^0.66.5",

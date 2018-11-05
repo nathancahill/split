@@ -154,17 +154,11 @@ describe('Split', function() {
         split.collapse(0)
 
         expect(this.a.getBoundingClientRect().width).toBeCloseTo(100, 0)
-        expect(this.b.getBoundingClientRect().width).toBeCloseTo(
-            800 - 100 - 10,
-            0,
-        )
+        expect(this.b.getBoundingClientRect().width).toBeCloseTo(800 - 100 - 10, 0)
 
         split.collapse(1)
 
-        expect(this.a.getBoundingClientRect().width).toBeCloseTo(
-            800 - 100 - 10,
-            0,
-        )
+        expect(this.a.getBoundingClientRect().width).toBeCloseTo(800 - 100 - 10, 0)
         expect(this.b.getBoundingClientRect().width).toBeCloseTo(100, 0)
     })
 

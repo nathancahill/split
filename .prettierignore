@@ -1,2 +1,3 @@
 dist/
 *.d.ts
+*.spec.js
