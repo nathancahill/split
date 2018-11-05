@@ -11,13 +11,17 @@
     "lint": "eslint src",
     "size": "echo \"gzip size: $(gzip-size --raw $npm_package_minified_main) bytes\""
   },
-  "repository": {
-    "type": "git",
-    "url": "git+https://github.com/nathancahill/react-split-grid.git"
-  },
+  "repository": "https://github.com/nathancahill/split",
+  "author": "Nathan Cahill <nathan@nathancahill.com>",
+  "homepage": "https://split.js.org/",
+  "files": ["dist"],
   "license": "MIT",
   "dependencies": {
     "react": "^15.4.2",
     "split-grid": "^1.0.7"
+  },
+  "collective": {
+    "type": "opencollective",
+    "url": "https://opencollective.com/splitjs"
   }
 }

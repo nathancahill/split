@@ -11,12 +11,9 @@
     "lint": "eslint src",
     "size": "echo \"gzip size: $(gzip-size --raw $npm_package_minified_main) bytes\""
   },
-  "repository": "https://github.com/nathancahill/split-grid",
+  "repository": "https://github.com/nathancahill/split",
   "author": "Nathan Cahill <nathan@nathancahill.com>",
   "homepage": "https://split.js.org/",
-  "bugs": {
-    "url": "https://github.com/nathancahill/Split.js/issues"
-  },
   "files": ["dist"],
   "license": "MIT",
   "collective": {

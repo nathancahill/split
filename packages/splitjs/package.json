@@ -4,16 +4,10 @@
   "description": "2kb unopinionated utility for resizeable split views",
   "main": "dist/split.js",
   "minified:main": "dist/split.min.js",
-  "repository": {
-    "type": "git",
-    "url": "git+https://github.com/nathancahill/Split.js.git"
-  },
+  "repository": "https://github.com/nathancahill/split",
   "keywords": ["css", "split", "flexbox", "tiny", "split-layout"],
   "author": "Nathan Cahill <nathan@nathancahill.com>",
   "license": "MIT",
-  "bugs": {
-    "url": "https://github.com/nathancahill/Split.js/issues"
-  },
   "homepage": "https://split.js.org/",
   "scripts": {
     "lint": "eslint src",
