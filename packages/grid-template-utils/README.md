@@ -56,7 +56,7 @@ import { parse, combine, getSizeAtTrack } from 'grid-template-utils'
     },
 ]
 
-> combine('1fr 10px 1fr', { 1: { value: '20px' } })
+> combine('1fr 10px 1fr', [,{ value: '20px' }])
 '1fr 20px 1fr'
 
 
