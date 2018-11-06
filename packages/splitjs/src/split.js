@@ -381,6 +381,10 @@ const Split = (idsOption, options = {}) => {
             return sizesToTrim
         }
 
+        if (minSizes.reduce((a, b) => a + b, 0) > parentSize) {
+            return sizesToTrim
+        }
+
         // Keep track of the excess pixels, the amount of pixels over the desired percentage
         // Also keep track of the elements with pixels to spare, to decrease after if needed
         let excessPixels = 0

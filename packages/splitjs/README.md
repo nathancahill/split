@@ -62,7 +62,7 @@ var Split = require('split.js')
 The [UMD](https://github.com/umdjs/umd) build is also available on [unpkg](http://unpkg.com/):
 
 ```html
-<script src="https://unpkg.com/split.js/split.min.js"></script>
+<script src="https://unpkg.com/split.js/dist/split.min.js"></script>
 ```
 
 You can find the library on `window.Split`.
