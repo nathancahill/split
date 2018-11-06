@@ -7,7 +7,7 @@ export default [
     {
         input: './src/index.js',
         output: {
-            name: 'Split',
+            name: 'GridTemplateUtils',
             file: pkg.main,
             format: 'umd',
             sourcemap: false,
@@ -26,7 +26,7 @@ export default [
     {
         input: './src/index.js',
         output: {
-            name: 'Split',
+            name: 'GridTemplateUtils',
             file: pkg['minified:main'],
             format: 'umd',
             sourcemap: true,
