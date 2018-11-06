@@ -38,23 +38,23 @@ You can find the library on `window.GridTemplateUtils`.
 import { parse, combine, getSizeAtTrack } from 'grid-template-utils'
 
 > parse('1fr 10px 1fr')
-{
-  0: {
-    value: '1fr',
-    type: 'fr',
-    numeric: 1,
-  },
-  1: {
-    value: '10px',
-    type: 'px',
-    numeric: 10,
-  },
-  2: {
-    value: '1fr',
-    type: 'fr',
-    numeric: 1,
-  },
-}
+[
+    {
+        value: '1fr',
+        type: 'fr',
+        numeric: 1,
+    },
+    {
+        value: '10px',
+        type: 'px',
+        numeric: 10,
+    },
+    {
+        value: '1fr',
+        type: 'fr',
+        numeric: 1,
+    },
+]
 
 > combine('1fr 10px 1fr', { 1: { value: '20px' } })
 '1fr 20px 1fr'
