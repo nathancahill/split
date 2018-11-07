@@ -6,18 +6,25 @@ const pkg = require('./package.json')
 export default [
     {
         input: './src/index.js',
-        output: {
-            name: 'ReactSplit',
-            file: pkg.main,
-            format: 'umd',
-            sourcemap: false,
-            banner: `/*! ${pkg.name} - v${pkg.version} */\n`,
-            globals: {
-                react: 'React',
-                'prop-types': 'PropTypes',
-                'split.js': 'Split',
+        output: [
+            {
+                name: 'ReactSplit',
+                file: pkg.main,
+                format: 'umd',
+                sourcemap: false,
+                banner: `/*! ${pkg.name} - v${pkg.version} */\n`,
+                globals: {
+                    react: 'React',
+                    'prop-types': 'PropTypes',
+                    'split.js': 'Split',
+                },
             },
-        },
+            {
+                file: pkg.module,
+                format: 'esm',
+                sourcemap: false,
+            },
+        ],
         external: ['split.js', 'react', 'prop-types'],
         plugins: [
             buble({

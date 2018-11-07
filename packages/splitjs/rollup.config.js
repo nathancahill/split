@@ -14,7 +14,14 @@ const output = {
 export default [
     {
         input: 'src/split.js',
-        output,
+        output: [
+            output,
+            {
+                file: pkg.module,
+                format: 'esm',
+                sourcemap: false,
+            },
+        ],
         plugins: [buble()],
     },
     {

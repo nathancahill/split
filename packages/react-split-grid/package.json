@@ -4,6 +4,7 @@
   "description": "React component for Split Grid",
   "main": "dist/react-split-grid.js",
   "minified:main": "dist/react-split-grid.min.js",
+  "module": "dist/react-split-grid.es.js",
   "scripts": {
     "build": "rollup -c && npm run size",
     "watch": "rollup -cw",
