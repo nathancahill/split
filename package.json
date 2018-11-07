@@ -1,8 +1,6 @@
 {
   "private": true,
-  "workspaces": [
-    "packages/*"
-  ],
+  "workspaces": ["packages/*"],
   "scripts": {
     "build": "lerna run build",
     "test": "lerna run test",
@@ -35,6 +33,7 @@
     "prettier": "1.14.3",
     "rollup": "^0.66.5",
     "rollup-plugin-buble": "^0.19.4",
+    "rollup-plugin-node-resolve": "^3.4.0",
     "rollup-plugin-uglify": "^6.0.0"
   }
 }
