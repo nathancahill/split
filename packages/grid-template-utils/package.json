@@ -4,6 +4,7 @@
     "description": "Utility functions for working with grid templates",
     "main": "dist/grid-template-utils.js",
     "minified:main": "dist/grid-template-utils.min.js",
+    "module": "dist/grid-template-utils.es.js",
     "scripts": {
         "build": "rollup -c && npm run size",
         "watch": "rollup -cw",
