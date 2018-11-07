@@ -1,6 +1,6 @@
 {
   "name": "react-split-grid",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "React component for Split Grid",
   "main": "dist/react-split-grid.js",
   "minified:main": "dist/react-split-grid.min.js",
