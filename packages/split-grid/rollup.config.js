@@ -6,13 +6,20 @@ const pkg = require('./package.json')
 export default [
     {
         input: './src/index.js',
-        output: {
-            name: 'Split',
-            file: pkg.main,
-            format: 'umd',
-            sourcemap: false,
-            banner: `/*! ${pkg.name} - v${pkg.version} */\n`,
-        },
+        output: [
+            {
+                name: 'Split',
+                file: pkg.main,
+                format: 'umd',
+                sourcemap: false,
+                banner: `/*! ${pkg.name} - v${pkg.version} */\n`,
+            },
+            {
+                file: pkg.module,
+                format: 'esm',
+                sourcemap: false,
+            },
+        ],
         plugins: [
             buble({
                 exclude: 'node_modules/**',
