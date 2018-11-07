@@ -3,7 +3,7 @@
 > Unopinionated utilities for resizeable split views.
 
 -   **Zero Deps**
--   **Tiny:** Weight between 1-2kb gzipped.
+-   **Tiny:** Each is between 1-2kb gzipped.
 -   **Fast:** No overhead or attached window event listeners, uses pure CSS for resizing.
 -   **Unopinionated:** Only compute view sizes. Everything else is up to you.
 
