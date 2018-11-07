@@ -1,41 +1,9 @@
-import {
-    getStyles,
-    getTrackValues,
-    getComputedValues,
-    getGapValue,
-    getTypeFromTrackValue,
-    getSizeAtTrack,
-    firstNonZero,
-} from './gridUtil'
+import { parse, getSizeAtTrack } from 'grid-template-utils'
+import { getStyles, getGapValue, firstNonZero } from './util'
+import getMatchedCSSRules from './getMatchedCSSRules'
 
 const gridTemplatePropColumns = 'grid-template-columns'
 const gridTemplatePropRows = 'grid-template-rows'
-
-const getMatchedCSSRules = el =>
-    []
-        .concat(
-            ...Array.from(el.ownerDocument.styleSheets).map(s => {
-                let rules = []
-
-                try {
-                    rules = Array.from(s.cssRules || [])
-                } catch (e) {
-                    // Ignore results on security error
-                }
-
-                return rules
-            }),
-        )
-        .filter(r => {
-            let matches = false
-            try {
-                matches = el.matches(r.selectorText)
-            } catch (e) {
-                // Ignore matching erros
-            }
-
-            return matches
-        })
 
 const NOOP = () => false
 
@@ -154,7 +122,7 @@ class Gutter {
     }
 
     getSizeOfTrack(track) {
-        return this.computedPixels[track]
+        return this.computedPixels[track].numeric
     }
 
     getRawTracks() {
@@ -193,16 +161,12 @@ class Gutter {
 
     setTracks(raw) {
         this.tracks = raw.split(' ')
-        this.trackTypes = this.tracks.reduce((accum, value, i) => {
-            // eslint-disable-next-line no-param-reassign
-            accum[i] = getTypeFromTrackValue(value)
-            return accum
-        }, {})
+        this.trackValues = parse(raw)
     }
 
     setComputedTracks(raw) {
         this.computedTracks = raw.split(' ')
-        this.computedPixels = getComputedValues(this.computedTracks)
+        this.computedPixels = parse(raw)
     }
 
     setGap(raw) {
@@ -234,30 +198,34 @@ class Gutter {
         }
 
         this.getDimensions()
-        this.setComputedTracks(this.getRawComputedTracks())
         this.setTracks(this.getRawTracks())
+        this.setComputedTracks(this.getRawComputedTracks())
         this.setGap(this.getGap())
         this.setComputedGap(this.getRawComputedGap())
 
-        const trackPercentage = getTrackValues('%', this.tracks)
-        const trackFr = getTrackValues('fr', this.tracks)
+        const trackPercentage = this.trackValues.filter(
+            track => track.type === '%',
+        )
+        const trackFr = this.trackValues.filter(track => track.type === 'fr')
 
-        this.totalFrs = Object.keys(trackFr).length
+        this.totalFrs = trackFr.length
 
         if (this.totalFrs) {
             const track = firstNonZero(trackFr)
 
-            if (track !== undefined) {
-                this.frToPixels = this.computedPixels[track] / trackFr[track]
+            if (track !== null) {
+                this.frToPixels =
+                    this.computedPixels[track].numeric / trackFr[track].numeric
             }
         }
 
-        if (Object.keys(trackPercentage).length) {
+        if (trackPercentage.length) {
             const track = firstNonZero(trackPercentage)
 
-            if (track !== undefined) {
+            if (track !== null) {
                 this.percentageToPixels =
-                    this.computedPixels[track] / trackPercentage[track]
+                    this.computedPixels[track].numeric /
+                    trackPercentage[track].numeric
             }
         }
 
@@ -391,30 +359,30 @@ class Gutter {
             bTrackSize = this.minSizeEnd
         }
 
-        if (this.trackTypes[this.aTrack] === 'px') {
+        if (this.trackValues[this.aTrack].type === 'px') {
             this.tracks[this.aTrack] = `${aTrackSize}px`
-        } else if (this.trackTypes[this.aTrack] === 'fr') {
+        } else if (this.trackValues[this.aTrack].type === 'fr') {
             if (this.totalFrs === 1) {
                 this.tracks[this.aTrack] = '1fr'
             } else {
                 const targetFr = aTrackSize / this.frToPixels
                 this.tracks[this.aTrack] = `${targetFr}fr`
             }
-        } else if (this.trackTypes[this.aTrack] === '%') {
+        } else if (this.trackValues[this.aTrack].type === '%') {
             const targetPercentage = aTrackSize / this.percentageToPixels
             this.tracks[this.aTrack] = `${targetPercentage}%`
         }
 
-        if (this.trackTypes[this.bTrack] === 'px') {
+        if (this.trackValues[this.bTrack].type === 'px') {
             this.tracks[this.bTrack] = `${bTrackSize}px`
-        } else if (this.trackTypes[this.bTrack] === 'fr') {
+        } else if (this.trackValues[this.bTrack].type === 'fr') {
             if (this.totalFrs === 1) {
                 this.tracks[this.bTrack] = '1fr'
             } else {
                 const targetFr = bTrackSize / this.frToPixels
                 this.tracks[this.bTrack] = `${targetFr}fr`
             }
-        } else if (this.trackTypes[this.bTrack] === '%') {
+        } else if (this.trackValues[this.bTrack].type === '%') {
             const targetPercentage = bTrackSize / this.percentageToPixels
             this.tracks[this.bTrack] = `${targetPercentage}%`
         }
@@ -535,14 +503,14 @@ class Grid {
             ...options,
         }
 
-        options.columnGutters.forEach(gutterOptions => {
+        defaultOptions.columnGutters.forEach(gutterOptions => {
             this.columnGutters[options.track] = createGutter(
                 'column',
                 defaultOptions,
             )(gutterOptions)
         })
 
-        options.rowGutters.forEach(gutterOptions => {
+        defaultOptions.rowGutters.forEach(gutterOptions => {
             this.rowGutters[options.track] = createGutter(
                 'row',
                 defaultOptions,

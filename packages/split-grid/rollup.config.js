@@ -1,3 +1,4 @@
+import resolve from 'rollup-plugin-node-resolve'
 import buble from 'rollup-plugin-buble'
 import { uglify } from 'rollup-plugin-uglify'
 
@@ -21,6 +22,7 @@ export default [
             },
         ],
         plugins: [
+            resolve(),
             buble({
                 exclude: 'node_modules/**',
                 objectAssign: 'Object.assign',
@@ -40,6 +42,7 @@ export default [
             banner: `/*! ${pkg.name} - v${pkg.version} */\n`,
         },
         plugins: [
+            resolve(),
             buble({
                 exclude: 'node_modules/**',
                 objectAssign: 'Object.assign',
