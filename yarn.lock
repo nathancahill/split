@@ -6666,7 +6666,7 @@ react-dom@^16.6.1:
     prop-types "^15.6.2"
     scheduler "^0.11.0"
 
-"react@>=15.4.2 || >= 16.0.0", react@^16.6.1:
+react@^16.6.1:
   version "16.6.1"
   resolved "https://registry.yarnpkg.com/react/-/react-16.6.1.tgz#ee2aef4f0a09e494594882029821049772f915fe"
   integrity sha512-OtawJThYlvRgm9BXK+xTL7BIlDx8vv21j+fbQDjRRUyok6y7NyjlweGorielTahLZHYIdKUoK2Dp9ByVWuMqxw==

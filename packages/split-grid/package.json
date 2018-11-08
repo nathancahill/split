@@ -1,6 +1,6 @@
 {
   "name": "split-grid",
-  "version": "1.0.8",
+  "version": "1.0.9",
   "description": "The spiritual successor of Split.js, built for CSS Grid",
   "main": "dist/split-grid.js",
   "minified:main": "dist/split-grid.min.js",

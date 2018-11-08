@@ -1,6 +1,6 @@
 {
   "name": "react-split-grid",
-  "version": "1.0.1",
+  "version": "1.0.2",
   "description": "React component for Split Grid",
   "main": "dist/react-split-grid.js",
   "minified:main": "dist/react-split-grid.min.js",
@@ -19,8 +19,10 @@
   "license": "MIT",
   "dependencies": {
     "prop-types": "^15.5.7",
-    "react": ">=15.4.2 || >= 16.0.0",
-    "split-grid": "^1.0.8"
+    "split-grid": "^1.0.9"
+  },
+  "peerDependencies": {
+    "react": ">=15.4.2 || >= 16.0.0"
   },
   "collective": {
     "type": "opencollective",

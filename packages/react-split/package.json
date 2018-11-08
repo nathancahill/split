@@ -1,6 +1,6 @@
 {
   "name": "react-split",
-  "version": "2.0.2",
+  "version": "2.0.3",
   "description": "React component for Split.js",
   "main": "dist/react-split.js",
   "minified:main": "dist/react-split.min.js",
@@ -19,8 +19,10 @@
   "license": "MIT",
   "dependencies": {
     "prop-types": "^15.5.7",
-    "react": ">=15.4.2 || >= 16.0.0",
     "split.js": "^1.5.9"
+  },
+  "peerDependencies": {
+    "react": ">=15.4.2 || >= 16.0.0"
   },
   "collective": {
     "type": "opencollective",

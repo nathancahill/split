@@ -31,6 +31,7 @@
     "karma-sauce-launcher": "^1.2.0",
     "lerna": "^3.4.3",
     "prettier": "1.14.3",
+    "react": "^16.6.1",
     "rollup": "^0.66.5",
     "rollup-plugin-buble": "^0.19.4",
     "rollup-plugin-node-resolve": "^3.4.0",
