@@ -458,7 +458,9 @@ const createGutter = (direction, options) => gutterOptions => {
     }
 
     const trackMinSizes =
-        direction === 'column' ? options.columnMinSizes : options.rowMinSizes
+        direction === 'column'
+            ? options.columnMinSizes || {}
+            : options.rowMinSizes || {}
     const trackMinSize = direction === 'column' ? 'columnMinSize' : 'rowMinSize'
 
     return new Gutter(
@@ -490,12 +492,10 @@ const createGutter = (direction, options) => gutterOptions => {
 
 class Grid {
     constructor(options) {
-        this.options = options
-
         this.columnGutters = {}
         this.rowGutters = {}
 
-        const defaultOptions = {
+        this.options = {
             columnGutters: options.columnGutters || [],
             rowGutters: options.rowGutters || [],
             columnMinSizes: options.columnMinSizes || {},
@@ -503,18 +503,17 @@ class Grid {
             ...options,
         }
 
-        defaultOptions.columnGutters.forEach(gutterOptions => {
+        this.options.columnGutters.forEach(gutterOptions => {
             this.columnGutters[options.track] = createGutter(
                 'column',
-                defaultOptions,
+                this.options,
             )(gutterOptions)
         })
 
-        defaultOptions.rowGutters.forEach(gutterOptions => {
-            this.rowGutters[options.track] = createGutter(
-                'row',
-                defaultOptions,
-            )(gutterOptions)
+        this.options.rowGutters.forEach(gutterOptions => {
+            this.rowGutters[options.track] = createGutter('row', this.options)(
+                gutterOptions,
+            )
         })
     }
 

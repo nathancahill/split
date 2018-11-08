@@ -16,6 +16,7 @@ export default [
                 globals: {
                     react: 'React',
                     'split-grid': 'Split',
+                    'prop-types': 'PropTypes',
                 },
             },
             {
@@ -24,7 +25,7 @@ export default [
                 sourcemap: false,
             },
         ],
-        external: ['split-grid', 'react'],
+        external: ['split-grid', 'react', 'prop-types'],
         plugins: [
             buble({
                 exclude: 'node_modules/**',
@@ -46,9 +47,10 @@ export default [
             globals: {
                 react: 'React',
                 'split-grid': 'Split',
+                'prop-types': 'PropTypes',
             },
         },
-        external: ['split-grid', 'react'],
+        external: ['split-grid', 'react', 'prop-types'],
         plugins: [
             buble({
                 exclude: 'node_modules/**',

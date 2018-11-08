@@ -1,4 +1,5 @@
 import React from 'react'
+import PropTypes from 'prop-types'
 import Split from 'split.js'
 
 class SplitWrapper extends React.Component {
@@ -135,6 +136,49 @@ class SplitWrapper extends React.Component {
             </div>
         )
     }
+}
+
+SplitWrapper.propTypes = {
+    sizes: PropTypes.arrayOf(PropTypes.number),
+    minSize: PropTypes.oneOfType([
+        PropTypes.number,
+        PropTypes.arrayOf(PropTypes.number),
+    ]),
+    expandToMin: PropTypes.bool,
+    gutterSize: PropTypes.number,
+    gutterAlign: PropTypes.string,
+    snapOffset: PropTypes.number,
+    dragInterval: PropTypes.number,
+    direction: PropTypes.string,
+    cursor: PropTypes.string,
+    gutter: PropTypes.func,
+    elementStyle: PropTypes.func,
+    gutterStyle: PropTypes.func,
+    onDrag: PropTypes.func,
+    onDragStart: PropTypes.func,
+    onDragEnd: PropTypes.func,
+    collapsed: PropTypes.bool,
+    children: PropTypes.element,
+}
+
+SplitWrapper.defaultProps = {
+    sizes: undefined,
+    minSize: undefined,
+    expandToMin: undefined,
+    gutterSize: undefined,
+    gutterAlign: undefined,
+    snapOffset: undefined,
+    dragInterval: undefined,
+    direction: undefined,
+    cursor: undefined,
+    gutter: undefined,
+    elementStyle: undefined,
+    gutterStyle: undefined,
+    onDrag: undefined,
+    onDragStart: undefined,
+    onDragEnd: undefined,
+    collapsed: undefined,
+    children: undefined,
 }
 
 export default SplitWrapper

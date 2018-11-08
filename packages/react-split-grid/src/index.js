@@ -93,12 +93,18 @@ class ReactSplitGrid extends React.Component {
         const state = {}
         let needsSetState = false
 
-        if (nextProps.gridTemplateColumns !== prevState.gridTemplateColumns) {
+        if (
+            nextProps.gridTemplateColumns &&
+            nextProps.gridTemplateColumns !== prevState.gridTemplateColumns
+        ) {
             state.gridTemplateColumns = nextProps.gridTemplateColumns
             needsSetState = true
         }
 
-        if (nextProps.gridTemplateRows !== prevState.prevGridTemplateRows) {
+        if (
+            nextProps.gridTemplateRows &&
+            nextProps.gridTemplateRows !== prevState.prevGridTemplateRows
+        ) {
             state.gridTemplateRows = nextProps.gridTemplateRows
             needsSetState = true
         }
@@ -171,14 +177,14 @@ class ReactSplitGrid extends React.Component {
         return component
             ? React.createElement(component, props)
             : render
-                ? render(props)
-                : children
-                    ? typeof children === 'function'
-                        ? children(props)
-                        : !(React.Children.count(children) === 0)
-                            ? React.Chidren.only(children)
-                            : null
-                    : null
+            ? render(props)
+            : children
+            ? typeof children === 'function'
+                ? children(props)
+                : !(React.Children.count(children) === 0)
+                ? React.Chidren.only(children)
+                : null
+            : null
     }
 }
 
@@ -194,14 +200,14 @@ ReactSplitGrid.propTypes = {
 }
 
 ReactSplitGrid.defaultProps = {
-    component: null,
-    render: null,
-    children: null,
-    gridTemplateColumns: null,
-    gridTemplateRows: null,
-    columnMinSizes: null,
-    rowMinSizes: null,
-    onDrag: null,
+    component: undefined,
+    render: undefined,
+    children: undefined,
+    gridTemplateColumns: undefined,
+    gridTemplateRows: undefined,
+    columnMinSizes: undefined,
+    rowMinSizes: undefined,
+    onDrag: undefined,
 }
 
 export default ReactSplitGrid
