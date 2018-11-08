@@ -521,9 +521,9 @@ Overflow can be handled as well, to get scrolling within the elements:
 
 This library uses [CSS calc()](https://developer.mozilla.org/en-US/docs/Web/CSS/calc#AutoCompatibilityTable), [CSS box-sizing](https://developer.mozilla.org/en-US/docs/Web/CSS/box-sizing#AutoCompatibilityTable) and [JS getBoundingClientRect()](https://developer.mozilla.org/en-US/docs/Web/API/Element/getBoundingClientRect#AutoCompatibilityTable). These features are supported in the following browsers:
 
-| <img src="http://i.imgur.com/dJC1GUv.png" width="48px" height="48px" alt="Chrome logo"> | <img src="http://i.imgur.com/o1m5RcQ.png" width="48px" height="48px" alt="Firefox logo"> | <img src="http://i.imgur.com/8h3iz5H.png" width="48px" height="48px" alt="Internet Explorer logo"> | <img src="http://i.imgur.com/iQV4nmJ.png" width="48px" height="48px" alt="Opera logo"> | <img src="http://i.imgur.com/j3tgNKJ.png" width="48px" height="48px" alt="Safari logo"> | [<img src="http://i.imgur.com/70as3qf.png" height="48px" alt="BrowserStack logo">](http://browserstack.com/) |
-| :-------------------------------------------------------------------------------------: | :--------------------------------------------------------------------------------------: | :------------------------------------------------------------------------------------------------: | :------------------------------------------------------------------------------------: | :-------------------------------------------------------------------------------------: | :----------------------------------------------------------------------------------------------------------- |
-|                                          22+ ✔                                          |                                           6+ ✔                                           |                                                9+ ✔                                                |                                         15+ ✔                                          |                                         6.2+ ✔                                          | Sponsored ✔                                                                                                  |
+| <img src="http://i.imgur.com/dJC1GUv.png" width="48px" height="48px" alt="Chrome logo"> | <img src="http://i.imgur.com/o1m5RcQ.png" width="48px" height="48px" alt="Firefox logo"> | <img src="http://i.imgur.com/8h3iz5H.png" width="48px" height="48px" alt="Internet Explorer logo"> | <img src="http://i.imgur.com/iQV4nmJ.png" width="48px" height="48px" alt="Opera logo"> | <img src="http://i.imgur.com/j3tgNKJ.png" width="48px" height="48px" alt="Safari logo"> | [<img src="saucelabs.svg" height="48px" alt="Sauce Labs">](https://saucelabs.com) |
+| :-------------------------------------------------------------------------------------: | :--------------------------------------------------------------------------------------: | :------------------------------------------------------------------------------------------------: | :------------------------------------------------------------------------------------: | :-------------------------------------------------------------------------------------: | :-------------------------------------------------------------------------------- |
+|                                          22+ ✔                                          |                                           6+ ✔                                           |                                                9+ ✔                                                |                                         15+ ✔                                          |                                         6.2+ ✔                                          | Sponsored ✔                                                                       |
 
 Gracefully falls back in IE 8 and below to only setting the initial widths/heights and not allowing dragging. IE 8 requires polyfills for `Array.isArray()`, `Array.forEach`, `Array.map`, `Array.filter`, `Object.keys()` and `getComputedStyle`. This script from [Polyfill.io](https://polyfill.io/) includes all of these, adding 1.91 kb to the gzipped size.
 
@@ -533,7 +533,7 @@ This is **ONLY NEEDED** if you are supporting **IE8:**
 <script src="///polyfill.io/v2/polyfill.min.js?features=Array.isArray,Array.prototype.forEach,Array.prototype.map,Object.keys,Array.prototype.filter,getComputedStyle"></script>
 ```
 
-This project's tests are run on multiple desktop and mobile browsers sponsored by [BrowserStack](http://browserstack.com/).
+Cross-browser Testing Platform and Open Source <3 Provided by [Sauce Labs](https://saucelabs.com).
 
 ## Credits
 
@@ -551,6 +551,8 @@ Thank you to all our backers! 🙏 [[Become a backer](https://opencollective.com
 ### Sponsors
 
 Support this project by becoming a sponsor. Your logo will show up here with a link to your website. [[Become a sponsor](https://opencollective.com/splitjs#sponsor)]
+
+![Sauce Labs](saucelabs.svg)
 
 <a href="https://opencollective.com/splitjs/sponsor/0/website" target="_blank"><img src="https://opencollective.com/splitjs/sponsor/0/avatar.svg"></a>
 <a href="https://opencollective.com/splitjs/sponsor/1/website" target="_blank"><img src="https://opencollective.com/splitjs/sponsor/1/avatar.svg"></a>
