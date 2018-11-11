@@ -59,11 +59,13 @@ import Split from 'split.js'
 var Split = require('split.js')
 ```
 
-The [UMD](https://github.com/umdjs/umd) build is also available on [unpkg](http://unpkg.com/) or [cdnjs](https://cdnjs.com/):
+The [UMD](https://github.com/umdjs/umd) build is also available on [unpkg](http://unpkg.com/):
 
 ```html
 <script src="https://unpkg.com/split.js/dist/split.min.js"></script>
 ```
+
+or [cdnjs](https://cdnjs.com/):
 
 ```html
 <script src="https://cdnjs.cloudflare.com/ajax/libs/split.js/1.5.9/split.min.js"></script>
