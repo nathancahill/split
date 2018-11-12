@@ -25,7 +25,6 @@ class Gutter {
         this.direction = direction
         this.element = options.element
         this.track = options.track
-        this.trackTypes = {}
 
         if (direction === 'column') {
             this.gridTemplateProp = gridTemplatePropColumns
