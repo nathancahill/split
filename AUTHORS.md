@@ -31,3 +31,4 @@
 -   Chi Wang @patr0nus
 -   Adrian Jones @adrianbj
 -   Bradley Kemp @bradleyjkemp
+-   André Victor @av1ctor
