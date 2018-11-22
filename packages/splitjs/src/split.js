@@ -152,9 +152,8 @@ const Split = (idsOption, options = {}) => {
     // behavior will be whacky otherwise.
     const firstElement = elementOrSelector(ids[0])
     const parent = firstElement.parentNode
-    const parentFlexDirection = getComputedStyle
-        ? getComputedStyle(parent).flexDirection
-        : null
+    const parentStyle = getComputedStyle ? getComputedStyle(parent) : null
+    const parentFlexDirection = parentStyle ? parentStyle.flexDirection : null
 
     // Set default options.sizes to equal percentages of the parent element.
     let sizes = getOption(options, 'sizes') || ids.map(() => 100 / ids.length)
@@ -352,6 +351,9 @@ const Split = (idsOption, options = {}) => {
         if (!getComputedStyle) return null
 
         const computedStyle = getComputedStyle(element)
+
+        if (!computedStyle) return null
+
         let size = element[clientSize]
 
         if (size === 0) return null
