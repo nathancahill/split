@@ -269,8 +269,10 @@ class Gutter {
         this.grid.style.pointerEvents = 'none'
 
         // Set the cursor at multiple levels
-        this.grid.style.cursor = this.cursor
-        window.document.body.style.cursor = this.cursor
+        this.css = document.createElement("style");
+        this.css.type = "text/css";
+        this.css.innerHTML = "* {cursor:" + this.cursor + " !important}";
+        window.document.body.appendChild(this.css);
 
         this.onDragStart(this.direction, this.track)
     }
@@ -406,11 +408,9 @@ class Gutter {
             this.grid.style.webkitUserSelect = ''
             this.grid.style.MozUserSelect = ''
             this.grid.style.pointerEvents = ''
-
-            this.grid.style.cursor = ''
         }
 
-        window.document.body.style.cursor = ''
+        window.document.body.removeChild(this.css);
     }
 
     destroy(immediate = true, cb) {
