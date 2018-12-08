@@ -271,7 +271,7 @@ class Gutter {
         // Set the cursor at multiple levels
         this.css = document.createElement("style");
         this.css.type = "text/css";
-        this.css.innerHTML = "* {cursor:" + this.cursor + " !important}";
+        this.css.innerHTML = `* {cursor: ${this.cursor} !important}`;
         window.document.body.appendChild(this.css);
 
         this.onDragStart(this.direction, this.track)
