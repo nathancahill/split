@@ -658,6 +658,7 @@ const Split = (idsOption, options = {}) => {
                 i === ids.length - 1,
                 gutterAlign,
             ),
+            i,
         )
 
         // After the first iteration, and we have a pair object, append it to the
@@ -707,8 +708,8 @@ const Split = (idsOption, options = {}) => {
                 a.size = trimmed[i - 1]
                 b.size = newSize
 
-                setElementSize(a.element, a.size, pair[aGutterSize])
-                setElementSize(b.element, b.size, pair[bGutterSize])
+                setElementSize(a.element, a.size, pair[aGutterSize], a.i)
+                setElementSize(b.element, b.size, pair[bGutterSize], b.i)
             }
         })
     }
