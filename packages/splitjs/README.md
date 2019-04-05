@@ -146,7 +146,7 @@ the first element will always load at at least `300px`, even if `25%` were small
 Split(['#one', '#two'], {
     sizes: [25, 75],
     minSize: [300, 100],
-    expanedToMin: true,
+    expandToMin: true,
 })
 ```
 
