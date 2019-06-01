@@ -1,5 +1,5 @@
 <p align="center">
-<img alt="Split.js" title="Split.js" src="logo.svg" width="430">
+<img alt="Split.js" title="Split.js" src="https://rawcdn.githack.com/nathancahill/split/df1873f0c74d2da60f42e1774040651d6191b9bb/packages/splitjs/logo.svg?sanitize=true" width="430">
 <br><br>
 <a href="https://circleci.com/gh/nathancahill/split"><img src="https://img.shields.io/circleci/project/github/nathancahill/split/master.svg" alt="Build Status"></a>
 <img src="https://img.badgesize.io/https://unpkg.com/split.js/dist/split.min.js?compression=gzip&label=size&v=1.5.10" alt="File Size">
