@@ -1,6 +1,6 @@
 {
   "name": "split.js",
-  "version": "1.5.10",
+  "version": "1.5.11",
   "description": "2kb unopinionated utility for resizeable split views",
   "main": "dist/split.js",
   "minified:main": "dist/split.min.js",
@@ -13,6 +13,7 @@
   "scripts": {
     "lint": "eslint src",
     "test": "karma start",
+    "prepublish": "rollup -c",
     "build": "rollup -c && npm run size",
     "watch": "rollup -cw",
     "size": "echo \"gzip size: $(gzip-size --raw $npm_package_minified_main) bytes\"",
