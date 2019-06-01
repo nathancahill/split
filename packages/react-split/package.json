@@ -1,11 +1,12 @@
 {
   "name": "react-split",
-  "version": "2.0.4",
+  "version": "2.0.5",
   "description": "React component for Split.js",
   "main": "dist/react-split.js",
   "minified:main": "dist/react-split.min.js",
   "module": "dist/react-split.es.js",
   "scripts": {
+    "prepublish": "rollup -c",
     "build": "rollup -c && npm run size",
     "watch": "rollup -cw",
     "test": "jest",
