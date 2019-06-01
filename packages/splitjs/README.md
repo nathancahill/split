@@ -222,13 +222,13 @@ Split(['#one', '#two'], {
 Optional function called to create each gutter element. The signature looks like this:
 
 ```js
-;(index, direction, pairElement) => HTMLElement
+(index, direction, pairElement) => HTMLElement
 ```
 
 Defaults to creating a `div` with `class="gutter gutter-horizontal"` or `class="gutter gutter-vertical"`, depending on the direction. The default gutter function looks like this:
 
 ```js
-;(index, direction) => {
+(index, direction) => {
     const gutter = document.createElement('div')
     gutter.className = `gutter gutter-${direction}`
     return gutter
@@ -243,7 +243,7 @@ An additional argument, `pairElement`, is passed to the gutter function: this is
 This final argument makes it easy to return the gutter that has already been created, for example, if `split.destroy()` was called with the option to preserve the gutters.
 
 ```js
-;(index, direction, pairElement) => pairElement.previousSibling
+(index, direction, pairElement) => pairElement.previousSibling
 ```
 
 #### elementStyle
@@ -251,7 +251,7 @@ This final argument makes it easy to return the gutter that has already been cre
 Optional function called setting the CSS style of the elements. The signature looks like this:
 
 ```js
-;(dimension, elementSize, gutterSize, index) => Object
+(dimension, elementSize, gutterSize, index) => Object
 ```
 
 Dimension will be a string, `'width'` or `'height'`, and can be used in the return style. `elementSize` is the target percentage value of the element, and `gutterSize` is the target pixel value of the gutter.
@@ -286,7 +286,7 @@ Flex styles for a horizontal split could return an object like this:
 Optional function called when setting the CSS style of the gutters. The signature looks like this:
 
 ```js
-;(dimension, gutterSize, index) => Object
+(dimension, gutterSize, index) => Object
 ```
 
 Dimension is a string, either `'width'` or `'height'`, and `gutterSize` is a pixel value representing the width of the gutter.
