@@ -157,7 +157,7 @@ SplitWrapper.propTypes = {
     onDrag: PropTypes.func,
     onDragStart: PropTypes.func,
     onDragEnd: PropTypes.func,
-    collapsed: PropTypes.bool,
+    collapsed: PropTypes.number,
     children: PropTypes.arrayOf(PropTypes.element),
 }
 
