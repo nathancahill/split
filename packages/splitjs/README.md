@@ -27,7 +27,7 @@
 -   [Options](#options)
 -   [Examples](#usage-examples)
 -   [Saving State](#saving-state)
--   [Flexbox](#flexbox)
+-   [Flexbox](#flex-layout)
 -   [API](#api)
 -   [CSS](#css)
 -   [React](#react)
