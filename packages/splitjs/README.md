@@ -523,6 +523,10 @@ Overflow can be handled as well, to get scrolling within the elements:
 }
 ```
 
+## React
+
+**[React Split](https://github.com/nathancahill/split/tree/master/packages/react-split)** - Thin wrapper component for Split.js.
+
 ## Browser Support
 
 This library uses [CSS calc()](https://developer.mozilla.org/en-US/docs/Web/CSS/calc#AutoCompatibilityTable), [CSS box-sizing](https://developer.mozilla.org/en-US/docs/Web/CSS/box-sizing#AutoCompatibilityTable) and [JS getBoundingClientRect()](https://developer.mozilla.org/en-US/docs/Web/API/Element/getBoundingClientRect#AutoCompatibilityTable). These features are supported in the following browsers:
