@@ -1,4 +1,4 @@
-# React-Split &nbsp; [![CI](https://img.shields.io/circleci/project/github/nathancahill/split/master.svg)](https://circleci.com/gh/nathancahill/split) ![Dependencies](https://david-dm.org/nathancahill/split/status.svg) ![](https://img.badgesize.io/https://unpkg.com/react-split/dist/react-split.min.js?compression=gzip&label=size&v=2.0.4)
+# React-Split &nbsp; [![CI](https://img.shields.io/circleci/project/github/nathancahill/split/master.svg)](https://circleci.com/gh/nathancahill/split) ![Dependencies](https://david-dm.org/nathancahill/split/status.svg) ![](https://img.badgesize.io/https://unpkg.com/react-split/dist/react-split.min.js?compression=gzip&label=size&v=2.0.5)
 
 React component for [Split.js](https://github.com/nathancahill/Split.js/)
 
@@ -37,7 +37,7 @@ You can find the library on `window.ReactSplit`.
 ## Usage
 
 The `<Split />` component wraps multiple children components to create a resizeable split view. The component is a
-light wraper around the [Split.js](https://github.com/nathancahill/Split.js/) library and accepts (mostly) the same options.
+light wrapper around the [Split.js](https://github.com/nathancahill/Split.js/) library and accepts (mostly) the same options.
 
 ```js
 import Split from 'react-split'
@@ -48,13 +48,102 @@ import Split from 'react-split'
 </Split>
 ```
 
-## Documentation
+## Reference
 
-Refer to [Split.js documentation](https://github.com/nathancahill/Split.js/#documentation) for the options the component accepts as props. The differences are noted below:
+### `<Split>`
 
-A few props are exempt from updating. These props are functions, given the difficulty of comparing function objects,
-these props will not trigger a `componentDidUpdate`.
-Follow React best practices, and do not create functions in the render method. Instead, create them once and pass them as props.
+Creates a Split instance and a `<div>` wrapper around the children components.
+All additional props are passed through to the to the `<div>` component.
+
+### Example
+
+```js
+import Split from 'react-split'
+
+<Split
+    sizes={[25, 75]}
+    minSize={100}
+    expandToMin={false}
+    gutterSize={10}
+    gutterAlign="center"
+    snapOffset={30}
+    dragInterval={1}
+    direction="horizontal"
+    cursor="col-resize"
+>
+    <ComponentA />
+    <ComponentB />
+</Split>
+```
+
+### Props
+
+#### `sizes`
+
+`sizes?: [number]` - [Docs](https://github.com/nathancahill/split/tree/master/packages/splitjs#sizes)
+
+#### `minSize`
+
+`minSize?: number | [number]` - [Docs](https://github.com/nathancahill/split/tree/master/packages/splitjs#minsize-default-100)
+
+#### `expandToMin`
+
+`expandToMin?: boolean` - [Docs](https://github.com/nathancahill/split/tree/master/packages/splitjs#expandtomin-default-false)
+
+#### `gutterSize`
+
+`gutterSize?: number` - [Docs](https://github.com/nathancahill/split/tree/master/packages/splitjs#guttersize-default-10)
+
+#### `gutterAlign`
+
+`gutterAlign?: 'center' | 'start' | 'end'` - [Docs](https://github.com/nathancahill/split/tree/master/packages/splitjs#gutteralign-default-center)
+
+#### `snapOffset`
+
+`snapOffset?: number` - [Docs](https://github.com/nathancahill/split/tree/master/packages/splitjs#snapoffset-default-30)
+
+#### `dragInterval`
+
+`dragInterval?: number` - [Docs](https://github.com/nathancahill/split/tree/master/packages/splitjs#draginterval-default-1)
+
+#### `direction`
+
+`direction?: 'horizontal' | 'vertical'` - [Docs](https://github.com/nathancahill/split/tree/master/packages/splitjs#direction-default-horizontal)
+
+#### `cursor`
+
+`cursor?: string` - [Docs](https://github.com/nathancahill/split/tree/master/packages/splitjs#cursor-default-col-resize)
+
+#### `gutter`
+
+`gutter?: (index, direction, pairElement) => HTMLElement` - [Docs](https://github.com/nathancahill/split/tree/master/packages/splitjs#gutter)
+
+#### `elementStyle`
+
+`elementStyle?: (dimension, elementSize, gutterSize, index) => Object` - [Docs](https://github.com/nathancahill/split/tree/master/packages/splitjs#elementstyle)
+
+#### `gutterStyle`
+
+`gutterStyle?: (dimension, gutterSize, index) => Object` - [Docs](https://github.com/nathancahill/split/tree/master/packages/splitjs#gutterstyle)
+
+#### `onDrag`
+
+`onDrag?: sizes => void` - [Docs](https://github.com/nathancahill/split/tree/master/packages/splitjs#ondrag-ondragstart-ondragend)
+
+#### `onDragStart`
+
+`onDragStart?: sizes => void` - [Docs](https://github.com/nathancahill/split/tree/master/packages/splitjs#ondrag-ondragstart-ondragend)
+
+#### `onDragEnd`
+
+`onDragEnd?: sizes => void` - [Docs](https://github.com/nathancahill/split/tree/master/packages/splitjs#ondrag-ondragstart-ondragend)
+
+## Migrating from Split.js
+
+Refer to [Split.js documentation](https://github.com/nathancahill/split/tree/master/packages/splitjs#documentation) for the options the component accepts as props. The differences are noted below:
+
+A few props are exempt from updating. These props are functions, these props will not trigger a `componentDidUpdate`.
+Following React best practices, and do not create functions in the render method. Instead, create them once and pass them as props.
 
 -   `gutter`
 -   `elementStyle`
@@ -72,7 +161,7 @@ Follow React best practices, and do not create functions in the render method. I
 
 ## License
 
-Copyright (c) 2018 Nathan Cahill
+Copyright (c) 2019 Nathan Cahill
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal

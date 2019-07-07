@@ -1,7 +1,7 @@
 
 # Split Grid [![CI](https://img.shields.io/circleci/project/github/nathancahill/split/master.svg)](https://circleci.com/gh/nathancahill/split) ![Dependencies](https://david-dm.org/nathancahill/split/status.svg) [![File size](https://img.badgesize.io/https://unpkg.com/split-grid/dist/split-grid.min.js?compression=gzip&label=size&v=1.0.7)](https://unpkg.com/split-grid/dist/split-grid.min.js)
 
-The spiritual successor of [Split.js](https://github.com/nathancahill/Split.js/), built for CSS Grid.
+The spiritual successor of [Split.js](https://github.com/nathancahill/split/tree/master/packages/splitjs), built for CSS Grid.
 
  - __Zero Deps__
  - __Tiny:__ Weights 2kb gzipped.
@@ -367,7 +367,7 @@ before removing event listeners.
 
 ## License
 
-Copyright (c) 2018 Nathan Cahill
+Copyright (c) 2019 Nathan Cahill
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal

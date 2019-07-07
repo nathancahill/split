@@ -214,7 +214,7 @@ class Wrapper extends React.Component {
 
 ## License
 
-Copyright (c) 2018 Nathan Cahill
+Copyright (c) 2019 Nathan Cahill
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
