@@ -1,6 +1,6 @@
 # React Split Grid &nbsp; [![CI](https://img.shields.io/circleci/project/github/nathancahill/split/master.svg)](https://circleci.com/gh/nathancahill/split) ![Dependencies](https://david-dm.org/nathancahill/split/status.svg) ![](https://img.badgesize.io/https://unpkg.com/react-split-grid/dist/react-split-grid.min.js?compression=gzip&label=size)
 
-React component for [Split Grid](https://github.com/nathancahill/split-grid/)
+React component for [Split Grid](https://github.com/nathancahill/split/tree/master/packages/split-grid)
 
 ## Installation
 
@@ -36,7 +36,7 @@ You can find the library on `window.ReactSplitGrid`.
 
 ## `<Split />`
 
-`<Split>` is a light component wrapper around the [Split Grid](https://github.com/nathancahill/split-grid/) library.
+`<Split>` is a light component wrapper around the [Split Grid](https://github.com/nathancahill/split/tree/master/packages/split-grid) library.
 It uses the render prop pattern, but also supports calling the `children` prop or
 the `component` prop.
 
@@ -75,7 +75,7 @@ All three render methods will be passed the same props:
 
 ### Props
 
-Refer to [Split Grid documentation](https://github.com/nathancahill/split-grid/#reference) for the options the component accepts as props.
+Refer to [Split Grid documentation](https://github.com/nathancahill/split/tree/master/packages/split-grid#reference) for the options the component accepts as props.
 
 Here's the full list:
 
