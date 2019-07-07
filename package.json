@@ -30,7 +30,7 @@
     "karma-chrome-launcher": "^2.2.0",
     "karma-firefox-launcher": "^1.1.0",
     "karma-jasmine": "^1.1.2",
-    "karma-sauce-launcher": "^1.2.0",
+    "karma-sauce-launcher": "^2.0.2",
     "lerna": "^3.15.0",
     "prettier": "1.14.3",
     "react": "^16.6.1",
