@@ -75,7 +75,7 @@ class SplitWrapper extends React.Component {
                 ),
                 options,
             )
-        } else {
+        } else if (sizes) {
             // If only the size has changed, set the size. No need to do this if re-created.
             let sizeChanged = false
 
