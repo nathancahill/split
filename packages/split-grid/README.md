@@ -274,11 +274,19 @@ Split(options) // gutters created implicitly
 ```
 
 __Split Grid__
+
+Gutters are part of the grid layout:
+
 ```html
 <div class="grid">
-    <div class="column-1"></div>
-    <div class="column-2"></div>
-    <div class="row-1"></div>
+    <div>Column One</div>
+    <div class="gutter-column-1"></div>
+    <div>Column Two</div>
+    <div class="gutter-column-3"></div>
+    <div>Column Three</div>
+    <div>Row One</div>
+    <div class="gutter-row-1"></div>
+    <div>Row Two</div>
 </div>
 ```
 
@@ -286,14 +294,14 @@ __Split Grid__
 Split({ // gutters specified in options
     columnGutters: [{
         track: 1,
-        element: document.querySelector('.column-1'),
+        element: document.querySelector('.gutter-column-1'),
     }, {
         track: 3,
-        element: document.querySelector('.column-3'),
+        element: document.querySelector('.gutter-column-3'),
     }],
     rowGutters: [{
         track: 1,
-        element: document.querySelector('.row-1'),
+        element: document.querySelector('.gutter-row-1'),
     }]
 })
 ```
@@ -315,13 +323,13 @@ Split({
 __Split Grid__
 
 ```html
-<div style="grid-template-columns: 50% 50%"></div>
+<div style="grid-template-columns: 1fr 10px 1fr"></div>
 ```
 
 _or_
 
 ```js
-> document.querySelector('.grid').style['grid-template-columns'] = '50% 50%'
+> document.querySelector('.grid').style['grid-template-columns'] = '1fr 10px 1fr'
 ```
 
 #### `split.getSizes()` is replaced by CSS values
@@ -339,7 +347,7 @@ __Split Grid__
 
 ```js
 > document.querySelector('.grid').style['grid-template-columns']
-"50% 50%"
+"1fr 10px 1fr"
 ```
 
 #### `split.setSizes()` is replaced by CSS values
@@ -355,7 +363,7 @@ __Split.js__
 __Split Grid__
 
 ```js
-> document.querySelector('.grid').style['grid-template-columns'] = '50% 50%'
+> document.querySelector('.grid').style['grid-template-columns'] = '1fr 10px 1fr'
 ```
 
 #### `split.destroy()` has different parameters in Split Grid
