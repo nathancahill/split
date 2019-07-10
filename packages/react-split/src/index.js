@@ -65,7 +65,7 @@ class SplitWrapper extends React.Component {
         // Destroy and re-create split if options changed
         if (needsRecreate) {
             options.minSize = minSize
-            options.sizes = sizes
+            options.sizes = sizes || this.split.getSizes()
             this.split.destroy(true, true)
             options.gutter = (index, direction, pairB) => pairB.previousSibling
             this.split = Split(
