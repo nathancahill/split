@@ -1,6 +1,6 @@
 const numeric = (value, unit) => Number(value.slice(0, -1 * unit.length))
 
-const parseValue = value => {
+const parseValue = (value, element) => {
     if (value.endsWith('px'))
         return { value, type: 'px', numeric: numeric(value, 'px') }
     if (value.endsWith('fr'))
@@ -8,10 +8,12 @@ const parseValue = value => {
     if (value.endsWith('%'))
         return { value, type: '%', numeric: numeric(value, '%') }
     if (value === 'auto') return { value, type: 'auto' }
+    if (value.startsWith('var(') && element)
+        return parseValue(getComputedStyle(element).getPropertyValue(value.slice(4, -1)))
     return null
 }
 
-export const parse = rule => rule.split(' ').map(parseValue)
+export const parse = (rule, element) => rule.split(' ').map((v)=>{ return parseValue(v, element) })
 
 export const combine = (rule, tracks) => {
     const prevTracks = rule ? rule.split(' ') : []
