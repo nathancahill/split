@@ -2,7 +2,7 @@
 
 ## Developing
 
-The tooling is [Yarn](https://yarnpkg.com/), [Lerna](https://lernajs.io/),
+The tooling is [Yarn](https://yarnpkg.com/), [Lerna](https://lerna.js.org/),
 [Prettier](https://prettier.io/) and [Eslint](https://eslint.org/). To get started:
 
 ```bash
