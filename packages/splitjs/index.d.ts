@@ -1,4 +1,4 @@
-// Type definitions for split.js 1.3
+// Type definitions for split.js 1.4
 // Project: https://github.com/nathancahill/Split.js
 // Definitions by: Ilia Choly <https://github.com/icholy>
 // Definitions: https://github.com/DefinitelyTyped/DefinitelyTyped
@@ -45,13 +45,13 @@ declare namespace Split {
     cursor?: 'col-resize' | 'row-resize';
 
     // Callback on drag.
-    onDrag?(): void;
+    onDrag?(sizes: number[]): void;
 
     // Callback on drag start.
-    onDragStart?(): void;
+    onDragStart?(sizes: number[]): void;
 
     // Callback on drag end.
-    onDragEnd?(): void;
+    onDragEnd?(sizes: number[]): void;
 
     // Called to create each gutter element
     gutter?(
