@@ -2,7 +2,7 @@
   "name": "split.js",
   "version": "1.5.11",
   "description": "2kb unopinionated utility for resizeable split views",
-  "main": "dist/split.js",  
+  "main": "dist/split.js",
   "minified:main": "dist/split.min.js",
   "typings": "index.d.ts",
   "module": "dist/split.es.js",
