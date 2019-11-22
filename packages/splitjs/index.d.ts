@@ -42,7 +42,7 @@ declare namespace Split {
     direction?: 'horizontal' | 'vertical';
 
     // Cursor to display while dragging.
-    cursor?: 'col-resize' | 'row-resize';
+    cursor?: string;
 
     // Callback on drag.
     onDrag?(): void;
