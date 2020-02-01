@@ -503,14 +503,14 @@ class Grid {
         }
 
         this.options.columnGutters.forEach(gutterOptions => {
-            this.columnGutters[options.track] = createGutter(
+            this.columnGutters[gutterOptions.track] = createGutter(
                 'column',
                 this.options,
             )(gutterOptions)
         })
 
         this.options.rowGutters.forEach(gutterOptions => {
-            this.rowGutters[options.track] = createGutter('row', this.options)(
+            this.rowGutters[gutterOptions.track] = createGutter('row', this.options)(
                 gutterOptions,
             )
         })
