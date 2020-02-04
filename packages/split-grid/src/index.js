@@ -160,12 +160,12 @@ class Gutter {
 
     setTracks(raw) {
         this.tracks = raw.split(' ')
-        this.trackValues = parse(raw)
+        this.trackValues = parse(raw, this.element)
     }
 
     setComputedTracks(raw) {
         this.computedTracks = raw.split(' ')
-        this.computedPixels = parse(raw)
+        this.computedPixels = parse(raw, this.element)
     }
 
     setGap(raw) {
