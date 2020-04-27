@@ -17,6 +17,7 @@ export default [
                     react: 'React',
                     'prop-types': 'PropTypes',
                     'split.js': 'Split',
+                    'lodash.isequal': 'lodash.isequal',
                 },
             },
             {
@@ -25,7 +26,7 @@ export default [
                 sourcemap: false,
             },
         ],
-        external: ['split.js', 'react', 'prop-types'],
+        external: ['split.js', 'react', 'prop-types', 'lodash.isequal'],
         plugins: [
             buble({
                 exclude: 'node_modules/**',
@@ -48,9 +49,10 @@ export default [
                 react: 'React',
                 'prop-types': 'PropTypes',
                 'split.js': 'Split',
+                'lodash.isequal': 'lodash.isequal',
             },
         },
-        external: ['split.js', 'react', 'prop-types'],
+        external: ['split.js', 'react', 'prop-types', 'lodash.isequal'],
         plugins: [
             buble({
                 exclude: 'node_modules/**',

@@ -1,7 +1,7 @@
 import React from 'react'
 import PropTypes from 'prop-types'
 import Split from 'split.js'
-import xor from 'lodash.xor'
+import equal from 'lodash.isequal'
 
 class SplitWrapper extends React.Component {
     componentDidMount() {
@@ -20,7 +20,9 @@ class SplitWrapper extends React.Component {
             collapsed: prevCollapsed,
             children: prevChildren,
         } = prevProps
-        const sizesLengthChanged = xor(children, prevChildren).length !== 0
+
+        const childrenChanged =
+            sizes.length !== prevSizes.length || !equal(children, prevChildren)
 
         const otherProps = [
             'expandToMin',
@@ -35,7 +37,7 @@ class SplitWrapper extends React.Component {
         let needsRecreate = otherProps
             // eslint-disable-next-line react/destructuring-assignment
             .map(prop => this.props[prop] !== prevProps[prop])
-            .reduce((accum, same) => accum || same, sizesLengthChanged)
+            .reduce((accum, same) => accum || same, childrenChanged)
 
         // Compare minSize when both are arrays, when one is an array and when neither is an array
         if (Array.isArray(minSize) && Array.isArray(prevMinSize)) {
@@ -54,7 +56,7 @@ class SplitWrapper extends React.Component {
 
         // Destroy and re-create split if options changed
         if (needsRecreate) {
-            if (sizesLengthChanged) {
+            if (childrenChanged) {
                 options.sizes = sizes
             } else {
                 options.sizes = this.split.getSizes()
@@ -62,7 +64,7 @@ class SplitWrapper extends React.Component {
                     pairB.previousSibling
             }
             options.minSize = minSize
-            this.split.destroy(true, !sizesLengthChanged)
+            this.split.destroy(true, !childrenChanged)
             this.split = Split(
                 Array.from(this.parent.children).filter(
                     // eslint-disable-next-line no-underscore-dangle
