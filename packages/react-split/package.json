@@ -19,6 +19,7 @@
   "files": ["dist"],
   "license": "MIT",
   "dependencies": {
+    "lodash.isequal": "^4.5.0",
     "prop-types": "^15.5.7",
     "split.js": "^1.5.9"
   },
