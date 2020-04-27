@@ -22,7 +22,8 @@ class SplitWrapper extends React.Component {
         } = prevProps
 
         const childrenChanged =
-            sizes.length !== prevSizes.length || !equal(children, prevChildren)
+            (sizes && prevSizes && sizes.length !== prevSizes.length) ||
+            !equal(children, prevChildren)
 
         const otherProps = [
             'expandToMin',
