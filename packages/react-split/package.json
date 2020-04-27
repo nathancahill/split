@@ -16,9 +16,7 @@
   "repository": "https://github.com/nathancahill/split",
   "author": "Nathan Cahill <nathan@nathancahill.com>",
   "homepage": "https://split.js.org/",
-  "files": [
-    "dist"
-  ],
+  "files": ["dist"],
   "license": "MIT",
   "dependencies": {
     "lodash.isequal": "^4.5.0",
