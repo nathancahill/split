@@ -2,7 +2,7 @@
 // maintainable code, while at the same time manually optimizing for tiny minified file size,
 // browser compatibility without additional requirements, graceful fallback (IE8 is supported)
 // and very few assumptions about the user's page layout.
-const global = window
+const global = typeof window !== 'undefined' ? window : {}
 const { document } = global
 
 // Save a couple long function names that are used frequently.
@@ -18,7 +18,7 @@ const NOOP = () => false
 
 // Figure out if we're in IE8 or not. IE8 will still render correctly,
 // but will be static instead of draggable.
-const isIE8 = global.attachEvent && !global[addEventListener]
+const isIE8 = global && global.attachEvent && !global[addEventListener]
 
 // Helper function determines which prefixes of CSS calc we need.
 // We only need to do this once on startup, when this anonymous function is called.
@@ -27,10 +27,13 @@ const isIE8 = global.attachEvent && !global[addEventListener]
 // http://stackoverflow.com/questions/16625140/js-feature-detection-to-detect-the-usage-of-webkit-calc-over-calc/16625167#16625167
 const calc = `${['', '-webkit-', '-moz-', '-o-']
     .filter(prefix => {
-        const el = document.createElement('div')
-        el.style.cssText = `width:${prefix}calc(9px)`
+        if (document) {
+            const el = document.createElement('div')
+            el.style.cssText = `width:${prefix}calc(9px)`
 
-        return !!el.style.length
+            return !!el.style.length
+        }
+        return false
     })
     .shift()}calc`
 
@@ -42,11 +45,14 @@ const isString = v => typeof v === 'string' || v instanceof String
 // do `Split([elem1, elem2])` as well as `Split(['#id1', '#id2'])`.
 const elementOrSelector = el => {
     if (isString(el)) {
-        const ele = document.querySelector(el)
-        if (!ele) {
-            throw new Error(`Selector ${el} did not match a DOM element`)
+        if (document) {
+            const ele = document.querySelector(el)
+            if (!ele) {
+                throw new Error(`Selector ${el} did not match a DOM element`)
+            }
+            return ele
         }
-        return ele
+        return null
     }
 
     return el
@@ -83,9 +89,12 @@ const getGutterSize = (gutterSize, isFirst, isLast, gutterAlign) => {
 
 // Default options
 const defaultGutterFn = (i, gutterDirection) => {
-    const gut = document.createElement('div')
-    gut.className = `gutter gutter-${gutterDirection}`
-    return gut
+    if (document) {
+        const gut = document.createElement('div')
+        gut.className = `gutter gutter-${gutterDirection}`
+        return gut
+    }
+    return null
 }
 
 const defaultElementStyleFn = (dim, size, gutSize) => {
@@ -454,12 +463,14 @@ const Split = (idsOption, options = {}) => {
 
         self.dragging = false
 
-        // Remove the stored event listeners. This is why we store them.
-        global[removeEventListener]('mouseup', self.stop)
-        global[removeEventListener]('touchend', self.stop)
-        global[removeEventListener]('touchcancel', self.stop)
-        global[removeEventListener]('mousemove', self.move)
-        global[removeEventListener]('touchmove', self.move)
+        if (global) {
+            // Remove the stored event listeners. This is why we store them.
+            global[removeEventListener]('mouseup', self.stop)
+            global[removeEventListener]('touchend', self.stop)
+            global[removeEventListener]('touchcancel', self.stop)
+            global[removeEventListener]('mousemove', self.move)
+            global[removeEventListener]('touchmove', self.move)
+        }
 
         // Clear bound function references
         self.stop = null
@@ -482,7 +493,9 @@ const Split = (idsOption, options = {}) => {
 
         self.gutter.style.cursor = ''
         self.parent.style.cursor = ''
-        document.body.style.cursor = ''
+        if (document) {
+            document.body.style.cursor = ''
+        }
     }
 
     // startDragging calls `calculateSizes` to store the inital size in the pair object.
@@ -515,12 +528,14 @@ const Split = (idsOption, options = {}) => {
         self.move = drag.bind(self)
         self.stop = stopDragging.bind(self)
 
-        // All the binding. `window` gets the stop events in case we drag out of the elements.
-        global[addEventListener]('mouseup', self.stop)
-        global[addEventListener]('touchend', self.stop)
-        global[addEventListener]('touchcancel', self.stop)
-        global[addEventListener]('mousemove', self.move)
-        global[addEventListener]('touchmove', self.move)
+        if (global) {
+            // All the binding. `window` gets the stop events in case we drag out of the elements.
+            global[addEventListener]('mouseup', self.stop)
+            global[addEventListener]('touchend', self.stop)
+            global[addEventListener]('touchcancel', self.stop)
+            global[addEventListener]('mousemove', self.move)
+            global[addEventListener]('touchmove', self.move)
+        }
 
         // Disable selection. Disable!
         a[addEventListener]('selectstart', NOOP)
@@ -541,7 +556,9 @@ const Split = (idsOption, options = {}) => {
         // Set the cursor at multiple levels
         self.gutter.style.cursor = cursor
         self.parent.style.cursor = cursor
-        document.body.style.cursor = cursor
+        if (document) {
+            document.body.style.cursor = cursor
+        }
 
         // Cache the initial sizes of the pair.
         calculateSizes.call(self)
