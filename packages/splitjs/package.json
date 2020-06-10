@@ -22,7 +22,7 @@
         "build": "rollup -c && npm run size",
         "watch": "rollup -cw",
         "size": "echo \"gzip size: $(gzip-size --raw $npm_package_minified_main) bytes\"",
-        "saucelabs": "yarn run test --browsers sl_firefox_latest,sl_chrome_latest,sl_safari,sl_firefox,sl_chrome,sl_edge,sl_ie_11,sl_ie_10,sl_ie_9"
+        "saucelabs": "yarn run test --browsers sl_firefox_latest,sl_chrome_latest,sl_safari,sl_edge,sl_ie_11,sl_ie_10"
     },
     "files": [
         "dist"
