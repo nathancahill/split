@@ -1,5 +1,5 @@
-import buble from 'rollup-plugin-buble'
-import { uglify } from 'rollup-plugin-uglify'
+import buble from '@rollup/plugin-buble'
+import { terser } from 'rollup-plugin-terser'
 
 const pkg = require('./package.json')
 
@@ -31,13 +31,6 @@ export default [
             sourcemap: true,
             file: pkg['minified:main'],
         },
-        plugins: [
-            buble(),
-            uglify({
-                output: {
-                    comments: /^!/,
-                },
-            }),
-        ],
+        plugins: [buble(), terser()],
     },
 ]

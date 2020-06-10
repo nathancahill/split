@@ -4,7 +4,7 @@
     "description": "The spiritual successor of Split.js, built for CSS Grid",
     "main": "dist/split-grid.js",
     "minified:main": "dist/split-grid.min.js",
-    "module": "dist/split-grid.es.js",
+    "module": "dist/split-grid.mjs",
     "scripts": {
         "build": "rollup -c && npm run size",
         "watch": "rollup -cw",
