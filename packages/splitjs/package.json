@@ -5,6 +5,7 @@
     "main": "dist/split.js",
     "minified:main": "dist/split.min.js",
     "module": "dist/split.mjs",
+    "types": "index.d.ts",
     "repository": "https://github.com/nathancahill/split",
     "keywords": [
         "css",
@@ -25,6 +26,7 @@
         "saucelabs": "yarn run test --browsers sl_firefox_latest,sl_chrome_latest,sl_safari,sl_edge,sl_ie_11,sl_ie_10"
     },
     "files": [
+        "index.d.ts",
         "dist"
     ],
     "browserslist": [
