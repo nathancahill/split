@@ -21,20 +21,6 @@ module.exports = config => {
                 version: 'latest',
             },
 
-            // earliest firefox, chrome
-            sl_firefox: {
-                base: 'SauceLabs',
-                browserName: 'firefox',
-                platform: 'Windows 10',
-                version: '6.0',
-            },
-            sl_chrome: {
-                base: 'SauceLabs',
-                browserName: 'chrome',
-                platform: 'Windows 10',
-                version: '26.0',
-            },
-
             // latest edge
             sl_edge: {
                 base: 'SauceLabs',
@@ -55,13 +41,6 @@ module.exports = config => {
                 browserName: 'internet explorer',
                 platform: 'Windows 7',
                 version: '10.0',
-            },
-            // ie 9
-            sl_ie_9: {
-                base: 'SauceLabs',
-                browserName: 'internet explorer',
-                platform: 'Windows 7',
-                version: '9.0',
             },
         },
         frameworks: ['jasmine'],
