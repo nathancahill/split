@@ -2,8 +2,9 @@
 // maintainable code, while at the same time manually optimizing for tiny minified file size,
 // browser compatibility without additional requirements
 // and very few assumptions about the user's page layout.
-const global = window
-const { document } = global
+const global = typeof window !== 'undefined' ? window : null
+const ssr = global === null
+const document = !ssr ? global.document : undefined
 
 // Save a couple long function names that are used frequently.
 // This optimization saves around 400 bytes.
@@ -21,14 +22,16 @@ const NOOP = () => false
 //
 // Tests -webkit, -moz and -o prefixes. Modified from StackOverflow:
 // http://stackoverflow.com/questions/16625140/js-feature-detection-to-detect-the-usage-of-webkit-calc-over-calc/16625167#16625167
-const calc = `${['', '-webkit-', '-moz-', '-o-']
-    .filter(prefix => {
-        const el = document.createElement('div')
-        el.style.cssText = `width:${prefix}calc(9px)`
+const calc = ssr
+    ? 'calc'
+    : `${['', '-webkit-', '-moz-', '-o-']
+          .filter(prefix => {
+              const el = document.createElement('div')
+              el.style.cssText = `width:${prefix}calc(9px)`
 
-        return !!el.style.length
-    })
-    .shift()}calc`
+              return !!el.style.length
+          })
+          .shift()}calc`
 
 // Helper function checks if its argument is a string-like type
 const isString = v => typeof v === 'string' || v instanceof String
@@ -126,6 +129,8 @@ const defaultGutterStyleFn = (dim, gutSize) => ({ [dim]: `${gutSize}px` })
 //    `pair` object and a gutter.
 // 5. Actually size the pair elements, insert gutters and attach event listeners.
 const Split = (idsOption, options = {}) => {
+    if (ssr) return {}
+
     let ids = idsOption
     let dimension
     let clientAxis
