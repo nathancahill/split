@@ -9,13 +9,14 @@
         "build": "rollup -c && npm run size",
         "watch": "rollup -cw",
         "test": "jest",
-        "lint": "eslint src",
         "size": "echo \"gzip size: $(gzip-size --raw $npm_package_minified_main) bytes\""
     },
     "repository": "https://github.com/nathancahill/split",
     "author": "Nathan Cahill <nathan@nathancahill.com>",
     "homepage": "https://split.js.org/",
-    "files": ["dist"],
+    "files": [
+        "dist"
+    ],
     "license": "MIT",
     "collective": {
         "type": "opencollective",
