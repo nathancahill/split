@@ -1,6 +1,6 @@
 // The programming goals of Split.js are to deliver readable, understandable and
 // maintainable code, while at the same time manually optimizing for tiny minified file size,
-// browser compatibility without additional requirements, graceful fallback (IE8 is supported)
+// browser compatibility without additional requirements
 // and very few assumptions about the user's page layout.
 const global = window
 const { document } = global
@@ -15,10 +15,6 @@ const aGutterSize = '_b'
 const bGutterSize = '_c'
 const HORIZONTAL = 'horizontal'
 const NOOP = () => false
-
-// Figure out if we're in IE8 or not. IE8 will still render correctly,
-// but will be static instead of draggable.
-const isIE8 = global.attachEvent && !global[addEventListener]
 
 // Helper function determines which prefixes of CSS calc we need.
 // We only need to do this once on startup, when this anonymous function is called.
@@ -92,11 +88,7 @@ const defaultElementStyleFn = (dim, size, gutSize) => {
     const style = {}
 
     if (!isString(size)) {
-        if (!isIE8) {
-            style[dim] = `${calc}(${size}% - ${gutSize}px)`
-        } else {
-            style[dim] = `${size}%`
-        }
+        style[dim] = `${calc}(${size}% - ${gutSize}px)`
     } else {
         style[dim] = size
     }
@@ -623,30 +615,27 @@ const Split = (idsOption, options = {}) => {
         // staticly assigning sizes without draggable gutters. Assigns a string
         // to `size`.
         //
-        // IE9 and above
-        if (!isIE8) {
-            // Create gutter elements for each pair.
-            if (i > 0) {
-                const gutterElement = gutter(i, direction, element.element)
-                setGutterSize(gutterElement, gutterSize, i)
+        // Create gutter elements for each pair.
+        if (i > 0) {
+            const gutterElement = gutter(i, direction, element.element)
+            setGutterSize(gutterElement, gutterSize, i)
 
-                // Save bound event listener for removal later
-                pair[gutterStartDragging] = startDragging.bind(pair)
+            // Save bound event listener for removal later
+            pair[gutterStartDragging] = startDragging.bind(pair)
 
-                // Attach bound event listener
-                gutterElement[addEventListener](
-                    'mousedown',
-                    pair[gutterStartDragging],
-                )
-                gutterElement[addEventListener](
-                    'touchstart',
-                    pair[gutterStartDragging],
-                )
+            // Attach bound event listener
+            gutterElement[addEventListener](
+                'mousedown',
+                pair[gutterStartDragging],
+            )
+            gutterElement[addEventListener](
+                'touchstart',
+                pair[gutterStartDragging],
+            )
 
-                parent.insertBefore(gutterElement, element.element)
+            parent.insertBefore(gutterElement, element.element)
 
-                pair.gutter = gutterElement
-            }
+            pair.gutter = gutterElement
         }
 
         setElementSize(
@@ -742,13 +731,6 @@ const Split = (idsOption, options = {}) => {
                 })
             }
         })
-    }
-
-    if (isIE8) {
-        return {
-            setSizes,
-            destroy,
-        }
     }
 
     return {
