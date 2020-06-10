@@ -4,32 +4,32 @@ module.exports = config => {
             sl_firefox_latest: {
                 base: 'SauceLabs',
                 browserName: 'firefox',
-                platform: 'macOS 10.13',
-                version: '63.0',
+                platform: 'macOS 10.15',
+                version: 'latest',
             },
             sl_chrome_latest: {
                 base: 'SauceLabs',
                 browserName: 'chrome',
-                platform: 'macOS 10.13',
-                version: '70.0',
+                platform: 'macOS 10.15',
+                version: 'latest',
             },
             sl_safari: {
                 base: 'SauceLabs',
                 browserName: 'safari',
-                platform: 'macOS 10.13',
-                version: '12.1',
+                platform: 'macOS 10.15',
+                version: 'latest',
             },
 
             sl_firefox: {
                 base: 'SauceLabs',
                 browserName: 'firefox',
-                platform: 'Windows 7',
+                platform: 'macOS 10.15',
                 version: '6.0',
             },
             sl_chrome: {
                 base: 'SauceLabs',
                 browserName: 'chrome',
-                platform: 'Windows 7',
+                platform: 'macOS 10.15',
                 version: '26.0',
             },
 
@@ -37,13 +37,13 @@ module.exports = config => {
                 base: 'SauceLabs',
                 browserName: 'MicrosoftEdge',
                 platform: 'Windows 10',
-                version: '14.14393',
+                version: 'latest',
             },
             sl_ie_11: {
                 base: 'SauceLabs',
                 browserName: 'internet explorer',
-                platform: 'Windows 7',
-                version: '11.0',
+                platform: 'Windows 10',
+                version: 'latest',
             },
             sl_ie_10: {
                 base: 'SauceLabs',
