@@ -1,16 +1,17 @@
 module.exports = config => {
     config.set({
         customLaunchers: {
+            // latest firefox, chrome, safari
             sl_firefox_latest: {
                 base: 'SauceLabs',
                 browserName: 'firefox',
-                platform: 'macOS 10.15',
+                platform: 'Windows 10',
                 version: 'latest',
             },
             sl_chrome_latest: {
                 base: 'SauceLabs',
                 browserName: 'chrome',
-                platform: 'macOS 10.15',
+                platform: 'Windows 10',
                 version: 'latest',
             },
             sl_safari: {
@@ -20,37 +21,42 @@ module.exports = config => {
                 version: 'latest',
             },
 
+            // earliest firefox, chrome
             sl_firefox: {
                 base: 'SauceLabs',
                 browserName: 'firefox',
-                platform: 'macOS 10.15',
+                platform: 'Windows 10',
                 version: '6.0',
             },
             sl_chrome: {
                 base: 'SauceLabs',
                 browserName: 'chrome',
-                platform: 'macOS 10.15',
+                platform: 'Windows 10',
                 version: '26.0',
             },
 
+            // latest edge
             sl_edge: {
                 base: 'SauceLabs',
                 browserName: 'MicrosoftEdge',
                 platform: 'Windows 10',
                 version: 'latest',
             },
+            // ie 11
             sl_ie_11: {
                 base: 'SauceLabs',
                 browserName: 'internet explorer',
                 platform: 'Windows 10',
                 version: 'latest',
             },
+            // ie 10
             sl_ie_10: {
                 base: 'SauceLabs',
                 browserName: 'internet explorer',
                 platform: 'Windows 7',
                 version: '10.0',
             },
+            // ie 9
             sl_ie_9: {
                 base: 'SauceLabs',
                 browserName: 'internet explorer',
