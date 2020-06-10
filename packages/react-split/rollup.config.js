@@ -1,4 +1,4 @@
-import buble from 'rollup-plugin-buble'
+import buble from '@rollup/plugin-buble'
 import { terser } from 'rollup-plugin-terser'
 
 const pkg = require('./package.json')
