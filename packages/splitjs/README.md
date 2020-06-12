@@ -2,7 +2,7 @@
 <img alt="Split.js" title="Split.js" src="https://rawcdn.githack.com/nathancahill/split/df1873f0c74d2da60f42e1774040651d6191b9bb/packages/splitjs/logo.svg?sanitize=true" width="430">
 <br><br>
 <a href="https://circleci.com/gh/nathancahill/split"><img src="https://img.shields.io/circleci/project/github/nathancahill/split/master.svg" alt="Build Status"></a>
-<img src="https://img.badgesize.io/https://unpkg.com/split.js/dist/split.min.js?compression=gzip&label=size&v=1.5.11" alt="File Size">
+<img src="https://img.badgesize.io/https://unpkg.com/split.js/dist/split.min.js?compression=gzip&label=size&v=1.6.0" alt="File Size">
 <img src="https://badge.fury.io/js/split.js.svg" alt="npm version">
 <img src="https://david-dm.org/nathancahill/split/status.svg" alt="Dependencies">
 <img src = "https://opencollective.com/splitjs/backers/badge.svg" alt="Backers on Open Collective"/>
@@ -68,7 +68,7 @@ The [UMD](https://github.com/umdjs/umd) build is also available on [unpkg](http:
 or [cdnjs](https://cdnjs.com/):
 
 ```html
-<script src="https://cdnjs.cloudflare.com/ajax/libs/split.js/1.5.11/split.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/split.js/1.6.0/split.min.js"></script>
 ```
 
 You can find the library on `window.Split`.
