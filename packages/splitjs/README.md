@@ -4,7 +4,7 @@
 <a href="https://circleci.com/gh/nathancahill/split"><img src="https://img.shields.io/circleci/project/github/nathancahill/split/master.svg" alt="Build Status"></a>
 <img src="https://img.badgesize.io/https://unpkg.com/split.js/dist/split.min.js?compression=gzip&label=size&v=1.6.0" alt="File Size">
 <img src="https://badge.fury.io/js/split.js.svg" alt="npm version">
-<img src="https://david-dm.org/nathancahill/split/status.svg" alt="Dependencies">
+<img src="https://img.shields.io/badge/dependencies-0-brightgreen" alt="Dependencies">
 <img src = "https://opencollective.com/splitjs/backers/badge.svg" alt="Backers on Open Collective"/>
 <img src = "https://opencollective.com/splitjs/sponsors/badge.svg" alt="Sponsors on Open Collective"/>
 </p>

@@ -1,4 +1,4 @@
-# Split [![CI](https://img.shields.io/circleci/project/github/nathancahill/split/master.svg)](https://circleci.com/gh/nathancahill/split) ![Dependencies](https://david-dm.org/nathancahill/split/status.svg) [![Backers on Open Collective](https://opencollective.com/splitjs/backers/badge.svg)](https://opencollective.com/splitjs/) [![Sponsors on Open Collective](https://opencollective.com/splitjs/sponsors/badge.svg)](https://opencollective.com/splitjs/)
+# Split [![CI](https://img.shields.io/circleci/project/github/nathancahill/split/master.svg)](https://circleci.com/gh/nathancahill/split) ![Dependencies](https://img.shields.io/badge/dependencies-0-brightgreen) [![Backers on Open Collective](https://opencollective.com/splitjs/backers/badge.svg)](https://opencollective.com/splitjs/) [![Sponsors on Open Collective](https://opencollective.com/splitjs/sponsors/badge.svg)](https://opencollective.com/splitjs/)
 
 > Unopinionated utilities for resizeable split views.
 
