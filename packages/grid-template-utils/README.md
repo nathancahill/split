@@ -1,4 +1,4 @@
-# Grid Template Utils [![CI](https://img.shields.io/circleci/project/github/nathancahill/split/master.svg)](https://circleci.com/gh/nathancahill/split) ![Dependencies](https://david-dm.org/nathancahill/split/status.svg) [![File size](https://img.badgesize.io/https://unpkg.com/grid-template-utils/dist/grid-template-utils.min.js?compression=gzip&label=size&v=1.0.0)](https://unpkg.com/grid-template-utils/dist/grid-template-utils.min.js)
+# Grid Template Utils [![CI](https://img.shields.io/circleci/project/github/nathancahill/split/master.svg)](https://circleci.com/gh/nathancahill/split) ![Dependencies](https://img.shields.io/badge/dependencies-0-brightgreen) [![File size](https://img.badgesize.io/https://unpkg.com/grid-template-utils/dist/grid-template-utils.min.js?compression=gzip&label=size&v=1.0.0)](https://unpkg.com/grid-template-utils/dist/grid-template-utils.min.js)
 
 ## Installation
 

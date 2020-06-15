@@ -19,3 +19,18 @@ export const firstNonZero = tracks => {
     }
     return null
 }
+
+export const NOOP = () => false
+
+export const defaultWriteStyle = (element, gridTemplateProp, style) => {
+    // eslint-disable-next-line no-param-reassign
+    element.style[gridTemplateProp] = style
+}
+
+export const getOption = (options, propName, def) => {
+    const value = options[propName]
+    if (value !== undefined) {
+        return value
+    }
+    return def
+}

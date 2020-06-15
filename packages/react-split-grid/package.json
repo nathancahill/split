@@ -1,31 +1,32 @@
 {
-  "name": "react-split-grid",
-  "version": "1.0.2",
-  "description": "React component for Split Grid",
-  "main": "dist/react-split-grid.js",
-  "minified:main": "dist/react-split-grid.min.js",
-  "module": "dist/react-split-grid.es.js",
-  "scripts": {
-    "build": "rollup -c && npm run size",
-    "watch": "rollup -cw",
-    "test": "jest",
-    "lint": "eslint src",
-    "size": "echo \"gzip size: $(gzip-size --raw $npm_package_minified_main) bytes\""
-  },
-  "repository": "https://github.com/nathancahill/split",
-  "author": "Nathan Cahill <nathan@nathancahill.com>",
-  "homepage": "https://split.js.org/",
-  "files": ["dist"],
-  "license": "MIT",
-  "dependencies": {
-    "prop-types": "^15.5.7",
-    "split-grid": "^1.0.9"
-  },
-  "peerDependencies": {
-    "react": ">=15.4.2 || >= 16.0.0"
-  },
-  "collective": {
-    "type": "opencollective",
-    "url": "https://opencollective.com/splitjs"
-  }
+    "name": "react-split-grid",
+    "version": "1.0.2",
+    "description": "React component for Split Grid",
+    "main": "dist/react-split-grid.js",
+    "minified:main": "dist/react-split-grid.min.js",
+    "module": "dist/react-split-grid.es.js",
+    "scripts": {
+        "build": "rollup -c && npm run size",
+        "watch": "rollup -cw",
+        "test": "jest",
+        "size": "echo \"gzip size: $(gzip-size --raw $npm_package_minified_main) bytes\""
+    },
+    "repository": "https://github.com/nathancahill/split",
+    "author": "Nathan Cahill <nathan@nathancahill.com>",
+    "homepage": "https://split.js.org/",
+    "files": [
+        "dist"
+    ],
+    "license": "MIT",
+    "dependencies": {
+        "prop-types": "^15.5.7",
+        "split-grid": "^1.0.9"
+    },
+    "peerDependencies": {
+        "react": ">=15.4.2 || >= 16.0.0"
+    },
+    "collective": {
+        "type": "opencollective",
+        "url": "https://opencollective.com/splitjs"
+    }
 }

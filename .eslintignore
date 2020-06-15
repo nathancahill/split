@@ -1,0 +1,4 @@
+**/dist/*
+**/node_modules/*
+docs
+packages/splitjs/test/lib

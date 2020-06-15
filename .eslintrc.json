@@ -11,6 +11,7 @@
         "react/jsx-filename-extension": [1, { "extensions": [".js"] }],
         "react/jsx-indent": [1, 4],
         "react/jsx-indent-props": [1, 4],
+        "react/jsx-props-no-spreading": [0],
         "import/no-unresolved": [0],
         "import/no-extraneous-dependencies": [0]
     }
