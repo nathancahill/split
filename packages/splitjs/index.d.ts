@@ -45,13 +45,13 @@ declare namespace Split {
         cursor?: string
 
         // Callback on drag.
-        onDrag?(sizes: number[]): void;
+        onDrag?(sizes: number[]): void
 
         // Callback on drag start.
-        onDragStart?(sizes: number[]): void;
+        onDragStart?(sizes: number[]): void
 
         // Callback on drag end.
-        onDragEnd?(sizes: number[]): void;
+        onDragEnd?(sizes: number[]): void
 
         // Called to create each gutter element
         gutter?(
