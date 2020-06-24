@@ -1,3 +1,6 @@
+## split.js v1.6.1, react-split v2.0.9
+- Revert from `.mjs` modules for Webpack
+
 ## react-split v2.0.8
 - Fix module resolution
 
