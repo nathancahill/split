@@ -1,10 +1,10 @@
 {
     "name": "split.js",
-    "version": "1.6.0",
+    "version": "1.6.1",
     "description": "2kb unopinionated utility for resizeable split views",
     "main": "dist/split.js",
     "minified:main": "dist/split.min.js",
-    "module": "dist/split.mjs",
+    "module": "dist/split.es.js",
     "types": "index.d.ts",
     "repository": "https://github.com/nathancahill/split",
     "keywords": [
