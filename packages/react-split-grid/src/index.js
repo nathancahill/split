@@ -182,7 +182,7 @@ class ReactSplitGrid extends React.Component {
             ? typeof children === 'function'
                 ? children(props)
                 : !(React.Children.count(children) === 0)
-                ? React.Chidren.only(children)
+                ? React.Children.only(children)
                 : null
             : null
     }
