@@ -305,7 +305,7 @@ Both `elementStyle` and `gutterStyle` are called continously while dragging, so 
 
 Callbacks that can be added on drag (fired continously), drag start and drag end. If doing more than basic operations in `onDrag`, add a debounce function to rate limit the callback.
 
-`onDragStart` and `onDragEnd` are passed the initial and final sizes of the split since it's a common pattern to access the sizes this way.
+`onDrag`, `onDragStart` and `onDragEnd` are passed the initial and final sizes of the split since it's a common pattern to access the sizes this way.
 
 Their function signature looks like this, where `sizes` is an array of percentage values like returned by `getSizes()`:
 

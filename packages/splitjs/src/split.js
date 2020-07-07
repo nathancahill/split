@@ -309,7 +309,7 @@ const Split = (idsOption, options = {}) => {
 
         // Call the drag callback continously. Don't do anything too intensive
         // in this callback.
-        getOption(options, 'onDrag', NOOP)()
+        getOption(options, 'onDrag', NOOP)(getSizes())
     }
 
     // Cache some important sizes when drag starts, so we don't have to do that
