@@ -194,29 +194,26 @@ class Gutter {
         this.setGap(this.getGap())
         this.setComputedGap(this.getRawComputedGap())
 
-        const trackPercentage = this.trackValues.filter(
-            track => track.type === '%',
-        )
+        const trackPercentage = this.trackValues.filter(track => track.type === '%')
         const trackFr = this.trackValues.filter(track => track.type === 'fr')
-
+		
         this.totalFrs = trackFr.length
 
-        if (this.totalFrs) {
-            const track = firstNonZero(trackFr)
+        if (trackFr.length) {
+            const track = this.trackValues.findIndex(track=> track.type === 'fr' && track.numeric > 0);
 
             if (track !== null) {
                 this.frToPixels =
-                    this.computedPixels[track].numeric / trackFr[track].numeric
+                    this.computedPixels[track].numeric / this.trackValues[track].numeric
             }
         }
 
         if (trackPercentage.length) {
-            const track = firstNonZero(trackPercentage)
+            const track = this.trackValues.findIndex(track=> track.type === '%' && track.numeric > 0);
 
             if (track !== null) {
                 this.percentageToPixels =
-                    this.computedPixels[track].numeric /
-                    trackPercentage[track].numeric
+                    this.computedPixels[track].numeric / this.trackValues[track].numeric
             }
         }
 
