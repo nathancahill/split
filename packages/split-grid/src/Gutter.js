@@ -207,6 +207,9 @@ class Gutter {
             if (track !== null) {
                 this.frToPixels =
                     this.computedPixels[track].numeric / trackFr[track].numeric
+                if (this.frToPixels === 0) {
+                    this.frToPixels = Number.EPSILON;
+                }
             }
         }
 
