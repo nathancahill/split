@@ -16,7 +16,7 @@
         "@babel/core": "^7.10.2",
         "@babel/preset-env": "^7.10.2",
         "@rollup/plugin-buble": "^0.21.3",
-        "@rollup/plugin-node-resolve": "^8.0.1",
+        "@rollup/plugin-node-resolve": "^9.0.0",
         "babel-jest": "^26.0.1",
         "eslint": "^5.16.0 || ^6.8.0 || ^7.2.0",
         "eslint-config-airbnb": "^18.2.0",
