@@ -638,7 +638,7 @@ const Split = (idsOption, options = {}) => {
                 pair[gutterStartDragging],
             )
 
-            parent.insertBefore(gutterElement, element.element)
+            element.element.parentElement.insertBefore(gutterElement, element.element)
 
             pair.gutter = gutterElement
         }
