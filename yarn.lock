@@ -6676,9 +6676,9 @@ karma-sauce-launcher@^4.1.5:
     webdriverio "^6.1.9"
 
 karma@^5.0.9:
-  version "5.2.0"
-  resolved "https://registry.yarnpkg.com/karma/-/karma-5.2.0.tgz#7f5d2ebe914af5f8436525d82c7c836013deb3e5"
-  integrity sha512-xT6n0ZVEB48jRHiwA+0nMx5uIah2daQNUZG9wDn9BC/XhFZbmiEid58GykV5m7gYLMa4q2sIFyET6gYuzIwcUw==
+  version "5.2.1"
+  resolved "https://registry.yarnpkg.com/karma/-/karma-5.2.1.tgz#c9f50c2e04fc249b598a422deb666e6673406d64"
+  integrity sha512-+/AO2fWL7kC3aWTx/lHjtKXfOqh0O+KLtTy4BLQ/b/eciHR4VTHHdPhdrn9sDBQskgDieaBZ+sAKzlldc4GW/Q==
   dependencies:
     body-parser "^1.19.0"
     braces "^3.0.2"
