@@ -204,18 +204,22 @@ class Gutter {
         if (this.totalFrs) {
             const track = firstNonZero(trackFr)
 
+            const oldTrack = this.trackValues.findIndex(t => trackFr[track].value === t.value);
+
             if (track !== null) {
                 this.frToPixels =
-                    this.computedPixels[track].numeric / trackFr[track].numeric
+                    this.computedPixels[oldTrack].numeric / trackFr[track].numeric
             }
         }
 
         if (trackPercentage.length) {
             const track = firstNonZero(trackPercentage)
 
+            const oldTrack$1 = this.trackValues.findIndex(t => trackPercentage[track$1].value === t.value);
+
             if (track !== null) {
                 this.percentageToPixels =
-                    this.computedPixels[track].numeric /
+                    this.computedPixels[oldTrack].numeric /
                     trackPercentage[track].numeric
             }
         }
