@@ -6676,9 +6676,9 @@ karma-sauce-launcher@^4.1.5:
     webdriverio "^6.1.9"
 
 karma@^5.0.9:
-  version "5.2.0"
-  resolved "https://registry.yarnpkg.com/karma/-/karma-5.2.0.tgz#7f5d2ebe914af5f8436525d82c7c836013deb3e5"
-  integrity sha512-xT6n0ZVEB48jRHiwA+0nMx5uIah2daQNUZG9wDn9BC/XhFZbmiEid58GykV5m7gYLMa4q2sIFyET6gYuzIwcUw==
+  version "5.2.2"
+  resolved "https://registry.yarnpkg.com/karma/-/karma-5.2.2.tgz#2e51d877635a8c3e4d07e83f1271ec2b1ab75cc0"
+  integrity sha512-rB3Ua5yDxmIupTj67r3Q8itz7TxJzRE6DmVcOfV20D509Uu9AoBKlVwbZhND4kcm6BqLfbHtv4DZC9QJfrUY+w==
   dependencies:
     body-parser "^1.19.0"
     braces "^3.0.2"
@@ -6699,7 +6699,7 @@ karma@^5.0.9:
     range-parser "^1.2.1"
     rimraf "^3.0.2"
     socket.io "^2.3.0"
-    source-map "^0.7.3"
+    source-map "^0.6.1"
     tmp "0.2.1"
     ua-parser-js "0.7.21"
     yargs "^15.3.1"
