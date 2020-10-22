@@ -35,7 +35,7 @@
         "karma-sauce-launcher": "^4.1.5",
         "lerna": "^3.22.1",
         "prettier": "^2.0.5",
-        "react": "^16.6.1",
+        "react": "^17.0.0",
         "rollup": "^2.15.0",
         "rollup-plugin-terser": "^7.0.0"
     }
