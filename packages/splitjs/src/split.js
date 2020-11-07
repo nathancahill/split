@@ -138,7 +138,7 @@ const Split = (idsOption, options = {}) => {
     let positionEnd
     let clientSize
     let elements
-    let eventListenerOptions
+    
 
     // Allow HTMLCollection to be used as an argument when supported
     if (Array.from) {
@@ -185,7 +185,7 @@ const Split = (idsOption, options = {}) => {
     // with the performance criteria of the browsers such as Chrome and Firefox.
     // Detail: https://developer.mozilla.org/tr/docs/Web/API/EventTarget/addEventListener
     const passiveSupport = getOption(options, 'passiveSupport', true)
-    eventListenerOptions = passiveSupport ? { passive: true } : false;
+    const eventListenerOptions = passiveSupport ? { passive: true } : false
 
 
 
