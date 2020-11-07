@@ -25,13 +25,13 @@ const NOOP = () => false
 const calc = ssr
     ? 'calc'
     : `${['', '-webkit-', '-moz-', '-o-']
-          .filter(prefix => {
-              const el = document.createElement('div')
-              el.style.cssText = `width:${prefix}calc(9px)`
+        .filter(prefix => {
+            const el = document.createElement('div')
+            el.style.cssText = `width:${prefix}calc(9px)`
 
-              return !!el.style.length
-          })
-          .shift()}calc`
+            return !!el.style.length
+        })
+        .shift()}calc`
 
 // Helper function checks if its argument is a string-like type
 const isString = v => typeof v === 'string' || v instanceof String
@@ -138,6 +138,7 @@ const Split = (idsOption, options = {}) => {
     let positionEnd
     let clientSize
     let elements
+    let eventListenerOptions
 
     // Allow HTMLCollection to be used as an argument when supported
     if (Array.from) {
@@ -179,6 +180,14 @@ const Split = (idsOption, options = {}) => {
         defaultElementStyleFn,
     )
     const gutterStyle = getOption(options, 'gutterStyle', defaultGutterStyleFn)
+
+    // This modification has been added to this plugin to make it compatible 
+    // with the performance criteria of the browsers such as Chrome and Firefox.
+    // Detail: https://developer.mozilla.org/tr/docs/Web/API/EventTarget/addEventListener
+    const passiveSupport = getOption(options, 'passiveSupport', true)
+    eventListenerOptions = passiveSupport ? { passive: true } : false;
+
+
 
     // 2. Initialize a bunch of strings based on the direction we're splitting.
     // A lot of the behavior in the rest of the library is paramatized down to
@@ -452,20 +461,20 @@ const Split = (idsOption, options = {}) => {
         self.dragging = false
 
         // Remove the stored event listeners. This is why we store them.
-        global[removeEventListener]('mouseup', self.stop)
-        global[removeEventListener]('touchend', self.stop)
-        global[removeEventListener]('touchcancel', self.stop)
-        global[removeEventListener]('mousemove', self.move)
-        global[removeEventListener]('touchmove', self.move)
+        global[removeEventListener]('mouseup', self.stop, eventListenerOptions)
+        global[removeEventListener]('touchend', self.stop, eventListenerOptions)
+        global[removeEventListener]('touchcancel', self.stop, eventListenerOptions)
+        global[removeEventListener]('mousemove', self.move, eventListenerOptions)
+        global[removeEventListener]('touchmove', self.move, eventListenerOptions)
 
         // Clear bound function references
         self.stop = null
         self.move = null
 
-        a[removeEventListener]('selectstart', NOOP)
-        a[removeEventListener]('dragstart', NOOP)
-        b[removeEventListener]('selectstart', NOOP)
-        b[removeEventListener]('dragstart', NOOP)
+        a[removeEventListener]('selectstart', NOOP, eventListenerOptions)
+        a[removeEventListener]('dragstart', NOOP, eventListenerOptions)
+        b[removeEventListener]('selectstart', NOOP, eventListenerOptions)
+        b[removeEventListener]('dragstart', NOOP, eventListenerOptions)
 
         a.style.userSelect = ''
         a.style.webkitUserSelect = ''
@@ -513,17 +522,17 @@ const Split = (idsOption, options = {}) => {
         self.stop = stopDragging.bind(self)
 
         // All the binding. `window` gets the stop events in case we drag out of the elements.
-        global[addEventListener]('mouseup', self.stop)
-        global[addEventListener]('touchend', self.stop)
-        global[addEventListener]('touchcancel', self.stop)
-        global[addEventListener]('mousemove', self.move)
-        global[addEventListener]('touchmove', self.move)
+        global[addEventListener]('mouseup', self.stop, eventListenerOptions)
+        global[addEventListener]('touchend', self.stop, eventListenerOptions)
+        global[addEventListener]('touchcancel', self.stop, eventListenerOptions)
+        global[addEventListener]('mousemove', self.move, eventListenerOptions)
+        global[addEventListener]('touchmove', self.move, eventListenerOptions)
 
         // Disable selection. Disable!
-        a[addEventListener]('selectstart', NOOP)
-        a[addEventListener]('dragstart', NOOP)
-        b[addEventListener]('selectstart', NOOP)
-        b[addEventListener]('dragstart', NOOP)
+        a[addEventListener]('selectstart', NOOP, eventListenerOptions)
+        a[addEventListener]('dragstart', NOOP, eventListenerOptions)
+        b[addEventListener]('selectstart', NOOP, eventListenerOptions)
+        b[addEventListener]('dragstart', NOOP, eventListenerOptions)
 
         a.style.userSelect = 'none'
         a.style.webkitUserSelect = 'none'
@@ -632,10 +641,12 @@ const Split = (idsOption, options = {}) => {
             gutterElement[addEventListener](
                 'mousedown',
                 pair[gutterStartDragging],
+                eventListenerOptions
             )
             gutterElement[addEventListener](
                 'touchstart',
                 pair[gutterStartDragging],
+                eventListenerOptions
             )
 
             parent.insertBefore(gutterElement, element.element)
@@ -716,10 +727,12 @@ const Split = (idsOption, options = {}) => {
                 pair.gutter[removeEventListener](
                     'mousedown',
                     pair[gutterStartDragging],
+                    eventListenerOptions
                 )
                 pair.gutter[removeEventListener](
                     'touchstart',
                     pair[gutterStartDragging],
+                    eventListenerOptions
                 )
             }
 
