@@ -1,7 +1,7 @@
 import React, { ReactNode, ReactElement } from "react";
 import { CSSStyleDeclarationPartial } from "split.js";
 
-export interface SplitProps extends Omit<React.HTMLProps<HTMLDivElement>, "sizes"> {
+export interface SplitProps extends Omit<React.HTMLProps<HTMLDivElement>, "sizes" | "onDrag" | "onDragStart" | "onDragEnd"> {
   // Initial sizes of each element in percents or CSS values.
   sizes?: number[];
 
@@ -27,13 +27,13 @@ export interface SplitProps extends Omit<React.HTMLProps<HTMLDivElement>, "sizes
   cursor?: string;
 
   // Callback on drag.
-  onDrag?(): void;
+  onDrag?(sizes: number[]): void;
 
   // Callback on drag start.
-  onDragStart?(): void;
+  onDragStart?(sizes: number[]): void;
 
   // Callback on drag end.
-  onDragEnd?(): void;
+  onDragEnd?(sizes: number[]): void;
 
   // Called to create each gutter element
   gutter?(index: number, direction: "horizontal" | "vertical"): HTMLElement;
