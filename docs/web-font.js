@@ -1,1 +1,0 @@
-!function(){"use strict";window.WebFontConfig={google:{families:["Arvo:400,700","Montserrat:700"]}};var e=document,t=e.createElement("script"),o=e.scripts[0];t.src="https://ajax.googleapis.com/ajax/libs/webfont/1.6.26/webfont.js",t.async=!0,o.parentNode.insertBefore(t,o)}();
