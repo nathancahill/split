@@ -12,9 +12,9 @@ declare module 'split-grid' {
     // The minimum size in pixels for all tracks. Default: `options.minSize`
     rowMinSize?: number;
     // An object keyed by `track` index, with values set to the minimum size in pixels for the track at that index. Allows individual minSizes to be specified by track. Note this option is plural with an `s`, while the two fallback options are singular. Default: `options.columnMinSize`
-    columnMinSizes?: MinSizes[];
+    columnMinSizes?: MinSizes;
     // An object keyed by `track` index, with values set to the minimum size in pixels for the track at that index. Allows individual minSizes to be specified by track. Note this option is plural with an `s`, while the two fallback options are singular. Default: `options.rowMinSize`
-    rowMinSizes?: MinSizes[];
+    rowMinSizes?: MinSizes;
     // Snap to minimum size at this offset in pixels. Set to `0` to disable snap. Default: `30`
     snapOffset?: number;
     // Snap to minimum size at this offset in pixels. Set to `0` to disable snap. Default: `options.snapOffset`
