@@ -23,6 +23,8 @@ class ReactSplitGrid extends React.Component {
         this.handleDragStart = this.handleDragStart.bind(this)
         this.writeStyle = this.writeStyle.bind(this)
         this.onDrag = this.onDrag.bind(this)
+        this.onDragStart = this.onDragStart.bind(this)
+        this.onDragEnd = this.onDragEnd.bind(this)
     }
 
     componentDidMount() {
@@ -30,6 +32,8 @@ class ReactSplitGrid extends React.Component {
 
         options.writeStyle = this.writeStyle
         options.onDrag = this.onDrag
+        options.onDragStart = this.onDragStart
+        options.onDragEnd = this.onDragEnd
 
         this.split = Split(options)
     }
@@ -121,6 +125,22 @@ class ReactSplitGrid extends React.Component {
 
         if (onDrag) {
             onDrag(direction, track, style)
+        }
+    }
+    
+    onDragStart(direction, track) {
+        const { onDragStart } = this.props
+
+        if (onDragStart) {
+            onDragStart(direction, track)
+        }
+    }
+    
+    onDragEnd(direction, track, style) {
+        const { onDragEnd } = this.props
+
+        if (onDragEnd) {
+            onDragEnd(direction, track)
         }
     }
 
