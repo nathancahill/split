@@ -136,7 +136,7 @@ class ReactSplitGrid extends React.Component {
         }
     }
     
-    onDragEnd(direction, track, style) {
+    onDragEnd(direction, track) {
         const { onDragEnd } = this.props
 
         if (onDragEnd) {
@@ -217,6 +217,8 @@ ReactSplitGrid.propTypes = {
     columnMinSizes: PropTypes.arrayOf(PropTypes.number),
     rowMinSizes: PropTypes.arrayOf(PropTypes.number),
     onDrag: PropTypes.func,
+    onDragStart: PropTypes.func,
+    onDragEnd: PropTypes.func,
 }
 
 ReactSplitGrid.defaultProps = {
@@ -228,6 +230,8 @@ ReactSplitGrid.defaultProps = {
     columnMinSizes: undefined,
     rowMinSizes: undefined,
     onDrag: undefined,
+    onDragStart: undefined,
+    onDragEnd: undefined,
 }
 
 export default ReactSplitGrid
