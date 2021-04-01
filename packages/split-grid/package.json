@@ -5,6 +5,7 @@
     "main": "dist/split-grid.js",
     "minified:main": "dist/split-grid.min.js",
     "module": "dist/split-grid.mjs",
+    "types": "index.d.ts",
     "scripts": {
         "build": "rollup -c && npm run size",
         "watch": "rollup -cw",
