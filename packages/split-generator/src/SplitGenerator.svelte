@@ -150,8 +150,8 @@ ${
     direction === 'horizontal' && layout === 'flex'
         ? `
 .split {
-    display: 'flex';
-    flex-direction: 'row';
+    display: flex;
+    flex-direction: row;
 }`
         : ''
 }${
