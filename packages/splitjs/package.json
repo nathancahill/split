@@ -1,6 +1,6 @@
 {
     "name": "split.js",
-    "version": "1.6.2",
+    "version": "1.6.3",
     "description": "2kb unopinionated utility for resizeable split views",
     "main": "dist/split.js",
     "minified:main": "dist/split.min.js",
