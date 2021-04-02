@@ -7,6 +7,7 @@
     "module": "dist/split-grid.mjs",
     "types": "index.d.ts",
     "scripts": {
+        "prepublish": "rollup -c",
         "build": "rollup -c && npm run size",
         "watch": "rollup -cw",
         "test": "jest",

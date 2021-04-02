@@ -6,6 +6,7 @@
     "minified:main": "dist/react-split-grid.min.js",
     "module": "dist/react-split-grid.es.js",
     "scripts": {
+        "prepublish": "rollup -c",
         "build": "rollup -c && npm run size",
         "watch": "rollup -cw",
         "test": "jest",
