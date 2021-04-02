@@ -155,10 +155,12 @@ const Split = (idsOption, options = {}) => {
     // Set default options.sizes to equal percentages of the parent element.
     let sizes = getOption(options, 'sizes') || ids.map(() => 100 / ids.length)
 
-    // Standardize minSize to an array if it isn't already. This allows minSize
-    // to be passed as a number.
+    // Standardize minSize and maxSize to an array if it isn't already.
+    // This allows minSize and maxSize to be passed as a number.
     const minSize = getOption(options, 'minSize', 100)
     const minSizes = Array.isArray(minSize) ? minSize : ids.map(() => minSize)
+    const maxSize = getOption(options, 'maxSize', Infinity)
+    const maxSizes = Array.isArray(maxSize) ? maxSize : ids.map(() => maxSize)
 
     // Get other options
     const expandToMin = getOption(options, 'expandToMin', false)
@@ -302,6 +304,15 @@ const Split = (idsOption, options = {}) => {
             this.size - (b.minSize + snapOffset + this[bGutterSize])
         ) {
             offset = this.size - (b.minSize + this[bGutterSize])
+        }
+
+        if (offset >= a.maxSize - snapOffset + this[aGutterSize]) {
+            offset = a.maxSize + this[aGutterSize]
+        } else if (
+            offset <=
+            this.size - (b.maxSize - snapOffset + this[bGutterSize])
+        ) {
+            offset = this.size - (b.maxSize + this[bGutterSize])
         }
 
         // Actually adjust the size.
@@ -577,6 +588,7 @@ const Split = (idsOption, options = {}) => {
             element: elementOrSelector(id),
             size: sizes[i],
             minSize: minSizes[i],
+            maxSize: maxSizes[i],
             i,
         }
 
