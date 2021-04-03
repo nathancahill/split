@@ -4,20 +4,14 @@
     export let max = 10
     export let step = 1
 
+    const clamp = value => Math.min(Math.max(value, min), max)
+
     const dec = () => {
-        if (value - step >= min) {
-            value -= step
-        } else {
-            value = min
-        }
+        value = clamp(value - step)
     }
 
     const inc = () => {
-        if (value + step <= max) {
-            value += step
-        } else {
-            value = max
-        }
+        value = clamp(value + step)
     }
 
     const handleChange = (ev) => {
@@ -55,7 +49,7 @@
     <input
         type="text"
         class="focus:ring-indigo-500 focus:border-indigo-500 focus:z-20 text-center border-gray-300 w-full px-3"
-        value="{value}"
+        value="{value === 100000 ? '∞' : value}"
         on:change="{handleChange}"
     />
 
