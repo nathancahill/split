@@ -35,19 +35,33 @@ class ReactSplitGrid extends React.Component {
     }
 
     componentDidUpdate(prevProps) {
-        const { columnMinSizes, rowMinSizes, children, ...options } = this.props
+        const {
+            columnMinSizes,
+            rowMinSizes,
+            columnMaxSizes,
+            rowMaxSizes,
+            children,
+            ...options
+        } = this.props
 
         const {
             columnMinSizes: prevColumnMinSizes,
             rowMinSizes: prevRowMinSizes,
+            columnMaxSizes: prevColumnMaxSizes,
+            rowMaxSizes: prevRowMaxSizes,
         } = prevProps
 
         const otherProps = [
             'minSize',
+            'maxsize',
             'columnMinSize',
             'rowMinSize',
+            'columnMaxSize',
+            'rowMaxSize',
             'columnMinSizes',
             'rowMinSizes',
+            'columnMaxSizes',
+            'rowMaxSizes',
             'snapOffset',
             'columnSnapOffset',
             'rowSnapOffset',
@@ -70,6 +84,10 @@ class ReactSplitGrid extends React.Component {
         }
 
         if (rowMinSizes !== prevRowMinSizes) {
+            needsRecreate = true
+        }
+
+        if (rowMaxSizes !== prevRowMaxSizes) {
             needsRecreate = true
         }
 
@@ -196,6 +214,8 @@ ReactSplitGrid.propTypes = {
     gridTemplateRows: PropTypes.string,
     columnMinSizes: PropTypes.arrayOf(PropTypes.number),
     rowMinSizes: PropTypes.arrayOf(PropTypes.number),
+    columnMaxSizes: PropTypes.arrayOf(PropTypes.number),
+    rowMaxSizes: PropTypes.arrayOf(PropTypes.number),
     onDrag: PropTypes.func,
 }
 
@@ -207,6 +227,8 @@ ReactSplitGrid.defaultProps = {
     gridTemplateRows: undefined,
     columnMinSizes: undefined,
     rowMinSizes: undefined,
+    columnMaxSizes: undefined,
+    rowMaxSizes: undefined,
     onDrag: undefined,
 }
 
