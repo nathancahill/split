@@ -5,6 +5,7 @@
     "main": "dist/react-split.js",
     "minified:main": "dist/react-split.min.js",
     "module": "dist/react-split.es.js",
+    "types": "index.d.ts",
     "scripts": {
         "prepublish": "rollup -c",
         "build": "rollup -c && npm run size",
@@ -24,7 +25,7 @@
         "split.js": "^1.6.0"
     },
     "peerDependencies": {
-        "react": ">=15.4.2 || >= 16.0.0"
+        "react": "*"
     },
     "collective": {
         "type": "opencollective",

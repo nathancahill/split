@@ -26,6 +26,9 @@ declare namespace Split {
         // Minimum size of each element.
         minSize?: number | number[]
 
+        // Maximum size of each element.
+        maxSize?: number | number[]
+
         expandToMin?: boolean
 
         // Gutter size in pixels.

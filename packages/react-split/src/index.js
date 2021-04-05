@@ -144,6 +144,10 @@ SplitWrapper.propTypes = {
         PropTypes.number,
         PropTypes.arrayOf(PropTypes.number),
     ]),
+    maxSize: PropTypes.oneOfType([
+        PropTypes.number,
+        PropTypes.arrayOf(PropTypes.number),
+    ]),
     expandToMin: PropTypes.bool,
     gutterSize: PropTypes.number,
     gutterAlign: PropTypes.string,
@@ -164,6 +168,7 @@ SplitWrapper.propTypes = {
 SplitWrapper.defaultProps = {
     sizes: undefined,
     minSize: undefined,
+    maxSize: undefined,
     expandToMin: undefined,
     gutterSize: undefined,
     gutterAlign: undefined,

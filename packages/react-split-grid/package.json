@@ -24,7 +24,7 @@
         "split-grid": "^1.0.9"
     },
     "peerDependencies": {
-        "react": ">=15.4.2 || >= 16.0.0"
+        "react": "*"
     },
     "collective": {
         "type": "opencollective",
