@@ -7,14 +7,29 @@ declare module 'split-grid' {
     rowGutters?: Gutter[];
     // The minimum size in pixels for all tracks. Default: `0`
     minSize?: number;
+    // The maximum size in pixels for all tracks. Default: `Infinity`
+    maxSize?: number;
+
     // The minimum size in pixels for all tracks. Default: `options.minSize`
     columnMinSize?: number;
     // The minimum size in pixels for all tracks. Default: `options.minSize`
     rowMinSize?: number;
+
+    // The maximum size in pixels for all tracks. Default: `options.maxSize`
+    columnMaxSize?: number;
+    // The maximum size in pixels for all tracks. Default: `options.maxSize`
+    rowMaxSize?: number;
+
     // An object keyed by `track` index, with values set to the minimum size in pixels for the track at that index. Allows individual minSizes to be specified by track. Note this option is plural with an `s`, while the two fallback options are singular. Default: `options.columnMinSize`
-    columnMinSizes?: MinSizes;
+    columnMinSizes?: Sizes;
     // An object keyed by `track` index, with values set to the minimum size in pixels for the track at that index. Allows individual minSizes to be specified by track. Note this option is plural with an `s`, while the two fallback options are singular. Default: `options.rowMinSize`
-    rowMinSizes?: MinSizes;
+    rowMinSizes?: Sizes;
+
+    // An object keyed by `track` index, with values set to the maximum size in pixels for the track at that index. Allows individual maxSizes to be specified by track. Note this option is plural with an `s`, while the two fallback options are singular. Default: `options.columnMaxSize`
+    columnMaxSizes?: Sizes;
+    // An object keyed by `track` index, with values set to the maximum size in pixels for the track at that index. Allows individual maxSizes to be specified by track. Note this option is plural with an `s`, while the two fallback options are singular. Default: `options.rowMaxSize`
+    rowMaxSizes?: Sizes;
+
     // Snap to minimum size at this offset in pixels. Set to `0` to disable snap. Default: `30`
     snapOffset?: number;
     // Snap to minimum size at this offset in pixels. Set to `0` to disable snap. Default: `options.snapOffset`
@@ -64,7 +79,7 @@ declare module 'split-grid' {
     track: number;
   };
 
-  export type MinSizes = { [track: number]: number };
+  export type Sizes = { [track: number]: number };
 
   export type Direction = 'row' | 'column';
 
