@@ -1,3 +1,7 @@
+## split.js v1.6.4, react-split v2.0.10
+
+-   Updates types with new `maxSize` option
+
 ## split-grid v1.0.10
 
 -   Fixes a bug in storing columns and rows in the instance
