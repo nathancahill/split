@@ -194,8 +194,8 @@ ReactSplitGrid.propTypes = {
     children: PropTypes.element,
     gridTemplateColumns: PropTypes.string,
     gridTemplateRows: PropTypes.string,
-    columnMinSizes: PropTypes.arrayOf(PropTypes.number),
-    rowMinSizes: PropTypes.arrayOf(PropTypes.number),
+    columnMinSizes: PropTypes.objectOf(PropTypes.number),
+    rowMinSizes: PropTypes.objectOf(PropTypes.number),
     onDrag: PropTypes.func,
 }
 
