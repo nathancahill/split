@@ -33,6 +33,7 @@ class SplitWrapper extends React.Component {
         } = prevProps
 
         const otherProps = [
+            'maxSize',
             'expandToMin',
             'gutterSize',
             'gutterAlign',
@@ -107,6 +108,7 @@ class SplitWrapper extends React.Component {
         const {
             sizes,
             minSize,
+            maxSize,
             expandToMin,
             gutterSize,
             gutterAlign,
