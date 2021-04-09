@@ -196,30 +196,18 @@ class Gutter {
         this.setGap(this.getGap())
         this.setComputedGap(this.getRawComputedGap())
 
-        const trackPercentage = this.trackValues.filter(
-            track => track.type === '%',
-        )
-        const trackFr = this.trackValues.filter(track => track.type === 'fr')
-
-        this.totalFrs = trackFr.length
-
-        if (this.totalFrs) {
-            const track = firstNonZero(trackFr)
-
-            if (track !== null) {
-                this.frToPixels =
-                    this.computedPixels[track].numeric / trackFr[track].numeric
-            }
+        const firstNonZeroFrTrack = firstNonZero('fr', this.trackValues)
+        if (firstNonZeroFrTrack !== null) {
+            this.frToPixels =
+                this.computedPixels[firstNonZeroFrTrack].numeric /
+                this.trackValues[firstNonZeroFrTrack].numeric
         }
 
-        if (trackPercentage.length) {
-            const track = firstNonZero(trackPercentage)
-
-            if (track !== null) {
-                this.percentageToPixels =
-                    this.computedPixels[track].numeric /
-                    trackPercentage[track].numeric
-            }
+        const firstNonZeroPercTrack = firstNonZero('%', this.trackValues)
+        if (firstNonZeroPercTrack !== null) {
+            this.percentageToPixels =
+                this.computedPixels[firstNonZeroPercTrack].numeric /
+                this.trackValues[firstNonZeroPercTrack].numeric
         }
 
         // get start of gutter track
