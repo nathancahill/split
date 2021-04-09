@@ -7253,9 +7253,9 @@ karma-jasmine@^4.0.0:
     jasmine-core "^3.6.0"
 
 karma-sauce-launcher@^4.1.5:
-  version "4.3.5"
-  resolved "https://registry.yarnpkg.com/karma-sauce-launcher/-/karma-sauce-launcher-4.3.5.tgz#fd882a182fdd86206c05311a34b674cd4aef7c1c"
-  integrity sha512-a6c8qbuLspMi2KNGQefXe/lhZAd2JSkxheT6kBb3GKwWfyZyjG+eF3C7lFennWHZyzeXHv7pY5LMpi/mHGCzag==
+  version "4.3.6"
+  resolved "https://registry.yarnpkg.com/karma-sauce-launcher/-/karma-sauce-launcher-4.3.6.tgz#274f999ce5a3bc76577a438839cb0dbbf2746a48"
+  integrity sha512-Ej62q4mUPFktyAm8g0g8J5qhwEkXwdHrwtiV4pZjKNHNnSs+4qgDyzs3VkpOy3AmNTsTqQXUN/lpiy0tZpDJZQ==
   dependencies:
     global-agent "^2.1.12"
     saucelabs "^4.6.3"
