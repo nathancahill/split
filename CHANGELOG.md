@@ -1,3 +1,7 @@
+## react-split v2.0.11
+
+-   Fixes a bug where `maxSize` was being passed to the DOM component
+
 ## split.js v1.6.4, react-split v2.0.10
 
 -   Updates types with new `maxSize` option
