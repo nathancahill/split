@@ -68,7 +68,11 @@ class SplitWrapper extends React.Component {
             options.minSize = minSize
             options.sizes = sizes || this.split.getSizes()
             this.split.destroy(true, true)
-            options.gutter = (index, direction, pairB) => pairB.previousSibling
+            options.gutter = (index, direction, pairB) => {
+                const gutter = pairB.previousSibling
+                gutter.className = `gutter gutter-${direction}`
+                return gutter
+            }
             this.split = Split(
                 Array.from(this.parent.children).filter(
                     // eslint-disable-next-line no-underscore-dangle
