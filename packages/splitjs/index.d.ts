@@ -37,7 +37,7 @@ declare namespace Split {
         gutterAlign?: string
 
         // Snap to minimum size offset in pixels.
-        snapOffset?: number
+        snapOffset?: number | number[]
 
         dragInterval?: number
 

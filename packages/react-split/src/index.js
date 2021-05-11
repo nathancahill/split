@@ -153,7 +153,10 @@ SplitWrapper.propTypes = {
     expandToMin: PropTypes.bool,
     gutterSize: PropTypes.number,
     gutterAlign: PropTypes.string,
-    snapOffset: PropTypes.number,
+    snapOffset: PropTypes.oneOfType([
+        PropTypes.number,
+        PropTypes.arrayOf(PropTypes.number),
+    ]),
     dragInterval: PropTypes.number,
     direction: PropTypes.string,
     cursor: PropTypes.string,
