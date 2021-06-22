@@ -53,7 +53,7 @@ class ReactSplitGrid extends React.Component {
 
         const otherProps = [
             'minSize',
-            'maxsize',
+            'maxSize',
             'columnMinSize',
             'rowMinSize',
             'columnMaxSize',
