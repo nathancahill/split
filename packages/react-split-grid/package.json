@@ -5,6 +5,7 @@
     "main": "dist/react-split-grid.js",
     "minified:main": "dist/react-split-grid.min.js",
     "module": "dist/react-split-grid.es.js",
+    "types": "./index.d.ts",
     "scripts": {
         "prepublish": "rollup -c",
         "build": "rollup -c && npm run size",
@@ -16,7 +17,8 @@
     "author": "Nathan Cahill <nathan@nathancahill.com>",
     "homepage": "https://split.js.org/",
     "files": [
-        "dist"
+        "dist",
+        "index.d.ts"
     ],
     "license": "MIT",
     "dependencies": {
