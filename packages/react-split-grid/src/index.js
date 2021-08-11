@@ -58,10 +58,6 @@ class ReactSplitGrid extends React.Component {
             'rowMinSize',
             'columnMaxSize',
             'rowMaxSize',
-            'columnMinSizes',
-            'rowMinSizes',
-            'columnMaxSizes',
-            'rowMaxSizes',
             'snapOffset',
             'columnSnapOffset',
             'rowSnapOffset',
@@ -78,16 +74,19 @@ class ReactSplitGrid extends React.Component {
             .map(prop => this.props[prop] !== prevProps[prop])
             .reduce((accum, same) => accum || same, false)
 
-        // TODO use deep equals
-        if (columnMinSizes !== prevColumnMinSizes) {
+        if (JSON.stringify(columnMinSizes, null) !== JSON.stringify(prevColumnMinSizes, null)) {
             needsRecreate = true
         }
 
-        if (rowMinSizes !== prevRowMinSizes) {
+        if (JSON.stringify(rowMinSizes, null) !== JSON.stringify(prevRowMinSizes, null)) {
             needsRecreate = true
         }
 
-        if (rowMaxSizes !== prevRowMaxSizes) {
+        if (JSON.stringify(columnMaxSizes, null) !== JSON.stringify(prevColumnMaxSizes, null)) {
+            needsRecreate = true
+        }
+        
+        if (JSON.stringify(rowMaxSizes, null) !== JSON.stringify(prevRowMaxSizes, null)) {
             needsRecreate = true
         }
 
