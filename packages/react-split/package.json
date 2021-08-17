@@ -17,7 +17,8 @@
     "author": "Nathan Cahill <nathan@nathancahill.com>",
     "homepage": "https://split.js.org/",
     "files": [
-        "dist"
+        "dist",
+        "index.d.ts"
     ],
     "license": "MIT",
     "dependencies": {
