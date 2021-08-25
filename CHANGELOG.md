@@ -1,3 +1,7 @@
+## react-split v2.0.12
+
+-   Publishes Typescript types on npm
+
 ## react-split v2.0.11
 
 -   Fixes a bug where `maxSize` was being passed to the DOM component
