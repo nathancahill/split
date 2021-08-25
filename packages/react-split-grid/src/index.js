@@ -47,6 +47,7 @@ class ReactSplitGrid extends React.Component {
         const {
             columnMinSizes: prevColumnMinSizes,
             rowMinSizes: prevRowMinSizes,
+            // TODO: Need to check why this is unused
             // columnMaxSizes: prevColumnMaxSizes,
             rowMaxSizes: prevRowMaxSizes,
         } = prevProps
