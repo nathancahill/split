@@ -1,7 +1,7 @@
 import React from 'react'
 import { Options } from 'split.js'
 
-export interface SplitProps {
+export interface SplitProps extends React.HTMLAttributes<HTMLDivElement> {
     sizes?: Options["sizes"]
     minSize?: Options["minSize"]
     maxSize?: Options["maxSize"]
@@ -19,7 +19,6 @@ export interface SplitProps {
     onDragStart?: Options["onDragStart"]
     onDragEnd?: Options["onDragEnd"]
     collapsed?: Number
-    className?: string
 }
 
 declare class Split extends React.Component<SplitProps, any> {}
