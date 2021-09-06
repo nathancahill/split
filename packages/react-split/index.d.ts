@@ -1,7 +1,7 @@
 import React from 'react'
 import { Options } from 'split.js'
 
-export interface SplitProps {
+export interface SplitProps extends React.HTMLAttributes<HTMLDivElement> {
     sizes?: Options["sizes"]
     minSize?: Options["minSize"]
     maxSize?: Options["maxSize"]
