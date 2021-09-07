@@ -1,3 +1,7 @@
+## react-split v2.0.13
+
+-   Extends React component types from React.HTMLAttributes
+
 ## react-split v2.0.12
 
 -   Publishes Typescript types on npm
