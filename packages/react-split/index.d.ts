@@ -1,7 +1,7 @@
 import React from 'react'
 import { Options } from 'split.js'
 
-export interface SplitProps extends React.HTMLAttributes<HTMLDivElement> {
+export interface SplitProps extends Omit<React.HTMLAttributes<HTMLDivElement>, 'onDrag'|'onDragStart'|'onDragEnd'> {
     sizes?: Options["sizes"]
     minSize?: Options["minSize"]
     maxSize?: Options["maxSize"]
