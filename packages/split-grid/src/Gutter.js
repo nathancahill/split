@@ -75,6 +75,8 @@ class Gutter {
 
         this.minSizeStart = options.minSizeStart
         this.minSizeEnd = options.minSizeEnd
+        this.maxSizeStart = options.maxSizeStart
+        this.maxSizeEnd = options.maxSizeEnd
 
         if (options.element) {
             this.element.addEventListener('mousedown', this.startDragging)
@@ -292,16 +294,26 @@ class Gutter {
         let mousePosition = this.getMousePosition(e)
 
         const gutterSize = this.getSizeOfTrack(this.track)
-        const minMousePosition =
+        const minMousePosition = Math.max(
             this.aTrackStart +
-            this.minSizeStart +
-            this.dragStartOffset +
-            this.computedGapPixels
-        const maxMousePosition =
+                this.minSizeStart +
+                this.dragStartOffset +
+                this.computedGapPixels,
             this.bTrackEnd -
-            this.minSizeEnd -
-            this.computedGapPixels -
-            (gutterSize - this.dragStartOffset)
+                this.maxSizeEnd -
+                this.computedGapPixels -
+                (gutterSize - this.dragStartOffset),
+        )
+        const maxMousePosition = Math.min(
+            this.bTrackEnd -
+                this.minSizeEnd -
+                this.computedGapPixels -
+                (gutterSize - this.dragStartOffset),
+            this.aTrackStart +
+                this.maxSizeStart +
+                this.dragStartOffset +
+                this.computedGapPixels,
+        )
         const minMousePositionOffset = minMousePosition + this.snapOffset
         const maxMousePositionOffset = maxMousePosition - this.snapOffset
 

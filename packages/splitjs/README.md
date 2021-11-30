@@ -83,6 +83,7 @@ var split = Split(<HTMLElement|selector[]> elements, <options> options?)
 | -------------- | --------------- | -------------- | -------------------------------------------------------- |
 | `sizes`        | Array           |                | Initial sizes of each element in percents or CSS values. |
 | `minSize`      | Number or Array | `100`          | Minimum size of each element.                            |
+| `maxSize`      | Number or Array | `Infinity`     | Maximum size of each element.                            |
 | `expandToMin`  | Boolean         | `false`        | Grow initial sizes to `minSize`                          |
 | `gutterSize`   | Number          | `10`           | Gutter size in pixels.                                   |
 | `gutterAlign`  | String          | `'center'`     | Gutter alignment between elements.                       |
@@ -128,11 +129,22 @@ Split(['#one', '#two'], {
 })
 ```
 
+#### maxSize. Default: `Infinity`
+
+An array of maximum sizes of the elements, specified as pixel values. Example: Setting the maximum sizes of the first element to `500px`, and not setting a maximum size on the second element.
+
+```js
+Split(['#one', '#two'], {
+    maxSize: [500, Infinity],
+})
+```
+
 If a number is passed instead of an array, all elements are set to the same minimum size:
 
 ```js
 Split(['#one', '#two'], {
     minSize: 100,
+    maxSize: 500,
 })
 ```
 
@@ -365,7 +377,7 @@ if (sizes) {
 
 var split = Split(['#one', '#two'], {
     sizes: sizes,
-    onDragEnd: function(sizes) {
+    onDragEnd: function (sizes) {
         localStorage.setItem('split-sizes', JSON.stringify(sizes))
     },
 })
@@ -396,12 +408,12 @@ For more complicated flex layouts, the `elementStyle` and `gutterStyle` can be u
 
 ```js
 Split(['#flex-1', '#flex-2'], {
-    elementStyle: function(dimension, size, gutterSize) {
+    elementStyle: function (dimension, size, gutterSize) {
         return {
             'flex-basis': 'calc(' + size + '% - ' + gutterSize + 'px)',
         }
     },
-    gutterStyle: function(dimension, gutterSize) {
+    gutterStyle: function (dimension, gutterSize) {
         return {
             'flex-basis': gutterSize + 'px',
         }

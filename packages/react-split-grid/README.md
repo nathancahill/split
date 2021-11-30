@@ -80,10 +80,15 @@ Refer to [Split Grid documentation](https://github.com/nathancahill/split/tree/m
 Here's the full list:
 
 -   `minSize: number`
+-   `maxSize: number`
 -   `columnMinSize: number`
 -   `rowMinSize: number`
+-   `columnMaxSize: number`
+-   `rowMaxSize: number`
 -   `columnMinSizes: { [track: number]: number }`
 -   `rowMinSizes: { [track: number]: number }`
+-   `columnMaxSizes: { [track: number]: number }`
+-   `rowMaxSizes: { [track: number]: number }`
 -   `snapOffset: number`
 -   `columnSnapOffset: number`
 -   `rowSnapOffset: number`

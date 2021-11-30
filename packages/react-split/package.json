@@ -1,10 +1,11 @@
 {
     "name": "react-split",
-    "version": "2.0.9",
+    "version": "2.0.13",
     "description": "React component for Split.js",
     "main": "dist/react-split.js",
     "minified:main": "dist/react-split.min.js",
     "module": "dist/react-split.es.js",
+    "types": "index.d.ts",
     "scripts": {
         "prepublish": "rollup -c",
         "build": "rollup -c && npm run size",
@@ -16,7 +17,8 @@
     "author": "Nathan Cahill <nathan@nathancahill.com>",
     "homepage": "https://split.js.org/",
     "files": [
-        "dist"
+        "dist",
+        "index.d.ts"
     ],
     "license": "MIT",
     "dependencies": {
@@ -24,7 +26,7 @@
         "split.js": "^1.6.0"
     },
     "peerDependencies": {
-        "react": ">=15.4.2 || >= 16.0.0"
+        "react": "*"
     },
     "collective": {
         "type": "opencollective",

@@ -19,6 +19,7 @@
     const defaultLayout = 'flex'
     const defaultPanes = 2
     const defaultMinSize = 100
+    const defaultMaxSize = 100000
     const defaultGutterSize = 10
     const defaultGutterAlign = 'center'
     const defaultSnapOffset = 30
@@ -34,6 +35,9 @@
     let minSize = parsedQuery.minSize
         ? parseInt(parsedQuery.minSize, 10)
         : defaultMinSize
+    let maxSize = parsedQuery.maxSize
+        ? parseInt(parsedQuery.maxSize, 10)
+        : defaultMaxSize
     let gutterSize = parsedQuery.gutterSize
         ? parseInt(parsedQuery.gutterSize, 10)
         : defaultGutterSize
@@ -50,6 +54,7 @@
         ...(layout !== defaultLayout && { layout }),
         ...(panes !== defaultPanes && { panes }),
         ...(minSize !== defaultMinSize && { minSize }),
+        ...(maxSize !== defaultMaxSize && { maxSize }),
         ...(gutterSize !== defaultGutterSize && { gutterSize }),
         ...(gutterAlign !== defaultGutterAlign && { gutterAlign }),
         ...(snapOffset !== defaultSnapOffset && { snapOffset }),
@@ -70,6 +75,7 @@
     $: hasCodeChanges =
         direction !== defaultDirection ||
         minSize !== defaultMinSize ||
+        maxSize !== defaultMaxSize ||
         gutterSize !== defaultGutterSize ||
         gutterAlign !== defaultGutterAlign ||
         snapOffset !== defaultSnapOffset ||
@@ -90,6 +96,7 @@ Split([${paneObjs.map(pane => `'${pane.selector}'`).join(', ')}]${
 ${[
     direction !== defaultDirection ? `    direction: '${direction}',` : '',
     minSize !== defaultMinSize ? `    minSize: ${minSize},` : '',
+    maxSize !== defaultMaxSize ? `    maxSize: ${maxSize},` : '',
     gutterSize !== defaultGutterSize ? `    gutterSize: ${gutterSize},` : '',
     gutterAlign !== defaultGutterAlign
         ? `    gutterAlign: '${gutterAlign}',`
@@ -118,6 +125,7 @@ ${
                   ? `    direction="${direction}"`
                   : '',
               minSize !== defaultMinSize ? `    minSize={${minSize}}` : '',
+              maxSize !== defaultMaxSize ? `    maxSize={${maxSize}}` : '',
               gutterSize !== defaultGutterSize
                   ? `    gutterSize={${gutterSize}}`
                   : '',
@@ -150,8 +158,8 @@ ${
     direction === 'horizontal' && layout === 'flex'
         ? `
 .split {
-    display: 'flex';
-    flex-direction: 'row';
+    display: flex;
+    flex-direction: row;
 }`
         : ''
 }${
@@ -277,6 +285,7 @@ ${
             paneObjs.map(p => p.selector),
             {
                 minSize,
+                maxSize,
                 direction,
                 gutterSize,
                 gutterAlign,
@@ -457,6 +466,22 @@ ${
                             step="{50}"
                             min="{0}"
                             max="{300}"
+                        />
+                    </div>
+
+                    <div>
+                        <label
+                            for="company_website"
+                            class="block text-sm font-medium text-gray-700 mb-1"
+                        >
+                            Maximum Size
+                        </label>
+                        <Stepper
+                            bind:value="{maxSize}"
+                            default="{defaultMaxSize}"
+                            step="{50}"
+                            min="{0}"
+                            max="{1000}"
                         />
                     </div>
 

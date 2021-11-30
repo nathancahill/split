@@ -155,16 +155,19 @@ const Split = (idsOption, options = {}) => {
     // Set default options.sizes to equal percentages of the parent element.
     let sizes = getOption(options, 'sizes') || ids.map(() => 100 / ids.length)
 
-    // Standardize minSize to an array if it isn't already. This allows minSize
-    // to be passed as a number.
+    // Standardize minSize and maxSize to an array if it isn't already.
+    // This allows minSize and maxSize to be passed as a number.
     const minSize = getOption(options, 'minSize', 100)
     const minSizes = Array.isArray(minSize) ? minSize : ids.map(() => minSize)
+    const maxSize = getOption(options, 'maxSize', Infinity)
+    const maxSizes = Array.isArray(maxSize) ? maxSize : ids.map(() => maxSize)
 
     // Get other options
     const expandToMin = getOption(options, 'expandToMin', false)
     const gutterSize = getOption(options, 'gutterSize', 10)
     const gutterAlign = getOption(options, 'gutterAlign', 'center')
     const snapOffset = getOption(options, 'snapOffset', 30)
+    const snapOffsets = Array.isArray(snapOffset) ? snapOffset : ids.map(() => snapOffset)
     const dragInterval = getOption(options, 'dragInterval', 1)
     const direction = getOption(options, 'direction', HORIZONTAL)
     const cursor = getOption(
@@ -295,13 +298,22 @@ const Split = (idsOption, options = {}) => {
         // If within snapOffset of min or max, set offset to min or max.
         // snapOffset buffers a.minSize and b.minSize, so logic is opposite for both.
         // Include the appropriate gutter sizes to prevent overflows.
-        if (offset <= a.minSize + snapOffset + this[aGutterSize]) {
+        if (offset <= a.minSize + a.snapOffset + this[aGutterSize]) {
             offset = a.minSize + this[aGutterSize]
         } else if (
             offset >=
-            this.size - (b.minSize + snapOffset + this[bGutterSize])
+            this.size - (b.minSize + b.snapOffset + this[bGutterSize])
         ) {
             offset = this.size - (b.minSize + this[bGutterSize])
+        }
+
+        if (offset >= a.maxSize - a.snapOffset + this[aGutterSize]) {
+            offset = a.maxSize + this[aGutterSize]
+        } else if (
+            offset <=
+            this.size - (b.maxSize - b.snapOffset + this[bGutterSize])
+        ) {
+            offset = this.size - (b.maxSize + this[bGutterSize])
         }
 
         // Actually adjust the size.
@@ -577,6 +589,8 @@ const Split = (idsOption, options = {}) => {
             element: elementOrSelector(id),
             size: sizes[i],
             minSize: minSizes[i],
+            maxSize: maxSizes[i],
+            snapOffset: snapOffsets[i],
             i,
         }
 

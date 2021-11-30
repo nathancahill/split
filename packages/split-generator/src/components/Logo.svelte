@@ -14,10 +14,6 @@
                 [dimension]: `${gutterSize}px`,
             }),
         })
-
-        setTimeout(() => {
-            console.log(s.getSizes())
-        }, 5000)
     })
 </script>
 

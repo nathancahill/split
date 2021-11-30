@@ -20,7 +20,12 @@ const createGutter = (direction, options) => gutterOptions => {
         direction === 'column'
             ? options.columnMinSizes || {}
             : options.rowMinSizes || {}
+    const trackMaxSizes =
+        direction === 'column'
+            ? options.columnMaxSizes || {}
+            : options.rowMaxSizes || {}
     const trackMinSize = direction === 'column' ? 'columnMinSize' : 'rowMinSize'
+    const trackMaxSize = direction === 'column' ? 'columnMaxSize' : 'rowMaxSize'
 
     return new Gutter(
         direction,
@@ -43,6 +48,24 @@ const createGutter = (direction, options) => gutterOptions => {
                     getOption(options, 'minSize', 0),
                 ),
             ),
+            maxSizeStart: getTrackOption(
+                trackMaxSizes,
+                gutterOptions.track - 1,
+                getOption(
+                    options,
+                    trackMaxSize,
+                    getOption(options, 'maxSize', Infinity),
+                ),
+            ),
+            maxSizeEnd: getTrackOption(
+                trackMaxSizes,
+                gutterOptions.track + 1,
+                getOption(
+                    options,
+                    trackMaxSize,
+                    getOption(options, 'maxSize', Infinity),
+                ),
+            ),
             ...gutterOptions,
         },
         options,
@@ -59,6 +82,8 @@ class Grid {
             rowGutters: options.rowGutters || [],
             columnMinSizes: options.columnMinSizes || {},
             rowMinSizes: options.rowMinSizes || {},
+            columnMaxSizes: options.columnMaxSizes || {},
+            rowMaxSizes: options.rowMaxSizes || {},
             ...options,
         }
 

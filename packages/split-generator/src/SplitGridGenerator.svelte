@@ -10,7 +10,6 @@
     import Copy from './icons/Copy.svelte'
     import Copied from './icons/Copied.svelte'
 
-    let mounted = false
     let split = null
     let mode = 'vanilla'
 
@@ -18,6 +17,7 @@
     const defaultRows = 1
     const defaultColumns = 2
     const defaultMinSize = 0
+    const defaultMaxSize = 100000
     const defaultSnapOffset = 30
     const defaultDragInterval = 1
 
@@ -30,6 +30,9 @@
     let minSize = parsedQuery.minSize
         ? parseInt(parsedQuery.minSize, 10)
         : defaultMinSize
+    let maxSize = parsedQuery.maxSize
+        ? parseInt(parsedQuery.maxSize, 10)
+        : defaultMaxSize
     let snapOffset = parsedQuery.snapOffset
         ? parseInt(parsedQuery.snapOffset, 10)
         : defaultSnapOffset
@@ -41,6 +44,7 @@
         ...(rows !== defaultRows && { rows }),
         ...(columns !== defaultColumns && { columns }),
         ...(minSize !== defaultMinSize && { minSize }),
+        ...(maxSize !== defaultMaxSize && { maxSize }),
         ...(snapOffset !== defaultSnapOffset && { snapOffset }),
         ...(dragInterval !== defaultDragInterval && { dragInterval }),
     }
@@ -58,6 +62,7 @@
 
     $: hasCodeChanges =
         minSize !== defaultMinSize ||
+        maxSize !== defaultMaxSize ||
         snapOffset !== defaultSnapOffset ||
         dragInterval !== defaultDragInterval
 
@@ -113,6 +118,7 @@ Split({${
         hasCodeChanges
             ? `\n${[
                   minSize !== defaultMinSize ? `    minSize: ${minSize},` : '',
+                  maxSize !== defaultMaxSize ? `    maxSize: ${maxSize},` : '',
                   snapOffset !== defaultSnapOffset
                       ? `    snapOffset: ${snapOffset},`
                       : '',
@@ -161,6 +167,7 @@ import Split from 'react-split-grid'
             ? `
 ${[
     minSize !== defaultMinSize ? `    minSize={${minSize}}` : '',
+    maxSize !== defaultMaxSize ? `    maxSize={${maxSize}}` : '',
     snapOffset !== defaultSnapOffset ? `    snapOffset={${snapOffset}}` : '',
     dragInterval !== defaultDragInterval
         ? `    dragInterval={${dragInterval}}`
@@ -289,6 +296,10 @@ ${rowObjs
         }
 
         return Split({
+            minSize,
+            maxSize,
+            snapOffset,
+            dragInterval,
             columnGutters: colObjs
                 .filter(col => col.track !== undefined)
                 .map(col => ({
@@ -468,6 +479,22 @@ ${rowObjs
                             step="{50}"
                             min="{0}"
                             max="{300}"
+                        />
+                    </div>
+
+                    <div>
+                        <label
+                            for="company_website"
+                            class="block text-sm font-medium text-gray-700 mb-1"
+                        >
+                            Maximum Size
+                        </label>
+                        <Stepper
+                            bind:value="{maxSize}"
+                            default="{defaultMaxSize}"
+                            step="{50}"
+                            min="{0}"
+                            max="{1000}"
                         />
                     </div>
 
