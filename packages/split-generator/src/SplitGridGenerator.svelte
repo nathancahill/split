@@ -231,7 +231,7 @@ ${colObjs
     .map(
         col => `
 .gutter-col-${col.track} {
-    grid-column: ${col.track};
+    grid-column: ${col.track + 1};
 }`,
     )
     .join('\n')}
@@ -249,7 +249,7 @@ ${rowObjs
     .map(
         row => `
 .gutter-row-${row.track} {
-    grid-row: ${row.track};
+    grid-row: ${row.track + 1};
 }`,
     )
     .join('\n')}
@@ -320,27 +320,6 @@ ${rowObjs
     })
 </script>
 
-<style global>
-    .gutter-col,
-    .gutter-row {
-        background-color: rgb(229, 231, 235);
-        background-repeat: no-repeat;
-        background-position: 50%;
-    }
-
-    .gutter-col {
-        grid-row: 1/-1;
-        cursor: col-resize;
-        background-image: url(/vertical.png);
-    }
-
-    .gutter-row {
-        grid-column: 1/-1;
-        cursor: row-resize;
-        background-image: url(/horizontal.png);
-    }
-</style>
-
 <svelte:head>
     <title>Split.js - Split-Grid</title>
 </svelte:head>
@@ -350,9 +329,7 @@ ${rowObjs
     <!-- Left column -->
     <div class="grid grid-cols-1 gap-4 lg:col-span-2">
         <section aria-labelledby="section-1-title">
-            <h2 class="sr-only" id="section-1-title">
-                Split.js
-            </h2>
+            <h2 class="sr-only" id="section-1-title">Split.js</h2>
             <div class="rounded-lg bg-white overflow-hidden shadow p-4">
                 <div
                     class="border-4 border-dashed border-gray-200 rounded-lg h-64"
@@ -362,16 +339,14 @@ ${rowObjs
                         style="grid-template-rows: {gridTemplateRows}; grid-template-columns: {gridTemplateCols}"
                     >
                         {#each allObjs as pane}
-                        <div class="{pane.class}" style="{pane.style}"></div>
+                            <div class={pane.class} style={pane.style} />
                         {/each}
                     </div>
                 </div>
             </div>
         </section>
         <section aria-labelledby="section-2-title">
-            <h2 class="sr-only" id="section-1-title">
-                Generated Code
-            </h2>
+            <h2 class="sr-only" id="section-1-title">Generated Code</h2>
             <div
                 class="rounded-lg bg-white overflow-hidden shadow p-4 markdown"
             >
@@ -379,39 +354,48 @@ ${rowObjs
                     <Toggle
                         sm
                         name="mode"
-                        bind:value="{mode}"
-                        options="{[{ title: 'JavaScript', value: 'vanilla' }, { title: 'React', value: 'react' }]}"
+                        bind:value={mode}
+                        options={[
+                            { title: 'JavaScript', value: 'vanilla' },
+                            { title: 'React', value: 'react' },
+                        ]}
                     />
                 </div>
                 <div class="relative markdown group">
                     <button
                         type="button"
                         class="absolute opacity-0 group-hover:opacity-100 top-1.5 right-1.5 inline-flex items-center px-4 py-2 border border-gray-300 shadow-sm text-base font-medium rounded-md text-gray-700 bg-gray-300 hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
-                        on:click="{copyJS}"
+                        on:click={copyJS}
                     >
                         {#if jsCopied}
-                        <Copied /> Copied {:else} <Copy /> Copy {/if}
+                            <Copied /> Copied
+                        {:else}
+                            <Copy /> Copy
+                        {/if}
                     </button>
                     {#if mode === 'vanilla'}
-                    <Prism language="javascript">{javascript}</Prism>
+                        <Prism language="javascript">{javascript}</Prism>
                     {:else if mode === 'react'}
-                    <Prism language="jsx">{react}</Prism>
+                        <Prism language="jsx">{react}</Prism>
                     {/if}
                 </div>
 
                 {#if mode === 'vanilla'}
-                <h3 class="text-lg font-medium mb-2 mt-4">HTML</h3>
-                <div class="relative markdown group">
-                    <button
-                        type="button"
-                        class="absolute opacity-0 group-hover:opacity-100 top-1.5 right-1.5 inline-flex items-center px-4 py-2 border border-gray-300 shadow-sm text-base font-medium rounded-md text-gray-700 bg-gray-300 hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
-                        on:click="{copyHTML}"
-                    >
-                        {#if htmlCopied}
-                        <Copied /> Copied {:else} <Copy /> Copy {/if}
-                    </button>
-                    <Prism language="html">{html}</Prism>
-                </div>
+                    <h3 class="text-lg font-medium mb-2 mt-4">HTML</h3>
+                    <div class="relative markdown group">
+                        <button
+                            type="button"
+                            class="absolute opacity-0 group-hover:opacity-100 top-1.5 right-1.5 inline-flex items-center px-4 py-2 border border-gray-300 shadow-sm text-base font-medium rounded-md text-gray-700 bg-gray-300 hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
+                            on:click={copyHTML}
+                        >
+                            {#if htmlCopied}
+                                <Copied /> Copied
+                            {:else}
+                                <Copy /> Copy
+                            {/if}
+                        </button>
+                        <Prism language="html">{html}</Prism>
+                    </div>
                 {/if}
 
                 <h3 class="text-lg font-medium mb-2 mt-4">CSS</h3>
@@ -419,10 +403,13 @@ ${rowObjs
                     <button
                         type="button"
                         class="absolute opacity-0 group-hover:opacity-100 top-1.5 right-1.5 inline-flex items-center px-4 py-2 border border-gray-300 shadow-sm text-base font-medium rounded-md text-gray-700 bg-gray-300 hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
-                        on:click="{copyCSS}"
+                        on:click={copyCSS}
                     >
                         {#if cssCopied}
-                        <Copied /> Copied {:else} <Copy /> Copy {/if}
+                            <Copied /> Copied
+                        {:else}
+                            <Copy /> Copy
+                        {/if}
                     </button>
                     <Prism language="css">{css}</Prism>
                 </div>
@@ -433,9 +420,7 @@ ${rowObjs
     <!-- Right column -->
     <div class="grid grid-cols-1 gap-4">
         <section aria-labelledby="section-2-title">
-            <h2 class="sr-only" id="section-2-title">
-                Options
-            </h2>
+            <h2 class="sr-only" id="section-2-title">Options</h2>
             <div class="rounded-lg bg-white overflow-hidden shadow">
                 <div class="p-6 space-y-4">
                     <div>
@@ -446,9 +431,9 @@ ${rowObjs
                             Rows
                         </label>
                         <Stepper
-                            bind:value="{rows}"
-                            default="{defaultRows}"
-                            min="{1}"
+                            bind:value={rows}
+                            default={defaultRows}
+                            min={1}
                         />
                     </div>
 
@@ -460,9 +445,9 @@ ${rowObjs
                             Columns
                         </label>
                         <Stepper
-                            bind:value="{columns}"
-                            default="{defaultColumns}"
-                            min="{1}"
+                            bind:value={columns}
+                            default={defaultColumns}
+                            min={1}
                         />
                     </div>
 
@@ -474,11 +459,11 @@ ${rowObjs
                             Minimum Size
                         </label>
                         <Stepper
-                            bind:value="{minSize}"
-                            default="{defaultMinSize}"
-                            step="{50}"
-                            min="{0}"
-                            max="{300}"
+                            bind:value={minSize}
+                            default={defaultMinSize}
+                            step={50}
+                            min={0}
+                            max={300}
                         />
                     </div>
 
@@ -490,11 +475,11 @@ ${rowObjs
                             Maximum Size
                         </label>
                         <Stepper
-                            bind:value="{maxSize}"
-                            default="{defaultMaxSize}"
-                            step="{50}"
-                            min="{0}"
-                            max="{1000}"
+                            bind:value={maxSize}
+                            default={defaultMaxSize}
+                            step={50}
+                            min={0}
+                            max={1000}
                         />
                     </div>
 
@@ -506,11 +491,11 @@ ${rowObjs
                             Snap Offset
                         </label>
                         <Stepper
-                            bind:value="{snapOffset}"
-                            default="{defaultSnapOffset}"
-                            min="{0}"
-                            max="{100}"
-                            step="{10}"
+                            bind:value={snapOffset}
+                            default={defaultSnapOffset}
+                            min={0}
+                            max={100}
+                            step={10}
                         />
                     </div>
 
@@ -522,11 +507,11 @@ ${rowObjs
                             Drag Interval
                         </label>
                         <Stepper
-                            bind:value="{dragInterval}"
-                            default="{defaultDragInterval}"
-                            min="{1}"
-                            max="{20}"
-                            step="{1}"
+                            bind:value={dragInterval}
+                            default={defaultDragInterval}
+                            min={1}
+                            max={20}
+                            step={1}
                         />
                     </div>
                 </div>
@@ -569,3 +554,24 @@ ${rowObjs
         </section>
     </div>
 </div>
+
+<style global>
+    .gutter-col,
+    .gutter-row {
+        background-color: rgb(229, 231, 235);
+        background-repeat: no-repeat;
+        background-position: 50%;
+    }
+
+    .gutter-col {
+        grid-row: 1/-1;
+        cursor: col-resize;
+        background-image: url(/vertical.png);
+    }
+
+    .gutter-row {
+        grid-column: 1/-1;
+        cursor: row-resize;
+        background-image: url(/horizontal.png);
+    }
+</style>
