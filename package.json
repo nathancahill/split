@@ -7,7 +7,8 @@
         "build": "lerna run build",
         "test": "lerna run test",
         "lint": "eslint .",
-        "saucelabs": "lerna run saucelabs"
+        "saucelabs": "lerna run saucelabs",
+        "deploy": "git push origin `git subtree split --prefix packages/split-generator/public master`:gh-pages --force"
     },
     "version": "1.0.0",
     "main": "index.js",
