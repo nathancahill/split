@@ -1,6 +1,6 @@
 {
     "name": "react-split",
-    "version": "2.0.13",
+    "version": "2.0.14",
     "description": "React component for Split.js",
     "main": "dist/react-split.js",
     "minified:main": "dist/react-split.min.js",

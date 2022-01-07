@@ -1,3 +1,17 @@
+## react-split-grid v1.0.4
+
+-   Publishes Typescript types on NPM
+-   Corrects misspelling of `maxSize` property
+-   Corrects type of parameters from object to array
+
+## react-split v2.0.14
+
+-   Omits incompatible properties from the React HTMLAttributes
+
+## split.js v1.6.5
+
+-   Allows `snapOffset` to be passed as an array
+
 ## react-split v2.0.13
 
 -   Extends React component types from React.HTMLAttributes
