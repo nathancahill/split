@@ -1,6 +1,11 @@
 import React from 'react'
 import { SplitOptions } from 'split-grid'
 
+export interface RenderParams {
+    getGridProps?: () => ({ style: {gridTemplateColumns: SplitOptions["gridTemplateColumns"], gridTemplateRows: SplitOptions["gridTemplateRows"] }}),
+    getGutterProps?: (direction: Direction, track: number) => ({ onMouseDown?: MouseEventHandler<HTMLDivElement>, onTouchStart?: () => MouseEventHandler<HTMLDivElement> }),
+}
+
 export interface SplitProps {
     columnGutters?: SplitOptions["columnGutters"]
     rowGutters?: SplitOptions["rowGutters"]
@@ -29,6 +34,7 @@ export interface SplitProps {
     writeStyle?: SplitOptions["writeStyle"]
     gridTemplateColumns?: SplitOptions["gridTemplateColumns"]
     gridTemplateRows?: SplitOptions["gridTemplateRows"]
+    render: (renderParams?: RenderParams) => React.ReactNode,
 }
 
 declare class Split extends React.Component<SplitProps, any> {}
