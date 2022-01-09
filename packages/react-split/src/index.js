@@ -41,12 +41,15 @@ class SplitWrapper extends React.Component {
             'dragInterval',
             'direction',
             'cursor',
+            'onDrag',
+            'onDragStart',
+            'onDragEnd',
         ]
 
         let needsRecreate = otherProps
             // eslint-disable-next-line react/destructuring-assignment
             .map(prop => this.props[prop] !== prevProps[prop])
-            .reduce((accum, same) => accum || same, false)
+            .reduce((accum, notSame) => accum || notSame, false)
 
         // Compare minSize when both are arrays, when one is an array and when neither is an array
         if (Array.isArray(minSize) && Array.isArray(prevMinSize)) {
