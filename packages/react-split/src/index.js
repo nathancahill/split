@@ -100,8 +100,10 @@ class SplitWrapper extends React.Component {
     }
 
     componentWillUnmount() {
-        this.split.destroy()
-        delete this.split
+        if (this.split) {
+          this.split.destroy()
+          delete this.split
+        }
     }
 
     render() {
