@@ -47,6 +47,7 @@ export interface SplitProps {
     gridTemplateRows?: SplitOptions["gridTemplateRows"]
     component?: (props: SplitRenderProps) => JSX.Element
     render?: (props: SplitRenderProps) => JSX.Element
+    children?: (props: SplitRenderProps) => JSX.Element
 }
 
 declare class Split extends React.Component<SplitProps, any> {}
