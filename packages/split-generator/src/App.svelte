@@ -1,3 +1,11 @@
+<script>
+    import Dashboard from './Dashboard.svelte'
+
+    import 'prismjs/components/prism-jsx.min'
+</script>
+
+<Dashboard />
+
 <style global lang="less">
     /*! purgecss start ignore */
     @tailwind base;
@@ -7,13 +15,6 @@
 
     /*! purgecss start ignore */
     @import 'src/less/markdown';
+    @import 'src/less/carbon';
     /*! purgecss end ignore */
 </style>
-
-<script>
-    import Dashboard from './Dashboard.svelte'
-
-    import 'prismjs/components/prism-jsx.min'
-</script>
-
-<Dashboard />
