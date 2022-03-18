@@ -318,6 +318,8 @@ ${rowObjs
     afterUpdate(() => {
         split = recreateSplit()
     })
+
+    const random = Math.random()
 </script>
 
 <svelte:head>
@@ -428,7 +430,8 @@ ${rowObjs
                     async
                     type="text/javascript"
                     src="//cdn.carbonads.com/carbon.js?serve=CEAI45QN&placement=splitjsorg"
-                    id="_carbonads_js"></script>
+                    id="_carbonads_js"
+                    name={random}></script>
             </div>
             <h2 class="sr-only" id="section-2-title">Options</h2>
             <div class="mb-4 rounded-lg bg-white overflow-hidden shadow">
