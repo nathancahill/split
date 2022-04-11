@@ -46,3 +46,11 @@ Support this project by becoming a sponsor. Your logo will show up here with a l
 <a href="https://opencollective.com/splitjs/sponsor/7/website" target="_blank"><img src="https://opencollective.com/splitjs/sponsor/7/avatar.svg"></a>
 <a href="https://opencollective.com/splitjs/sponsor/8/website" target="_blank"><img src="https://opencollective.com/splitjs/sponsor/8/avatar.svg"></a>
 <a href="https://opencollective.com/splitjs/sponsor/9/website" target="_blank"><img src="https://opencollective.com/splitjs/sponsor/9/avatar.svg"></a>
+
+### Used By
+
+-   [JSFiddle](https://jsfiddle.net/) - Code playground
+-   [Viz.js](http://viz-js.com/) - Graphviz in your browser
+-   [Perchance](https://perchance.org/welcome) - Platform for creating and sharing random text generators
+-   [Babylon.js Playground](https://www.babylonjs-playground.com/)
+-   And many more. Submit a PR to list your project here.
