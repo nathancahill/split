@@ -53,4 +53,5 @@ Support this project by becoming a sponsor. Your logo will show up here with a l
 -   [Viz.js](http://viz-js.com/) - Graphviz in your browser
 -   [Perchance](https://perchance.org/welcome) - Platform for creating and sharing random text generators
 -   [Babylon.js Playground](https://www.babylonjs-playground.com/)
+-   [Believers Sword](https://believers-sword-app.herokuapp.com/) - an app for reading and studying the bible. [Repository](https://github.com/Bible-Projects/believers-sword-app)
 -   And many more. Submit a PR to list your project here.
