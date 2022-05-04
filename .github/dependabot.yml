@@ -1,0 +1,31 @@
+version: 2
+updates:
+- package-ecosystem: npm
+  directory: "/"
+  schedule:
+    interval: daily
+  open-pull-requests-limit: 10
+  target-branch: master
+  ignore:
+  - dependency-name: postcss
+    versions:
+    - 8.2.10
+    - 8.2.11
+    - 8.2.12
+  - dependency-name: eslint-config-prettier
+    versions:
+    - 8.2.0
+  - dependency-name: rollup
+    versions:
+    - 2.45.0
+    - 2.45.1
+    - 2.45.2
+  - dependency-name: eslint
+    versions:
+    - 7.24.0
+  - dependency-name: karma
+    versions:
+    - 6.0.3
+  - dependency-name: node-fetch
+    versions:
+    - 2.6.1
