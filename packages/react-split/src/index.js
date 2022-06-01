@@ -6,30 +6,18 @@ class SplitWrapper extends React.Component {
     componentDidMount() {
         const { children, gutter, ...options } = this.props
 
-        options.gutter = (index, direction) => {
-            let gutterElement
-
-            if (gutter) {
-                gutterElement = gutter(index, direction)
-            } else {
-                gutterElement = document.createElement('div')
-                gutterElement.className = `gutter gutter-${direction}`
-            }
-
-            // eslint-disable-next-line no-underscore-dangle
-            gutterElement.__isSplitGutter = true
-            return gutterElement
-        }
+        options.gutter = this.makeGutterFn(gutter)
 
         this.split = Split(this.parent.children, options)
     }
 
     componentDidUpdate(prevProps) {
-        const { children, minSize, sizes, collapsed, ...options } = this.props
+        const { children, minSize, sizes, collapsed, gutter, ...options } = this.props
         const {
             minSize: prevMinSize,
             sizes: prevSizes,
             collapsed: prevCollapsed,
+            children: prevChildren,
         } = prevProps
 
         const otherProps = [
@@ -41,6 +29,7 @@ class SplitWrapper extends React.Component {
             'dragInterval',
             'direction',
             'cursor',
+            'children',
         ]
 
         let needsRecreate = otherProps
@@ -63,12 +52,26 @@ class SplitWrapper extends React.Component {
             needsRecreate = needsRecreate || minSize !== prevMinSize
         }
 
+        // If children have changed, remove the old gutters
+        if (prevChildren !== children) {
+            for (var i = this.parent.children.length - 1; i >=0; i--) {
+                if (this.parent.children[i].__isSplitGutter) {
+                    this.parent.children[i].remove()
+                }
+            }
+        }
+
         // Destroy and re-create split if options changed
         if (needsRecreate) {
             options.minSize = minSize
             options.sizes = sizes || this.split.getSizes()
+            if (prevChildren !== children && options.sizes.length !== children.count) {
+                options.sizes = undefined
+            }
             this.split.destroy(true, true)
-            options.gutter = (index, direction, pairB) => pairB.previousSibling
+            options.gutter = (index, direction, pairB) => {
+                return pairB.previousSibling.__isSplitGutter ? pairB.previousSibling : this.makeGutterFn(gutter)()
+            }
             this.split = Split(
                 Array.from(this.parent.children).filter(
                     // eslint-disable-next-line no-underscore-dangle
@@ -137,6 +140,23 @@ class SplitWrapper extends React.Component {
                 {children}
             </div>
         )
+    }
+
+    makeGutterFn(gutterFn) {
+        return function (index, direction) {
+            let gutterElement
+
+            if (gutterFn) {
+                gutterElement = gutter(index, direction)
+            } else {
+                gutterElement = document.createElement('div')
+                gutterElement.className = `gutter gutter-${direction}`
+            }
+
+            // eslint-disable-next-line no-underscore-dangle
+            gutterElement.__isSplitGutter = true
+            return gutterElement
+        }
     }
 }
 
