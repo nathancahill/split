@@ -147,7 +147,7 @@ class SplitWrapper extends React.Component {
             let gutterElement
 
             if (gutterFn) {
-                gutterElement = gutter(index, direction)
+                gutterElement = gutterFn(index, direction)
             } else {
                 gutterElement = document.createElement('div')
                 gutterElement.className = `gutter gutter-${direction}`
