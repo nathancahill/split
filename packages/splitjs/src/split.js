@@ -724,17 +724,17 @@ const Split = (idsOption, options = {}) => {
 
     function destroy(preserveStyles, preserveGutter) {
         pairs.forEach(pair => {
+            pair.gutter[removeEventListener](
+                'mousedown',
+                pair[gutterStartDragging],
+            )
+            pair.gutter[removeEventListener](
+                'touchstart',
+                pair[gutterStartDragging],
+            )
+
             if (preserveGutter !== true) {
                 pair.parent.removeChild(pair.gutter)
-            } else {
-                pair.gutter[removeEventListener](
-                    'mousedown',
-                    pair[gutterStartDragging],
-                )
-                pair.gutter[removeEventListener](
-                    'touchstart',
-                    pair[gutterStartDragging],
-                )
             }
 
             if (preserveStyles !== true) {
