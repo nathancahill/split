@@ -62,16 +62,17 @@ class SplitWrapper extends React.Component {
         } else {
             needsRecreate = needsRecreate || minSize !== prevMinSize
         }
-let dynamicallyAdded = false;
-    if (
-      !needsRecreate &&
-      prevSizes &&
-      this.props.sizes &&
-      prevSizes.length != this.props.sizes.length
-    ) {
-      needsRecreate = true;
-      dynamicallyAdded = true;
-    }
+        
+        let dynamicallyAdded = false;
+        if (
+        !needsRecreate &&
+        prevSizes &&
+        this.props.sizes &&
+        prevSizes.length != this.props.sizes.length
+        ) {
+        needsRecreate = true;
+        dynamicallyAdded = true;
+        }
         // Destroy and re-create split if options changed
         if (needsRecreate) {
             options.minSize = minSize
@@ -81,21 +82,21 @@ let dynamicallyAdded = false;
                 options.gutter = (index, direction, pairB) => pairB.previousSibling
             }
             else{
-             this.split.destroy();   
+                this.split.destroy();   
                 options.gutter = (index, direction) => {
-            let gutterElement
+                    let gutterElement
 
-            if (gutter) {
-                gutterElement = gutter(index, direction)
-            } else {
-                gutterElement = document.createElement('div')
-                gutterElement.className = `gutter gutter-${direction}`
-            }
+                    if (gutter) {
+                        gutterElement = gutter(index, direction)
+                    } else {
+                        gutterElement = document.createElement('div')
+                        gutterElement.className = `gutter gutter-${direction}`
+                    }
 
-            // eslint-disable-next-line no-underscore-dangle
-            gutterElement.__isSplitGutter = true
-            return gutterElement
-        }
+                    // eslint-disable-next-line no-underscore-dangle
+                    gutterElement.__isSplitGutter = true
+                    return gutterElement
+                }
             }
             
             
