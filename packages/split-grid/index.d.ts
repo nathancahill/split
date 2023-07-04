@@ -83,7 +83,7 @@ declare module 'split-grid' {
 
   export type Direction = 'row' | 'column';
 
-  export type GridTemplateProperty = 'grid-template-column' | 'grid-template-row';
+  export type GridTemplateProperty = 'grid-template-columns' | 'grid-template-rows';
 
   export default function Split(options: SplitOptions): SplitInstance;
 }
