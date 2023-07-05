@@ -62,13 +62,44 @@ class SplitWrapper extends React.Component {
         } else {
             needsRecreate = needsRecreate || minSize !== prevMinSize
         }
-
+        
+        let dynamicallyAdded = false;
+        if (
+        !needsRecreate &&
+        prevSizes &&
+        this.props.sizes &&
+        prevSizes.length != this.props.sizes.length
+        ) {
+        needsRecreate = true;
+        dynamicallyAdded = true;
+        }
         // Destroy and re-create split if options changed
         if (needsRecreate) {
             options.minSize = minSize
             options.sizes = sizes || this.split.getSizes()
-            this.split.destroy(true, true)
-            options.gutter = (index, direction, pairB) => pairB.previousSibling
+            if(!dynamicallyAdded){
+                this.split.destroy(true, true);
+                options.gutter = (index, direction, pairB) => pairB.previousSibling
+            }
+            else{
+                this.split.destroy();   
+                options.gutter = (index, direction) => {
+                    let gutterElement
+
+                    if (gutter) {
+                        gutterElement = gutter(index, direction)
+                    } else {
+                        gutterElement = document.createElement('div')
+                        gutterElement.className = `gutter gutter-${direction}`
+                    }
+
+                    // eslint-disable-next-line no-underscore-dangle
+                    gutterElement.__isSplitGutter = true
+                    return gutterElement
+                }
+            }
+            
+            
             this.split = Split(
                 Array.from(this.parent.children).filter(
                     // eslint-disable-next-line no-underscore-dangle
