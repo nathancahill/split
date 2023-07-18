@@ -1,5 +1,21 @@
-import React from 'react'
+import React, {MouseEventHandler, TouchEventHandler} from 'react'
 import { SplitOptions } from 'split-grid'
+
+interface SplitRenderProps {
+    getGridProps: () => {
+      style: {
+        gridTemplateColumns: string
+        gridTemplateRows: string
+      }
+    }
+    getGutterProps: (
+        direction?: string,
+        track?: number,
+    ) => {
+        onMouseDown: MouseEventHandler<HTMLDivElement>
+        onTouchStart: TouchEventHandler<HTMLDivElement>
+    }
+}
 
 export interface SplitProps {
     columnGutters?: SplitOptions["columnGutters"]
@@ -29,6 +45,9 @@ export interface SplitProps {
     writeStyle?: SplitOptions["writeStyle"]
     gridTemplateColumns?: SplitOptions["gridTemplateColumns"]
     gridTemplateRows?: SplitOptions["gridTemplateRows"]
+    component?: (props: SplitRenderProps) => JSX.Element
+    render?: (props: SplitRenderProps) => JSX.Element
+    children?: (props: SplitRenderProps) => JSX.Element
 }
 
 declare class Split extends React.Component<SplitProps, any> {}
