@@ -392,7 +392,18 @@ const Split = (idsOption, options = {}) => {
             return sizesToTrim
         }
 
-        if (minSizes.reduce((a, b) => a + b, 0) > parentSize) {
+        const gutterSizes = sizesToTrim.map((_, i) => getGutterSize(
+            gutterSize,
+            i === 0,
+            i === sizesToTrim.length - 1,
+            gutterAlign,
+        ))
+
+        // Ensure parent element has enough space to contain the adjusted sizes
+        const gutterSizesSum = gutterSizes.reduce((a, b) => a + b, 0)
+        const minSizesSum = minSizes.reduce((a, b) => a + b, gutterSizesSum)
+
+        if (minSizesSum > parentSize) {
             return sizesToTrim
         }
 
@@ -404,13 +415,7 @@ const Split = (idsOption, options = {}) => {
         const pixelSizes = sizesToTrim.map((size, i) => {
             // Convert requested percentages to pixel sizes
             const pixelSize = (parentSize * size) / 100
-            const elementGutterSize = getGutterSize(
-                gutterSize,
-                i === 0,
-                i === sizesToTrim.length - 1,
-                gutterAlign,
-            )
-            const elementMinSize = minSizes[i] + elementGutterSize
+            const elementMinSize = minSizes[i] + gutterSizes[i]
 
             // If element is too smal, increase excess pixels by the difference
             // and mark that it has no pixels to spare
