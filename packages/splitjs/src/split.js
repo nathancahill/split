@@ -438,7 +438,7 @@ const Split = (idsOption, options = {}) => {
             if (excessPixels > 0 && toSpare[i] - excessPixels > 0) {
                 const takenPixels = Math.min(
                     excessPixels,
-                    toSpare[i] - excessPixels,
+                    toSpare[i],
                 )
 
                 // Subtract the amount taken for the next iteration
