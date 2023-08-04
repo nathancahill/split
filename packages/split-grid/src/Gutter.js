@@ -358,6 +358,14 @@ class Gutter {
             bTrackSize = this.minSizeEnd
         }
 
+        if (aTrackSize > this.maxSizeStart) {
+            aTrackSize = this.maxSizeStart;
+        }
+
+        if (bTrackSize > this.maxSizeEnd) {
+            bTrackSize = this.maxSizeEnd;
+        }
+
         if (this.trackValues[this.aTrack].type === 'px') {
             this.tracks[this.aTrack] = `${aTrackSize}px`
         } else if (this.trackValues[this.aTrack].type === 'fr') {
