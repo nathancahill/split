@@ -82,6 +82,10 @@ class ReactSplitGrid extends React.Component {
         if (columnMinSizes !== prevColumnMinSizes) {
             needsRecreate = true
         }
+        // TODO use deep equals
+        if (columnMaxSizes !== prevColumnMaxSizes) {
+            needsRecreate = true
+        }
 
         if (rowMinSizes !== prevRowMinSizes) {
             needsRecreate = true
@@ -94,8 +98,9 @@ class ReactSplitGrid extends React.Component {
         // Destroy and re-create split if options changed
         if (needsRecreate) {
             options.columnMinSizes = columnMinSizes
+            options.columnMaxSizes = columnMaxSizes
             options.rowMinSizes = rowMinSizes
-
+            options.rowMaxSizes = rowMaxSizes
             this.split.destroy(false)
 
             this.split = Split(options)
