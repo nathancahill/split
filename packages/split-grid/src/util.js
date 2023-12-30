@@ -10,10 +10,10 @@ export const getGapValue = (unit, size) => {
     return null
 }
 
-export const firstNonZero = tracks => {
+export const firstNonZero = (type, tracks) => {
     // eslint-disable-next-line no-plusplus
     for (let i = 0; i < tracks.length; i++) {
-        if (tracks[i].numeric > 0) {
+        if (tracks[i].type === type && tracks[i].numeric > 0) {
             return i
         }
     }

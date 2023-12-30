@@ -88,10 +88,46 @@ test('getGapValue', () => {
     expect(getGapValue('px', '10px')).toEqual(10)
 })
 
-test('firstNonZero first', () => {
-    expect(firstNonZero([{ numeric: 1 }, { numeric: 0 }])).toEqual(0)
+test('firstNonZero fraction first', () => {
+    expect(
+        firstNonZero('fr', [
+            { type: 'fr', numeric: 1 },
+            { type: 'fr', numeric: 0 },
+            { type: '%', numeric: 2 },
+            { type: '%', numeric: 0 },
+        ]),
+    ).toEqual(0)
 })
 
-test('firstNonZero second', () => {
-    expect(firstNonZero([{ numeric: 0 }, { numeric: 1 }])).toEqual(1)
+test('firstNonZero fraction second', () => {
+    expect(
+        firstNonZero('fr', [
+            { type: 'fr', numeric: 0 },
+            { type: 'fr', numeric: 1 },
+            { type: '%', numeric: 0 },
+            { type: '%', numeric: 1 },
+        ]),
+    ).toEqual(1)
+})
+
+test('firstNonZero percentage first', () => {
+    expect(
+        firstNonZero('%', [
+            { type: 'fr', numeric: 1 },
+            { type: 'fr', numeric: 0 },
+            { type: '%', numeric: 2 },
+            { type: '%', numeric: 0 },
+        ]),
+    ).toEqual(2)
+})
+
+test('firstNonZero percentage second', () => {
+    expect(
+        firstNonZero('%', [
+            { type: 'fr', numeric: 0 },
+            { type: 'fr', numeric: 1 },
+            { type: '%', numeric: 0 },
+            { type: '%', numeric: 1 },
+        ]),
+    ).toEqual(3)
 })
